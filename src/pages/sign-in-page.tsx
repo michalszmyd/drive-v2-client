@@ -1,14 +1,25 @@
 import { css } from '@emotion/css';
-import { Button, Col, Input, Row, Space } from 'antd';
-import { useState } from 'react';
+import { Button, Input } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import FormContainer from '../components/guest/pages/form-container';
 import PageWrapper from '../components/guest/pages/page-wrapper';
 import { colors } from '../consts/colors';
+import CurrentUserContext from '../contexts/current-user-context';
 import StringHelper from '../helpers/string-helper';
+import UserModel from '../models/user-model';
+import UsersService from '../services/users-service';
+import { useNavigate } from "react-router-dom";
+import CurrentUserHelper from '../helpers/current-user-helper';
 
 export default function SignInPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
 
   const onChangeEmail = ({ target: { value } }: { target: { value: string } }) => {
     setEmail(value);
@@ -20,32 +31,43 @@ export default function SignInPage() {
 
   const onSubmit = () => {
     setIsLoading(true);
-  }
+
+    UsersService
+      .signIn({email, password})
+      .then(({data}) => {
+        const user = new UserModel({id: data.id});
+
+        CurrentUserHelper.set({
+          id: data.id,
+          authenticationToken: data.authentication_token,
+          refreshAuthenticationToken: data.refres_authentication_token,
+        });
+        setCurrentUser(user);
+        navigate("/dashboard");
+      })
+      .catch(() => {
+        toast.error("There was an error while trying to log in")
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const isButtonActive = StringHelper.isPresent(email) && StringHelper.isPresent(password);
 
   return (
     <PageWrapper>
-      <Row justify="center" style={{alignItems: 'center', flex: 1}}>
-        <Col xs={24} sm={24} md={12} lg={12} xl={8}>
-          <form className={styles.loginRow}>
-            <Space direction="vertical" size="middle" className={styles.space}>
-              <h1 className={styles.heading}>Log in</h1>
-              <Input value={email} name="email" type="email" onChange={onChangeEmail} placeholder="email" />
-              <Input value={password} name="password" type="password" onChange={onChangePassword} placeholder="password" />
-              <Button disabled={!isButtonActive} loading={isLoading} onClick={onSubmit} className={styles.submitButton} type="primary">Log in</Button>
-            </Space>
-          </form>
-        </Col>
-      </Row>
+      <FormContainer onSubmit={onSubmit}>
+        <h1 className={styles.heading}>Log in</h1>
+        <Input value={email} name="email" type="email" onChange={onChangeEmail} placeholder="email" />
+        <Input value={password} name="password" type="password" onChange={onChangePassword} placeholder="password" />
+        <Button disabled={!isButtonActive} loading={isLoading} onClick={onSubmit} className={styles.submitButton} type="primary">Log in</Button>
+      </FormContainer>
     </PageWrapper>
   );
 }
 
 const styles = {
-  space: css({
-    display: 'flex',
-  }),
   heading: css({
     fontWeight: 300,
   }),
@@ -56,13 +78,5 @@ const styles = {
     :hover {
       background-color: ${colors.secondary} !important;
     }
-  `),
-  loginRow: css(`
-    background-color: ${colors.white};
-    padding: 48px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0px 0px 38px -11px rgba(66, 68, 90, 1);
-    -moz-box-shadow: 0px 0px 38px -11px rgba(66, 68, 90, 1);
-    box-shadow: 0px 0px 38px -11px rgba(66, 68, 90, 1);
   `),
 }

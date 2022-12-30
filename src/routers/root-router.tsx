@@ -7,6 +7,8 @@ import {
 
 import WelcomePage from '../pages/welcome-page';
 import SignInPage from '../pages/sign-in-page';
+import ResetPasswordPage from '../pages/reset-password-page';
+import DashboardPage from '../pages/dashboard-page';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +18,14 @@ const router = createBrowserRouter([
   {
     path: "/sign-in",
     element: <SignInPage />
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPasswordPage />
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardPage />
   }
 ]);
 
