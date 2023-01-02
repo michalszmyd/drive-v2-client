@@ -8,6 +8,22 @@ export interface ResponsePages {
   per: number;
 }
 
+export function mapPagesToResponsePages({
+  current_page,
+  per,
+  total_pages,
+}: {
+  current_page: number;
+  per: number;
+  total_pages: number;
+}): ResponsePages {
+  return {
+    currentPage: current_page,
+    per: per,
+    totalPages: total_pages,
+  }
+}
+
 export default class ApiService {
   static async default({headers = {}}: {headers?: object} = {}): Promise<RequestInstance> {
     const baseUrl = `http://localhost:3000/${API_PREFIX}`;

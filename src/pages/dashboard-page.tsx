@@ -2,6 +2,7 @@ import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import userEvent from "@testing-library/user-event";
 import { Image, Space, Table, TablePaginationConfig } from "antd";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route"
 import MainAppWrapper from "../components/main-app-wrapper";
 import Text from "../components/shared/text";
@@ -68,14 +69,14 @@ export default function DashboardPage() {
 }
 
 function ItemRow({item}: {item: ItemModel}) {
-  if (item.fileType === 'folder') {
+  if (item.recordType === 'folder') {
     return              {
       key: item.id,
       type: <ItemLabel item={item} />,
       preview: <ItemPreview item={item} />,
       userName: item.userName,
-      name: item.name,
-      folderName: item.folderName,
+      name: <Link to={`/folders/${item.id}`}>{item.name}</Link>,
+      folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
       folder: <b>{item.folderId}</b>,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
@@ -86,21 +87,12 @@ function ItemRow({item}: {item: ItemModel}) {
     key: item.id,
     type: <ItemLabel item={item} />,
     preview: <ItemPreview item={item} />,
-    name: item.name,
+    name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
     userName: item.userName,
-    folderName: item.folderName,
-    folder: <b>{item.folderId}</b>,
+    folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   }
-}
-
-function FileRow({item}: {item: ItemModel}) {
-
-}
-
-function FolderRow({item}: {item: ItemModel}) {
-
 }
 
 function ItemPreview({item}: {item: ItemModel}) {

@@ -3,6 +3,7 @@ import { Breadcrumb, Layout, Menu, MenuProps } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
@@ -19,7 +20,7 @@ export default function MainAppWrapper({
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
 
-  const toggleTheme = () => setTheme(theme == Theme.Light ? Theme.Dark : Theme.Light);
+  const toggleTheme = () => setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
 
   const themeColors = resolveThemeColor(theme);
 
@@ -44,7 +45,7 @@ export default function MainAppWrapper({
           <Layout style={{ background: themeColors.backgroundSecondary, padding: '0 14px 14px', flex: 1, display: 'flex' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               {breadcrumbs.map((breadcrumb) => (
-                <Breadcrumb.Item>{breadcrumb}</Breadcrumb.Item>
+                <Breadcrumb.Item key={breadcrumb}>{breadcrumb}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
             <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
@@ -72,15 +73,15 @@ const styles = {
 const lowerMenuItems : MenuProps['items'] = [
   {
     key: 1,
-    label: 'My drive',
+    label:  <Link to="/dashboard">My drive</Link>,
   },
   {
     key: 2,
-    label: 'Folders',
+    label: <Link to="/folders">Folders</Link>,
     children: [
       {
         key: 2.1,
-        label: 'My folders'
+        label: <Link to="/my-folders">My Folders</Link>,
       }
     ]
   },
@@ -96,8 +97,3 @@ const lowerMenuItems : MenuProps['items'] = [
   },
 
 ]
-
-const upperMenuItems : MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}));

@@ -3,6 +3,7 @@ export const colors = {
   secondary: '#C550F2',
   white: '#fff',
   green: '#57EB68',
+  gray: '#eee',
 }
 
 export const light = {
