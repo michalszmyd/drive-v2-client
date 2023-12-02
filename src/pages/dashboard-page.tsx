@@ -1,5 +1,4 @@
 import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
-import userEvent from "@testing-library/user-event";
 import { Image, Space, Table, TablePaginationConfig } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";

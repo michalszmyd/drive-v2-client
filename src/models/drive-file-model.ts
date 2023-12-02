@@ -75,6 +75,10 @@ export default class DriveFileModel {
     return ImageExtensions.includes(this.fileType);
   }
 
+  isOwner(userId : number) : boolean {
+    return this.userId === userId;
+  }
+
   get isVideo() : boolean {
     if (!this.fileType) {
       return false

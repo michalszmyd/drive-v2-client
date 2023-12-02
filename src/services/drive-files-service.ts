@@ -11,6 +11,12 @@ export default class DriveFilesService {
     return new DriveFileModel(data);
   }
 
+  static async create(form: FormData) {
+    const instance = await AuthenticatedApiService.default();
+
+    return instance.post('files', form);
+  }
+
   static async folderFiles(
     folderId : number | string,
     {

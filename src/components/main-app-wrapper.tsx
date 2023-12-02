@@ -1,12 +1,16 @@
+import { FolderAddOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
 import { Breadcrumb, Layout, Menu, MenuProps } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
+import { uuid } from "../helpers/uuid-helper";
+import FolderModel from "../models/folder-model";
+import CreateFolderModalForm from "./folders/create-folder-modal-form";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
@@ -19,13 +23,57 @@ export default function MainAppWrapper({
 }: MainAppWrapperParams) {
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
+  const [isCreateFolderModalOpened, setIsCreateFolderModalOpened] = useState(false);
+  const navigate = useNavigate();
 
   const toggleTheme = () => setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
 
   const themeColors = resolveThemeColor(theme);
 
+  const closeModal = () => { setIsCreateFolderModalOpened(false) };
+  const openModal = () => {
+    setIsCreateFolderModalOpened(true);
+  }
+  const onCreateFolder = (folder: FolderModel) => {
+    navigate(`/folders/${folder.id}`);
+    closeModal();
+  }
+
+  const lowerMenuItems: MenuProps['items'] = [
+    {
+      key: 1,
+      label:  <Link to="/dashboard">My drive</Link>,
+    },
+    {
+      key: 2,
+      label: <Link to="/folders">Folders</Link>,
+      children: [
+        {
+          key: 2.1,
+          label: <Link to="/my-folders">My Folders</Link>,
+        }
+      ]
+    },
+    {
+      key: 3,
+      label: 'Files',
+      children: [
+        {
+          key: 3.1,
+          label: 'My files'
+        }
+      ]
+    },
+    {
+      key: 3,
+      label: <a onClick={openModal}>Create folder</a>,
+      icon: <FolderAddOutlined />
+    }
+  ]
+
   return (
     <ThemeContext.Provider value={{theme, setTheme: toggleTheme}}>
+      <CreateFolderModalForm onCreate={onCreateFolder} opened={isCreateFolderModalOpened} onCloseModal={closeModal} />
       <Layout style={{display: 'flex', flex: 1, minHeight: '100vh'}}>
         <Header className="header light">
           <div className="logo" />
@@ -69,31 +117,3 @@ const styles = {
     box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
   `)
 }
-
-const lowerMenuItems : MenuProps['items'] = [
-  {
-    key: 1,
-    label:  <Link to="/dashboard">My drive</Link>,
-  },
-  {
-    key: 2,
-    label: <Link to="/folders">Folders</Link>,
-    children: [
-      {
-        key: 2.1,
-        label: <Link to="/my-folders">My Folders</Link>,
-      }
-    ]
-  },
-  {
-    key: 3,
-    label: 'Files',
-    children: [
-      {
-        key: 3.1,
-        label: 'My files'
-      }
-    ]
-  },
-
-]

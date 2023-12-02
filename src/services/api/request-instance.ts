@@ -28,7 +28,7 @@ export default class RequestInstance {
   method: RequestAction;
   url: string | null;
   data: RequestDataPaylaod;
-  headers: object;
+  headers: {[key: string]: string;};
 
   constructor({
     baseUrl,
@@ -44,18 +44,18 @@ export default class RequestInstance {
 
   prepareRequestData = () => {
     let payloadParams = null;
-    let additionalHeaders = {};
+    let deleteHeaders: string[] = [];
 
     if (this.data instanceof FormData) {
       payloadParams = this.data;
-      additionalHeaders = {'Content-Type': 'application/x-www-form-urlencoded'}
+      deleteHeaders = ['Content-Type'];
     } else if (this.data) {
       payloadParams = JSON.stringify(this.data);
     }
 
     return {
       payloadParams,
-      additionalHeaders,
+      deleteHeaders,
     }
   }
 
@@ -64,19 +64,20 @@ export default class RequestInstance {
       throw new Error('Url must be specified.');
     }
 
-    const { payloadParams, additionalHeaders } = this.prepareRequestData();
+    const { payloadParams, deleteHeaders } = this.prepareRequestData();
 
     const requestHeaders: {
       [key: string]: string;
-    } = {...this.headers, ...additionalHeaders};
+    } = this.headers;
 
-    const httpHeaders = new Headers();
-    Object.keys(requestHeaders).forEach((key) => {
-      httpHeaders.append(key, requestHeaders[key]);
-    });
+    deleteHeaders.forEach((element) => {
+      delete requestHeaders[element];
+    })
+
+    this.headers = requestHeaders;
 
     console.log('Starting request: ');
-    console.log({instance: this, payloadParams, requestHeaders});
+    console.log({instance: this, payloadParams});
 
     const response = await fetch(`${this.baseUrl}${this.url}`, {
       headers: requestHeaders,
