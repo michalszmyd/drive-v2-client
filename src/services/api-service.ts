@@ -6,21 +6,25 @@ export interface ResponsePages {
   currentPage: number;
   totalPages: number;
   per: number;
+  total: number;
 }
 
 export function mapPagesToResponsePages({
   current_page,
   per,
   total_pages,
+  total,
 }: {
   current_page: number;
   per: number;
   total_pages: number;
+  total: number;
 }): ResponsePages {
   return {
     currentPage: current_page,
     per: per,
     totalPages: total_pages,
+    total: total,
   }
 }
 

@@ -110,10 +110,6 @@ export default function FileForm({
       to: boolean;
     }
   ) => {
-    console.log({fileForm, files});
-
-    console.log("On toggle")
-
     setFiles((state) => {
       return state.map((stateFile) => {
         if (stateFile.uniqueId === fileForm.uniqueId) {
@@ -172,8 +168,6 @@ export default function FileForm({
   const listFiles = files.length > 1;
   const primaryFile = files[0];
   const isUploadValid = new StringValidator(primaryFile.name).isPresent().isValid;
-
-  console.log({ showPreview, listFiles });
 
   return (
     <form className={styles.uploadForm} encType='multipart/form-data' onSubmit={onSubmit}>
@@ -239,7 +233,7 @@ enum NameType {
 const styles = {
   uploadForm: css(`
     width: 100%;
-    background-color: ${colors.white};
+    background-color: ${colors.darkWhite};
     padding: 24px;
     border-radius: 12px;
     -webkit-box-shadow: 0px 0px 24px -10px rgba(66, 68, 90, 1);

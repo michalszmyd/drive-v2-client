@@ -1,4 +1,5 @@
 import FolderModel from "./folder-model";
+import { resolveBaseURL } from "./helpers/methods";
 import UserModel from "./user-model";
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -58,7 +59,7 @@ export default class DriveFileModel {
     this.id = id;
     this.name = name;
     this.pinned = pinned;
-    this.sourceUrl = source_url;
+    this.sourceUrl = resolveBaseURL(source_url);
     this.userId = user_id;
     this.createdAt = created_at;
     this.updatedAt = updated_at;

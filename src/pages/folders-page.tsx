@@ -9,7 +9,7 @@ import FoldersService from "../services/folders-service";
 
 export default function FoldersPage() {
   const [folders, setFolders] = useState<FolderModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 40});
+  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 40, total: 1});
   const navigate = useNavigate();
 
   useEffect(() => {

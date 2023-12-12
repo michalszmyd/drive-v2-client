@@ -11,15 +11,18 @@ import ReactHelper from "../helpers/react-helper";
 import { uuid } from "../helpers/uuid-helper";
 import FolderModel from "../models/folder-model";
 import CreateFolderModalForm from "./folders/create-folder-modal-form";
+import { H1 } from "./shared/text-components";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
   breadcrumbs?: string[];
+  title?: string;
 }
 
 export default function MainAppWrapper({
   children,
-  breadcrumbs = []
+  breadcrumbs = [],
+  title = undefined,
 }: MainAppWrapperParams) {
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
@@ -97,6 +100,7 @@ export default function MainAppWrapper({
               ))}
             </Breadcrumb>
             <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
+              {title && <H1>{title}</H1>}
               {children}
             </Content>
           </Layout>

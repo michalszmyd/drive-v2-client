@@ -1,5 +1,5 @@
-import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
-import { Image, Space, Table, TablePaginationConfig } from "antd";
+import { FileOutlined, FolderOpenOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Col, Divider, Image, Input, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route"
@@ -7,6 +7,7 @@ import MainAppWrapper from "../components/main-app-wrapper";
 import Text from "../components/shared/text";
 import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
+import Search from "antd/es/input/Search";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -21,6 +22,8 @@ export default function DashboardPage() {
       pageSize: 10,
     },
   });
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   const fetchData = ({page, per}: {page: number; per: number}) => {
     ItemsService
@@ -31,7 +34,26 @@ export default function DashboardPage() {
           pagination: {
             current: pages.currentPage,
             pageSize: pages.per,
-            total: pages.totalPages,
+            total: pages.total,
+          }
+        })
+      }).finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  const fetchSearchData = ({page, per, query}: {page: number, per: number, query: string}) => {
+    setIsLoading(true);
+
+    ItemsService
+      .search({page, per, query})
+      .then(({records, pages}) => {
+        setItems(records);
+        setTableParams({
+          pagination: {
+            current: pages.currentPage,
+            pageSize: pages.per,
+            total: pages.total,
           }
         })
       }).finally(() => {
@@ -40,7 +62,24 @@ export default function DashboardPage() {
   }
 
   const onTableChange = ({current, pageSize}: TablePaginationConfig) => {
-    fetchData({page: current || 1, per: pageSize || 10});
+    const defaultParams = {
+      page: current || 1,
+      per: pageSize || 10
+    }
+
+    if (isSearching) {
+      return fetchSearchData({...defaultParams, query: searchQuery});
+    }
+
+    return fetchData(defaultParams);
+  }
+
+  const onSearch = () => {
+    setIsSearching(true);
+
+    fetchSearchData(
+      {page: 1, per: 10, query: searchQuery}
+    )
   }
 
   useEffect(() => {
@@ -49,19 +88,32 @@ export default function DashboardPage() {
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={['Dashboard']}>
-        <Text>
-          <h1>Recent files</h1>
-        </Text>
-        <Table
-          columns={tableHeader}
-          loading={isLoading}
-          onChange={onTableChange}
-          pagination={tableParams.pagination}
-          dataSource={items.map((item) => (
-            ItemRow({item})
-          ))}
-        />
+      <MainAppWrapper title="Recent Files" breadcrumbs={['Dashboard']}>
+        <Divider orientation="left">Search Files</Divider>
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Search
+              placeholder="input search text"
+              onSearch={onSearch}
+              enterButton
+              onChange={({target: {value}}) => setSearchQuery(value)}
+            />
+          </Col>
+        </Row>
+        <Divider orientation="left">Files list</Divider>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Table
+              columns={tableHeader}
+              loading={isLoading}
+              onChange={onTableChange}
+              pagination={tableParams.pagination}
+              dataSource={items.map((item) => (
+                ItemRow({item})
+              ))}
+            />
+          </Col>
+        </Row>
       </MainAppWrapper>
     </AuthenticatedRoute>
   );
@@ -77,6 +129,7 @@ function ItemRow({item}: {item: ItemModel}) {
       name: <Link to={`/folders/${item.id}`}>{item.name}</Link>,
       folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
       folder: <b>{item.folderId}</b>,
+      pinned: <></>,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
     };
@@ -89,13 +142,14 @@ function ItemRow({item}: {item: ItemModel}) {
     name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
     userName: item.userName,
     folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
+    pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
   }
 }
 
 function ItemPreview({item}: {item: ItemModel}) {
-  if (!item.isImage) {
+  if (!item.isImage || !item.sourceUrl) {
     return null;
   }
 
@@ -145,6 +199,11 @@ const tableHeader = [
     title: 'Folder',
     dataIndex: 'folderName',
     key: 'folderName',
+  },
+  {
+    title: 'Pinned',
+    dataIndex: 'pinned',
+    key: 'pinned',
   },
   {
     title: 'Created at',

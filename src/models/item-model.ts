@@ -1,14 +1,16 @@
+import { resolveBaseURL } from "./helpers/methods";
+
 export enum ItemModelRecordType {
   Folder = 'folder',
   DriveFile = 'drive_file',
 }
 
-const ImageExtensions = ['jpg', 'jpeg', 'png'];
+const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
 export default class ItemModel {
   id: number;
   name: string;
-  sourceUrl: string;
+  sourceUrl: string | null | undefined;
   folderId: number | null;
   pinned: boolean;
   recordType: ItemModelRecordType;
@@ -44,7 +46,7 @@ export default class ItemModel {
   ) {
     this.id = id;
     this.name = name;
-    this.sourceUrl = source_url;
+    this.sourceUrl = resolveBaseURL(source_url) || "";
     this.folderName = folder_name;
     this.userName = user_name;
     this.folderId = folder_id || null;

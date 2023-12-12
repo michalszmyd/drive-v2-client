@@ -1,4 +1,4 @@
-import { Button, Descriptions, List } from "antd";
+import { Button, Col, Descriptions, List, Row, Space } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ import FoldersService from "../services/folders-service";
 export default function FolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
   const [files, setFiles] = useState<DriveFileModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 20});
+  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 20, total: 1});
 
   const {id} = useParams();
   const navigate = useNavigate();
@@ -25,19 +25,19 @@ export default function FolderPage() {
   useEffect(() => {
     if (id) {
       FoldersService.find(id).then(setFolder);
-      fetchDriveFiles();
+      fetchDriveFiles()?.then(({records, pages}) => {
+        setFiles(records);
+        setPages(pages);
+      });
     }
 
     return clearScrollEvent;
   }, [id]);
 
-  const fetchDriveFiles = () => {
-    const {currentPage, per} = pages;
-
+  const fetchDriveFiles = ({page = 1, per = 20}: {page: number; per: number;} = {page: 1, per: 20}) => {
     if (id) {
-      return DriveFilesService.folderFiles(id, {page: currentPage, per}).then(({records, pages}) => {
-        setFiles(records)
-        setPages(pages);
+      return DriveFilesService.folderFiles(id, {page, per}).then(({records, pages}) => {
+        return {records, pages}
       });
     }
   }
@@ -79,21 +79,34 @@ export default function FolderPage() {
     )
   }
 
+  const onLoadMore = () => {
+    const {currentPage, per} = pages;
+
+    return fetchDriveFiles({page: currentPage + 1, per})?.then(({records, pages}) => {
+      setFiles((state) => state.concat(records));
+      setPages(pages);
+    });;
+  }
+
   return (
     <AuthenticatedRoute>
       <MainAppWrapper breadcrumbs={['Folder', folder.name]}>
-        <h2>{folder.name}</h2>
-        <Descriptions
-          bordered
-          size="default"
-        >
-          <Descriptions.Item label="Created at">{folder.createdAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
-        </Descriptions>
-        <FileForm
-          onSave={onFileFormSave}
-        />
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Descriptions
+              bordered
+              title={folder.name}
+              size="default"
+            >
+              <Descriptions.Item label="Created at">{folder.createdAt}</Descriptions.Item>
+              <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
+              <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
+            </Descriptions>
+          </Col>
+          <Col span={24}>
+            <FileForm onSave={onFileFormSave} />
+          </Col>
+        </Row>
         <List
           style={{marginTop: 15}}
           grid={{
@@ -111,7 +124,7 @@ export default function FolderPage() {
             <ListItem onClick={onFilesClick} item={item} />
           )}
           loadMore={
-            <Button>Load more</Button>
+            <Button onClick={onLoadMore}>Load more</Button>
           }
         />
       </MainAppWrapper>
