@@ -12,6 +12,7 @@ import FolderPage from '../pages/folder-page';
 import FilePage from "../pages/file-page";
 import FoldersPage from "../pages/folders-page";
 import EditFolderPage from "../pages/edit-folder-page";
+import EditFilePage from "../pages/edit-file-page";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
   {
     path: "/files/:id",
     element: <FilePage />
+  },
+  {
+    path: "/files/:id/edit",
+    element: <EditFilePage />
   }
 ]);
 

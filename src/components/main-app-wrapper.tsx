@@ -15,8 +15,13 @@ import { H1 } from "./shared/text-components";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
-  breadcrumbs?: string[];
+  breadcrumbs?: Array<string | BreadcrumbElement>;
   title?: string;
+}
+
+type BreadcrumbElement = {
+  href?: string;
+  title: string;
 }
 
 export default function MainAppWrapper({
@@ -96,7 +101,7 @@ export default function MainAppWrapper({
           <Layout style={{ background: themeColors.backgroundSecondary, padding: '0 14px 14px', flex: 1, display: 'flex' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               {breadcrumbs.map((breadcrumb) => (
-                <Breadcrumb.Item key={breadcrumb}>{breadcrumb}</Breadcrumb.Item>
+                <BreadcrumbItem breadcrumbItem={breadcrumb} />
               ))}
             </Breadcrumb>
             <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
@@ -108,6 +113,27 @@ export default function MainAppWrapper({
       </Layout>
     </ThemeContext.Provider>
   );
+}
+
+function BreadcrumbItem({
+  breadcrumbItem,
+}: {
+  breadcrumbItem: string | BreadcrumbElement;
+}) {
+  if (typeof breadcrumbItem === 'string') {
+    return (
+      <Breadcrumb.Item key={breadcrumbItem}>{breadcrumbItem}</Breadcrumb.Item>
+    )
+  }
+
+  return (
+    <Breadcrumb.Item key={breadcrumbItem.title}>
+      {
+        breadcrumbItem.href ? <Link to={breadcrumbItem.href}>{breadcrumbItem.title}</Link> : breadcrumbItem.title
+      }
+
+    </Breadcrumb.Item>
+  )
 }
 
 const styles = {

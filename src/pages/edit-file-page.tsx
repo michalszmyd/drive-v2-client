@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Descriptions, Image } from "antd";
+import { Button, Col, Descriptions, Row } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -8,12 +8,15 @@ import DriveFilesService from "../services/drive-files-service";
 import { ResolvePreview } from "../components/files/resolve-preview";
 import { css } from "@emotion/css";
 import { colors } from "../consts/colors";
-import CardExtraActions from "../components/folders/card-extra-actions";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+import { CheckOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 
-export default function FilePage() {
+export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [file, setFile] = useState<DriveFileModel | null>(null);
+  const [editableBody, setEditableBody] = useState<string>('');
 
   const {id} = useParams();
 
@@ -23,7 +26,10 @@ export default function FilePage() {
     if (id) {
       DriveFilesService
         .find(id)
-        .then(setFile)
+        .then((file) => {
+          setFile(file);
+          setEditableBody(file.body || '');
+        })
         .finally(() => setIsLoading(false));
     }
   }, [id]);
@@ -56,33 +62,26 @@ export default function FilePage() {
     return [file.name];
   }
 
-  const onFileDelete = () => {
-    DriveFilesService
-      .destroy(file)
-      .then(() => {
-        toast.success(`File '${file.name}' removed.`);
+  const onSave = () => {
+    DriveFilesService.update(file, {
+      body: editableBody,
+    }).then(() => {
+      toast.success('File saved.');
 
-        if (file.folderId) {
-          navigate(`/folders/${file.folderId}`);
-        } else {
-          navigate('/dashboard');
-        }
-      })
-      .catch((e) => {
-        const {data} = JSON.parse(e.message);
+      navigate(`/files/${file.id}`);
+    })
+    .catch((e) => {
+      const {data} = JSON.parse(e.message);
 
-        toast.error(`Error: ${JSON.stringify(data)}`);
-      });
+      toast.error(`Error: ${JSON.stringify(data)}`);
+    });
   }
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={buildBreadcrumbs()} >
-        <Descriptions title={file.name} bordered extra={
-          <CardExtraActions
-            editLinkTo={`/files/${file.id}/edit`}
-            deleteOnClick={onFileDelete}
-          />
+      <MainAppWrapper breadcrumbs={buildBreadcrumbs()}>
+        <Descriptions bordered title={file.name} extra={
+          <Button icon={<CheckOutlined color={colors.green} />} shape="round" onClick={onSave} />
         }>
           <Descriptions.Item label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
           <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
@@ -95,8 +94,17 @@ export default function FilePage() {
           <Descriptions.Item label="Updated at">{file.updatedAt}</Descriptions.Item>
         </Descriptions>
         <div className={styles.container}>
-          <p dangerouslySetInnerHTML={{__html: file.body || ''}} />
-          <ResolvePreview item={file} />
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <ReactQuill theme="snow" value={editableBody} onChange={setEditableBody} />
+            </Col>
+            <Col span={24}>
+              <ResolvePreview item={file} />
+            </Col>
+            <Col span={24}>
+              <Button onClick={onSave}>Save</Button>
+            </Col>
+          </Row>
         </div>
       </MainAppWrapper>
     </AuthenticatedRoute>

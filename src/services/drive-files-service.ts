@@ -19,6 +19,21 @@ export default class DriveFilesService {
     return new DriveFileModel(data);
   }
 
+  static async update(file: DriveFileModel, {
+    body
+  }: {
+    body: string;
+  }): Promise<DriveFileModel> {
+    const instance = await AuthenticatedApiService.default();
+
+    const {data} = await instance.put(`files/${file.id}`, {
+      drive_file: {
+        body
+      }
+    });
+
+    return new DriveFileModel(data);
+  }
   static async destroy(item: DriveFileModel) {
     const instance = await AuthenticatedApiService.default();
 
