@@ -1,3 +1,4 @@
+import DriveFileModel from "../models/drive-file-model";
 import FolderModel from "../models/folder-model";
 import { mapPagesToResponsePages, ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
@@ -55,10 +56,12 @@ export default class FoldersService {
     }
   }
 
-  static async createDriveFile(folderId: string | number, form: FormData) {
+  static async createDriveFile(folderId: string | number, form: FormData): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
-    return instance.post(`folders/${folderId}/files`, form);
+    const {data} = await instance.post(`folders/${folderId}/files`, form);
+
+    return new DriveFileModel(data);
   }
 
   static async find(id: number | string) {
@@ -79,6 +82,25 @@ export default class FoldersService {
     const instance = await AuthenticatedApiService.default();
 
     const {data} = await instance.post('folders', {
+      folder: {
+        folder_private: folderPrivate,
+        name
+      }
+    });
+
+    return new FolderModel(data);
+  }
+
+  static async update(folder: FolderModel, {
+    folderPrivate,
+    name,
+  }: {
+    folderPrivate: boolean;
+    name: string;
+  }): Promise<FolderModel> {
+    const instance = await AuthenticatedApiService.default();
+
+    const {data} = await instance.put(`folders/${folder.id}`, {
       folder: {
         folder_private: folderPrivate,
         name

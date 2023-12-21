@@ -1,13 +1,34 @@
-export default class FolderModel {
-  id: number;
+import StringValidator from "../validators/string-validator";
+import Validator from "./forms/validator";
+import Model from "./model";
+import UserModel from "./user-model";
+
+type UserParams = {id: number | null; name: string};
+
+const DEFAULT_ATTRIBUTES = {
+  id: null,
+  name: "",
+  user_id: null,
+  folder_private: false,
+  parent_folder_id: null,
+  created_at: null,
+  updated_at: null,
+  drive_files_count: 0,
+  user_name: null,
+  user: {id: null, name: ""},
+}
+
+export default class FolderModel extends Model {
+  id: number | null;
   name: string;
-  userId: number;
+  userId: number | null;
   folderPrivate: boolean;
   parentFolderId: number | null;
-  updatedAt: string;
-  createdAt: string;
+  updatedAt: string | null;
+  createdAt: string | null;
   driveFilesCount: number | null;
   userName: string | null;
+  user: UserModel;
 
   constructor({
     id,
@@ -19,25 +40,40 @@ export default class FolderModel {
     updated_at,
     drive_files_count,
     user_name,
+    user = {id: null, name: ""},
   }: {
-    id: number;
+    id: number | null;
     name: string;
-    user_id: number;
+    user_id: number | null;
     folder_private: boolean;
     parent_folder_id: number | null;
-    created_at: string;
-    updated_at: string;
+    created_at: string | null;
+    updated_at: string | null;
     drive_files_count: number | null;
     user_name: string | null;
-  }) {
+    user?: {id: number | null; name: string};
+  } = DEFAULT_ATTRIBUTES) {
+    super();
+
     this.id = id;
-    this.name = name;
+    this.name = name || "";
     this.userId = user_id;
-    this.folderPrivate = folder_private;
+    this.folderPrivate = folder_private || false;
     this.parentFolderId = parent_folder_id;
     this.updatedAt = updated_at;
     this.createdAt = created_at;
     this.userName = user_name;
-    this.driveFilesCount = drive_files_count;
+    this.driveFilesCount = drive_files_count || 0;
+    this.user = new UserModel(user);
+  }
+
+  get isValid() {
+    const validator = new Validator();
+
+    validator.validatePresenceOf("name", this.name);
+
+    this.errors = validator.errors;
+
+    return validator.isValid();
   }
 }

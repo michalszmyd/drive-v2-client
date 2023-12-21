@@ -1,7 +1,7 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
 import { Button, Col, Row, Switch } from "antd";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { colors } from "../../consts/colors";
 import StringHelper from "../../helpers/string-helper";
 import DriveFileModelForm, { UploadFile } from "../../models/forms/drive-file-model-form";
@@ -24,6 +24,33 @@ export default function FileForm({
     })
   ]);
   const [showPreview, setShowPreview] = useState<boolean>(true);
+
+  const onPaste = (event : any) => {
+    const items = event.clipboardData?.items;
+
+    if (!items) return;
+
+    for (let index in items) {
+      const item = items[index];
+
+      if (item.kind === 'file') {
+        const blob = item.getAsFile();
+        const up = new UploadFile(({
+          file: blob
+        }))
+
+        onPushFile([up]);
+      }
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('paste', onPaste);
+
+    return () => {
+      window.removeEventListener('paste', onPaste)
+    }
+  }, [])
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -64,7 +91,7 @@ export default function FileForm({
     });
   }
 
-  const onPushFile = (event: ChangeEvent<HTMLInputElement>) => {
+  const onUploadFile = (event: ChangeEvent<HTMLInputElement>) => {
     const {target: {files: uploadedFiles}} = event;
 
     if (!uploadedFiles) {
@@ -77,6 +104,10 @@ export default function FileForm({
         file: uploadedFile
       })));
 
+    onPushFile(filesArray);
+  }
+
+  const onPushFile = (filesArray: UploadFile[]) => {
     let [firstStateElement, ...restStateElements] = files;
 
     if (!firstStateElement.attachment) {
@@ -144,10 +175,6 @@ export default function FileForm({
       }
     } = event;
 
-    // if (!name || !value) {
-    //   return;
-    // }
-
     setFiles((state) => {
       return state.map((stateFile) => {
         if (stateFile.uniqueId === fileForm.uniqueId) {
@@ -204,7 +231,7 @@ export default function FileForm({
               name="upload_file"
               hidden
               multiple
-              onChange={onPushFile}
+              onChange={onUploadFile}
             />
           </div>
         </Col>

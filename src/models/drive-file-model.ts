@@ -3,7 +3,7 @@ import { resolveBaseURL } from "./helpers/methods";
 import UserModel from "./user-model";
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-const VideoExtensions = ['mp4', 'mp3', 'mpeg'];
+const VideoExtensions = ['mp4', 'mp3', 'mpeg', 'm4a'];
 
 export default class DriveFileModel {
   id: number;

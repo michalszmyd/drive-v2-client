@@ -141,4 +141,12 @@ export default class RequestInstance {
 
     return await this.request();
   }
+
+  delete = async (url: string, data: RequestDataPaylaod = null) => {
+    this.method = RequestAction.Delete;
+    this.data = data;
+    this.url = url;
+
+    return await this.request();
+  }
 }

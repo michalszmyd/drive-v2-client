@@ -66,7 +66,6 @@ export default function FileUploadInputs({
             name="body"
             value={body}
             onChange={onChange}
-            maxLength={6}
           />
         </Col>
       )}

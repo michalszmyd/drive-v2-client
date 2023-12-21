@@ -11,10 +11,20 @@ export default class DriveFilesService {
     return new DriveFileModel(data);
   }
 
-  static async create(form: FormData) {
+  static async create(form: FormData): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
-    return instance.post('files', form);
+    const {data} = await instance.post('files', form);
+
+    return new DriveFileModel(data);
+  }
+
+  static async destroy(item: DriveFileModel) {
+    const instance = await AuthenticatedApiService.default();
+
+    const {data} = await instance.delete(`files/${item.id}`);
+
+    return new DriveFileModel(data);
   }
 
   static async folderFiles(

@@ -1,6 +1,6 @@
-import { Button, Col, Descriptions, List, Row, Space } from "antd";
+import { Button, Col, Descriptions, List, Row, Space, Tooltip } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import FileForm from "../components/files/file-form";
@@ -13,6 +13,10 @@ import DriveFileModelForm from "../models/forms/drive-file-model-form";
 import { ResponsePages } from "../services/api-service";
 import DriveFilesService from "../services/drive-files-service";
 import FoldersService from "../services/folders-service";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { colors } from "../consts/colors";
+import { css } from "@emotion/css";
+import CardExtraActions from "../components/folders/card-extra-actions";
 
 export default function FolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
@@ -60,16 +64,16 @@ export default function FolderPage() {
     }
 
     files.forEach(async (file: DriveFileModelForm) => {
-      await FoldersService.createDriveFile(id, file.toFormData()).then(() => {
-        toast.success('File uploded.')
+      await FoldersService.createDriveFile(id, file.toFormData()).then((driveFile) => {
+        toast.success('File uploded.');
+
+        setFiles((state) => [driveFile].concat(state));
       })
       .catch((e) => {
         const {data} = JSON.parse(e.message);
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-
-      await fetchDriveFiles();
     });
   }
 
@@ -88,6 +92,23 @@ export default function FolderPage() {
     });;
   }
 
+  const onFileDelete = (item: DriveFileModel) => {
+    DriveFilesService
+      .destroy(item)
+      .then(() => {
+        toast.success(`File '${item.name}' removed.`);
+
+        setFiles((state) => (
+          state.filter((folderItem) => (folderItem.id !== item.id))
+        ));
+      })
+      .catch((e) => {
+        const {data} = JSON.parse(e.message);
+
+        toast.error(`Error: ${JSON.stringify(data)}`);
+      });
+  }
+
   return (
     <AuthenticatedRoute>
       <MainAppWrapper breadcrumbs={['Folder', folder.name]}>
@@ -97,9 +118,17 @@ export default function FolderPage() {
               bordered
               title={folder.name}
               size="default"
+              extra={
+                <CardExtraActions
+                  editLinkTo={`/folders/${folder.id}/edit`}
+                  deleteOnClick={() => {}}
+                />
+              }
             >
+              <Descriptions.Item label="User">{folder.user.name}</Descriptions.Item>
+              <Descriptions.Item label="Files">{pages.total}</Descriptions.Item>
+              <Descriptions.Item label="Private">{folder.folderPrivate}</Descriptions.Item>
               <Descriptions.Item label="Created at">{folder.createdAt}</Descriptions.Item>
-              <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
               <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
             </Descriptions>
           </Col>
@@ -121,7 +150,11 @@ export default function FolderPage() {
           dataSource={files}
           rowKey='id'
           renderItem={(item) => (
-            <ListItem onClick={onFilesClick} item={item} />
+            <ListItem
+              onClick={onFilesClick}
+              onDelete={() => onFileDelete(item)}
+              item={item}
+            />
           )}
           loadMore={
             <Button onClick={onLoadMore}>Load more</Button>
@@ -132,3 +165,8 @@ export default function FolderPage() {
   )
 }
 
+const styles = {
+  deleteIcon: css({
+    color: colors.redDelete,
+  })
+}

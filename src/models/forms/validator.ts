@@ -1,6 +1,6 @@
 import StringHelper from "../../helpers/string-helper";
 
-class Error {
+export class ValidationError {
   field: string;
   message: string
 
@@ -11,7 +11,7 @@ class Error {
 }
 
 export default class Validator {
-  errors: Error[];
+  errors: ValidationError[];
 
   constructor() {
     this.errors = [];
@@ -26,6 +26,6 @@ export default class Validator {
       return;
     }
 
-    this.errors.push(new Error(column, "is empty"));
+    this.errors.push(new ValidationError(column, "is empty"));
   }
 }
