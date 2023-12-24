@@ -13,6 +13,8 @@ import FilePage from "../pages/file-page";
 import FoldersPage from "../pages/folders-page";
 import EditFolderPage from "../pages/edit-folder-page";
 import EditFilePage from "../pages/edit-file-page";
+import ProfilePage from "../pages/profile-page";
+import AdminUsersPage from "../pages/admin/users-page";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardPage />
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage />
   },
   {
     path: "/my-folders",
@@ -54,6 +60,10 @@ const router = createBrowserRouter([
   {
     path: "/files/:id/edit",
     element: <EditFilePage />
+  },
+  {
+    path: "/admin/users",
+    element: <AdminUsersPage />
   }
 ]);
 

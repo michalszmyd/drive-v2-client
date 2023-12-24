@@ -6,7 +6,6 @@ import AuthenticatedRoute from "../components/authenticated/authenticated-route"
 import FileForm from "../components/files/file-form";
 import { ListItem } from "../components/folders/files/list-item";
 import MainAppWrapper from "../components/main-app-wrapper";
-import useScroll from "../hooks/on-scroll";
 import DriveFileModel from "../models/drive-file-model";
 import FolderModel from "../models/folder-model";
 import DriveFileModelForm from "../models/forms/drive-file-model-form";
@@ -34,8 +33,6 @@ export default function FolderPage() {
         setPages(pages);
       });
     }
-
-    return clearScrollEvent;
   }, [id]);
 
   const fetchDriveFiles = ({page = 1, per = 20}: {page: number; per: number;} = {page: 1, per: 20}) => {
@@ -49,8 +46,6 @@ export default function FolderPage() {
   const fetchNextPageDriveFiles = () => {
     alert();
   }
-
-  const [scrollEvent, clearScrollEvent] = useScroll(fetchNextPageDriveFiles);
 
   const onFilesClick = (item : DriveFileModel, {target: {className}}: {target: {className: string}}) => {
     if (!className.includes('image')) {

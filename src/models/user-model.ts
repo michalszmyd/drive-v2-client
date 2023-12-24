@@ -1,9 +1,53 @@
-export default class UserModel {
-  id: number | null;
-  name: string | null;
+import StringHelper from "../helpers/string-helper";
+import Model from "./model";
 
-  constructor({id, name = ''}: {id: number | null, name?: string | null}) {
+const DEFAULT_PARAMS = {
+  id: null,
+  name: '',
+  email: '',
+  admin: null,
+  created_at: '',
+  updated_at: '',
+}
+
+export default class UserModel extends Model {
+  id: number | null;
+  name: string;
+  email: string;
+  admin: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+
+  constructor({
+    id,
+    name = '',
+    email = '',
+    admin = null,
+    updated_at = '',
+    created_at = '',
+  }: {
+    id: number | null,
+    name?: string,
+    admin?: boolean | null,
+    email?: string,
+    updated_at?: string,
+    created_at?: string,
+  } = DEFAULT_PARAMS) {
+    super();
+
     this.id = id;
     this.name = name;
+    this.email = email;
+    this.admin = admin;
+    this.createdAt = created_at;
+    this.updatedAt = updated_at;
+  }
+
+  get displayName() {
+    if (StringHelper.isBlank(this.name)) {
+      return this.email;
+    }
+
+    return this.name;
   }
 }

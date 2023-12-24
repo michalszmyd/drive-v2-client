@@ -7,7 +7,6 @@ import PageWrapper from '../components/guest/pages/page-wrapper';
 import { colors } from '../consts/colors';
 import CurrentUserContext from '../contexts/current-user-context';
 import StringHelper from '../helpers/string-helper';
-import UserModel from '../models/user-model';
 import UsersService from '../services/users-service';
 import { useNavigate } from "react-router-dom";
 import CurrentUserHelper from '../helpers/current-user-helper';
@@ -34,15 +33,16 @@ export default function SignInPage() {
 
     UsersService
       .signIn({email, password})
-      .then(({data}) => {
-        const user = new UserModel({id: data.id});
-
+      .then(async ({data}) => {
         CurrentUserHelper.set({
           id: data.id,
           authenticationToken: data.authentication_token,
           refreshAuthenticationToken: data.refres_authentication_token,
         });
-        setCurrentUser(user);
+
+        const currentUser = await UsersService.me()
+
+        setCurrentUser(currentUser);
         navigate("/dashboard");
       })
       .catch(() => {

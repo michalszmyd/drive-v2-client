@@ -1,17 +1,17 @@
-import { FolderAddOutlined } from "@ant-design/icons";
+import { BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, UserOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { Breadcrumb, Layout, Menu, MenuProps } from "antd";
+import { Breadcrumb, Button, Col, Dropdown, Layout, Menu, MenuProps, Row } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
-import { uuid } from "../helpers/uuid-helper";
 import FolderModel from "../models/folder-model";
 import CreateFolderModalForm from "./folders/create-folder-modal-form";
 import { H1 } from "./shared/text-components";
+import CurrentUserContext from "../contexts/current-user-context";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
@@ -32,6 +32,7 @@ export default function MainAppWrapper({
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
   const [isCreateFolderModalOpened, setIsCreateFolderModalOpened] = useState(false);
+  const {currentUser} = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   const toggleTheme = () => setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
@@ -51,6 +52,7 @@ export default function MainAppWrapper({
     {
       key: 1,
       label:  <Link to="/dashboard">My drive</Link>,
+      icon: <FileProtectOutlined />
     },
     {
       key: 2,
@@ -60,17 +62,8 @@ export default function MainAppWrapper({
           key: 2.1,
           label: <Link to="/my-folders">My Folders</Link>,
         }
-      ]
-    },
-    {
-      key: 3,
-      label: 'Files',
-      children: [
-        {
-          key: 3.1,
-          label: 'My files'
-        }
-      ]
+      ],
+      icon: <FolderOpenOutlined />
     },
     {
       key: 3,
@@ -79,13 +72,51 @@ export default function MainAppWrapper({
     }
   ]
 
+  const adminPanelMenuItems = {
+    key: 4,
+    label: 'Admin',
+    icon: <BankOutlined />,
+    children: [
+      {
+        key: 4.1,
+        label: <Link to="/admin/users">Users</Link>,
+      }
+    ]
+  }
+
+  currentUser?.admin && lowerMenuItems.push(adminPanelMenuItems)
+
   return (
     <ThemeContext.Provider value={{theme, setTheme: toggleTheme}}>
       <CreateFolderModalForm onCreate={onCreateFolder} opened={isCreateFolderModalOpened} onCloseModal={closeModal} />
       <Layout style={{display: 'flex', flex: 1, minHeight: '100vh'}}>
         <Header className="header light">
-          <div className="logo" />
-          <button onClick={toggleTheme}>theme</button>
+          <Row justify="end">
+            <Col span={12}>
+              <div className="logo" />
+              <button onClick={toggleTheme}>theme</button>
+            </Col>
+            <Col span={12} className={styles.menuRight}>
+              <Dropdown menu={{ items: [
+                {
+                  key: 'menu-right-profile-1',
+                  label: <Link to="/profile">My profile</Link>
+                },
+                {
+                  key: 'menu-right-logout-2',
+                  label: <Link to="/settings">Settings</Link>
+                },
+                {
+                  key: 'menu-right-logout-3',
+                  label: <Link to="/profile">Log out</Link>
+                }
+              ] }} placement="bottom" arrow>
+                <Button type="primary" shape="circle" className={styles.avatar} size="large" icon={<UserOutlined />} />
+              </Dropdown>
+              <div style={{justifyContent: 'right', alignItems: 'right'}}>
+              </div>
+            </Col>
+          </Row>
         </Header>
         <Layout>
           <Sider theme={theme} width={200} collapsible collapsed={leftBarMenuCollapsed} onCollapse={setLeftBarMenuCollapsed}>
@@ -145,5 +176,14 @@ const styles = {
     -webkit-box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
     -moz-box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
     box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
-  `)
+  `),
+  menuRight: css({
+    justifyContent: 'right',
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+  }),
+  avatar: css({
+    backgroundColor: colors.main
+  })
 }

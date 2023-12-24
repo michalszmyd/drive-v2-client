@@ -76,7 +76,7 @@ export default class RequestInstance {
 
     this.headers = requestHeaders;
 
-    console.log('Starting request: ');
+    console.log(`Starting request ${this.url}: `);
     console.log({instance: this, payloadParams});
 
     const response = await fetch(`${this.baseUrl}${this.url}`, {
@@ -88,7 +88,7 @@ export default class RequestInstance {
     console.log(`Response code: ${response.status}`);
 
     if (response.status >= 200 && response.status < 400) {
-      if (response.status === 204) {
+      if ([201, 204].includes(response.status)) {
         return {
           instance: this,
           data: {},

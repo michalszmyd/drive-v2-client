@@ -6,15 +6,22 @@ import CurrentUserContext from './contexts/current-user-context';
 import CurrentUserHelper from './helpers/current-user-helper';
 import UserModel from './models/user-model';
 import RootRouter from './routers/root-router';
+import UsersService from './services/users-service';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    CurrentUserHelper.get().then((user) => {
+    CurrentUserHelper.get().then(async (user) => {
       if (user) {
-        setCurrentUser(new UserModel({id: user.id}));
+        try {
+          const fetchedCurrentUser = await UsersService.me();
+
+          setCurrentUser(fetchedCurrentUser);
+        } catch {
+          CurrentUserHelper.destroy();
+        }
       }
       setIsLoading(false);
     })
