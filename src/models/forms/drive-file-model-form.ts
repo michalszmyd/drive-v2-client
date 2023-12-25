@@ -1,6 +1,13 @@
 import { uuid } from "../../helpers/uuid-helper";
 import Validator from "./validator";
 
+export enum UploadingStatus {
+  WAITING = 'waiting',
+  UPLOADING = 'uploading',
+  SUCCESS = 'success',
+  ERROR = 'error',
+}
+
 export class UploadFile {
   id: string;
   file: File;
@@ -20,6 +27,7 @@ export default class DriveFileModelForm {
   validator: Validator;
   attachment: UploadFile | null;
   uniqueId: string;
+  uploadingStatus: UploadingStatus;
 
   constructor({
     id = null,
@@ -45,6 +53,7 @@ export default class DriveFileModelForm {
     this.pinned = pinned;
     this.attachment = attachment;
 
+    this.uploadingStatus = UploadingStatus.WAITING;
     this.uniqueId = uniqueId || uuid();
     this.validator = new Validator();
   }

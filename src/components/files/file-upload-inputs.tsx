@@ -3,6 +3,7 @@ import { css } from "@emotion/css";
 import {Checkbox, Col, Image, Input} from "antd";
 import {ChangeEvent} from "react";
 import DriveFileModelForm from "../../models/forms/drive-file-model-form";
+import FilePreview from "./file-preview";
 
 export default function FileUploadInputs({
   fileForm,
@@ -33,17 +34,17 @@ export default function FileUploadInputs({
   const previewSource = attachmentFile && URL.createObjectURL(attachmentFile);
 
   return (
-    <Col span={fieldsShown ? 24 : 4}>
+    <Col span={fieldsShown ? 24 : 3}>
       {previewSource && (
-        <div className={styles.previewContainer}>
-          <div onClick={() => onRemoveFile(fileForm)} className={styles.removeButton}>
-            <CloseCircleOutlined />
-          </div>
-          <Image style={{maxHeight: 240}} src={previewSource} />
-        </div>
+        <FilePreview
+          onRemove={onRemoveFile}
+          fileForm={fileForm}
+          previewSource={previewSource}
+          fileType={attachmentFile.type}
+        />
       )}
       {fieldsShown && (
-        <Col span={24}>
+        <>
           <Checkbox
             className={styles.inputField}
             checked={pinned}
@@ -67,7 +68,7 @@ export default function FileUploadInputs({
             value={body}
             onChange={onChange}
           />
-        </Col>
+        </>
       )}
     </Col>
   )

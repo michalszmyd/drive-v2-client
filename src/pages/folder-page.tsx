@@ -1,6 +1,6 @@
-import { Button, Col, Descriptions, List, Row, Space, Tooltip } from "antd";
+import { Button, Col, Collapse, Descriptions, Divider, List, Row } from "antd";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import FileForm from "../components/files/file-form";
@@ -8,19 +8,21 @@ import { ListItem } from "../components/folders/files/list-item";
 import MainAppWrapper from "../components/main-app-wrapper";
 import DriveFileModel from "../models/drive-file-model";
 import FolderModel from "../models/folder-model";
-import DriveFileModelForm from "../models/forms/drive-file-model-form";
+import DriveFileModelForm, { UploadingStatus } from "../models/forms/drive-file-model-form";
 import { ResponsePages } from "../services/api-service";
 import DriveFilesService from "../services/drive-files-service";
 import FoldersService from "../services/folders-service";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { colors } from "../consts/colors";
 import { css } from "@emotion/css";
 import CardExtraActions from "../components/folders/card-extra-actions";
+import UploadingFileProgress from "../components/files/uploading-file-progress";
+import ArrayHelper from "../helpers/array-helper";
 
 export default function FolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
   const [files, setFiles] = useState<DriveFileModel[]>([]);
   const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 20, total: 1});
+  const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
 
   const {id} = useParams();
   const navigate = useNavigate();
@@ -43,10 +45,6 @@ export default function FolderPage() {
     }
   }
 
-  const fetchNextPageDriveFiles = () => {
-    alert();
-  }
-
   const onFilesClick = (item : DriveFileModel, {target: {className}}: {target: {className: string}}) => {
     if (!className.includes('image')) {
       navigate(`/files/${item.id}`);
@@ -58,14 +56,40 @@ export default function FolderPage() {
       return;
     }
 
+    setUploadingFiles(files);
+
     files.forEach(async (file: DriveFileModelForm) => {
       await FoldersService.createDriveFile(id, file.toFormData()).then((driveFile) => {
         toast.success('File uploded.');
+
+        setUploadingFiles((state) => {
+          return state.map((element) => {
+            if (element.uniqueId === file.uniqueId) {
+              element.uploadingStatus = UploadingStatus.SUCCESS;
+
+              return element
+            }
+
+            return element;
+          });
+        });
 
         setFiles((state) => [driveFile].concat(state));
       })
       .catch((e) => {
         const {data} = JSON.parse(e.message);
+
+        setUploadingFiles((state) => {
+          return state.map((element) => {
+            if (element.uniqueId === file.uniqueId) {
+              element.uploadingStatus = UploadingStatus.ERROR;
+
+              return element
+            }
+
+            return element;
+          });
+        });
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
@@ -84,7 +108,7 @@ export default function FolderPage() {
     return fetchDriveFiles({page: currentPage + 1, per})?.then(({records, pages}) => {
       setFiles((state) => state.concat(records));
       setPages(pages);
-    });;
+    });
   }
 
   const onFileDelete = (item: DriveFileModel) => {
@@ -127,6 +151,19 @@ export default function FolderPage() {
               <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
             </Descriptions>
           </Col>
+          {ArrayHelper.isAny(uploadingFiles) && (
+            <Col span={24} >
+            <Collapse defaultActiveKey={['uploading-1']}>
+              <Collapse.Panel header="Uploading files progress" key="uploading-1">
+                {uploadingFiles.map((uploadingFile) => (
+                  <Col span={24}>
+                    <UploadingFileProgress driveFileForm={uploadingFile} key={uploadingFile.uniqueId} />
+                  </Col>
+                ))}
+              </Collapse.Panel>
+            </Collapse>
+            </Col>
+          )}
           <Col span={24}>
             <FileForm onSave={onFileFormSave} />
           </Col>
@@ -158,10 +195,4 @@ export default function FolderPage() {
       </MainAppWrapper>
     </AuthenticatedRoute>
   )
-}
-
-const styles = {
-  deleteIcon: css({
-    color: colors.redDelete,
-  })
 }

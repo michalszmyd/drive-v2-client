@@ -10,8 +10,19 @@ export function H1({children}: {children: string | React.ReactElement}) {
   )
 }
 
+export function H2({children}: {children: string | React.ReactElement}) {
+  return (
+    <h2 className={styles.h2}>
+      <Text>{children}</Text>
+    </h2>
+  )
+}
+
 const styles = {
   h1: css({
     fontSize: '24px',
+  }),
+  h2: css({
+    fontSize: '16px',
   }),
 }

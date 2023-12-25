@@ -199,7 +199,7 @@ export default function FileForm({
   return (
     <form className={styles.uploadForm} encType='multipart/form-data' onSubmit={onSubmit}>
       <h1>Upload your files</h1>
-      <Row gutter={[0, 12]} justify="space-between">
+      <Row gutter={[0, 12]} justify="start">
         <Col span={24}>
           {listFiles && <Switch
             checked={showPreview}
@@ -208,18 +208,16 @@ export default function FileForm({
             unCheckedChildren="Hidden"
           />}
         </Col>
-        <Row gutter={[(showPreview ? 0 : 12), 12]} justify="center">
-          {files.map((file) => (
-            <FileUploadInputs
-              onTogglePinned={onTogglePinned}
-              fieldsShown={showPreview}
-              key={file.uniqueId}
-              fileForm={file}
-              onFileChange={onChange}
-              onRemoveFile={onRemoveFile}
-            />
-          ))}
-        </Row>
+        {files.map((file) => (
+          <FileUploadInputs
+            onTogglePinned={onTogglePinned}
+            fieldsShown={showPreview}
+            key={file.uniqueId}
+            fileForm={file}
+            onFileChange={onChange}
+            onRemoveFile={onRemoveFile}
+          />
+        ))}
         <Col span={24}>
           <div className={styles.uploader}>
             <label htmlFor="upload_file">
