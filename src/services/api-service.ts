@@ -1,6 +1,7 @@
+import SETTINGS from "../consts/settings";
 import RequestInstance from "./api/request-instance";
 
-const API_PREFIX = "api/v1/";
+const API_PREFIX = SETTINGS.API_PREFIX;
 
 export interface ResponsePages {
   currentPage: number;
@@ -30,7 +31,7 @@ export function mapPagesToResponsePages({
 
 export default class ApiService {
   static async default({headers = {}}: {headers?: object} = {}): Promise<RequestInstance> {
-    const baseUrl = `http://localhost:3000/${API_PREFIX}`;
+    const baseUrl = `${SETTINGS.API_URL}/${API_PREFIX}`;
 
     return new RequestInstance({
       baseUrl,

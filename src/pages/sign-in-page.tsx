@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { Button, Input } from 'antd';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import FormContainer from '../components/guest/pages/form-container';
 import PageWrapper from '../components/guest/pages/page-wrapper';
@@ -18,7 +18,7 @@ export default function SignInPage() {
 
   const navigate = useNavigate();
 
-  const {setCurrentUser} = useContext(CurrentUserContext);
+  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
 
   const onChangeEmail = ({ target: { value } }: { target: { value: string } }) => {
     setEmail(value);
@@ -27,6 +27,12 @@ export default function SignInPage() {
   const onChangePassword = ({ target: { value } }: { target: { value: string } }) => {
     setPassword(value);
   }
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, [currentUser]);
 
   const onSubmit = () => {
     setIsLoading(true);
@@ -41,9 +47,7 @@ export default function SignInPage() {
         });
 
         const currentUser = await UsersService.me()
-
         setCurrentUser(currentUser);
-        navigate("/dashboard");
       })
       .catch(() => {
         toast.error("There was an error while trying to log in")

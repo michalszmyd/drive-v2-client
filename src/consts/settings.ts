@@ -1,8 +1,7 @@
 const SETTINGS = {
-  HOST_URL: "localhost",
-  HOST_PORT: "3001",
-  API_URL: "localhost",
-  PORT: "3000",
+  HOST_URL: process.env.REACT_APP_HOST_URL,
+  API_URL: process.env.REACT_APP_API_URL,
+  API_PREFIX: process.env.REACT_APP_API_PREFIX,
 }
 
 export default SETTINGS;

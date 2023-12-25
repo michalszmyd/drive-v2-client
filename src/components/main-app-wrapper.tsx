@@ -91,10 +91,9 @@ export default function MainAppWrapper({
       <CreateFolderModalForm onCreate={onCreateFolder} opened={isCreateFolderModalOpened} onCloseModal={closeModal} />
       <Layout style={{display: 'flex', flex: 1, minHeight: '100vh'}}>
         <Header className="header light">
-          <Row justify="end">
-            <Col span={12}>
-              <div className="logo" />
-              <button onClick={toggleTheme}>theme</button>
+          <Row justify="center" align="middle">
+            <Col span={12} className={styles.menuLeft}>
+              <img className={styles.logoImage} src="/favicon.ico" alt="image" />
             </Col>
             <Col span={12} className={styles.menuRight}>
               <Dropdown menu={{ items: [
@@ -179,6 +178,18 @@ const styles = {
   `),
   menuRight: css({
     justifyContent: 'right',
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+  }),
+  logoImage: css({
+    width: '64px',
+    height: '64px',
+    justifyContent: 'center',
+    padding: '10px',
+  }),
+  menuLeft: css({
+    justifyContent: 'left',
     flex: 1,
     display: 'flex',
     alignItems: 'center',

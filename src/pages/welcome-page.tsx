@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { css } from '@emotion/css';
 import { colors } from '../consts/colors';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageWrapper from '../components/guest/pages/page-wrapper';
+import CurrentUserContext from '../contexts/current-user-context';
 
 export default function WelcomePage() {
+  const navigate = useNavigate();
+
+  const {currentUser} = useContext(CurrentUserContext);
+
+  useEffect(() => {
+    if (CurrentUserContext) {
+      navigate("/dashboard");
+    }
+  }, [currentUser]);
+
   return (
     <PageWrapper className={styles.container}>
       <h1 className={styles.heading}>Drive</h1>
