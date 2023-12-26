@@ -56,9 +56,9 @@ export default function FolderPage() {
       return;
     }
 
-    setUploadingFiles(files);
+    for (const file of files) {
+      setUploadingFiles((state) => state.concat([file]));
 
-    files.forEach(async (file: DriveFileModelForm) => {
       await FoldersService.createDriveFile(id, file.toFormData()).then((driveFile) => {
         toast.success('File uploded.');
 
@@ -75,8 +75,7 @@ export default function FolderPage() {
         });
 
         setFiles((state) => [driveFile].concat(state));
-      })
-      .catch((e) => {
+      }).catch((e) => {
         const {data} = JSON.parse(e.message);
 
         setUploadingFiles((state) => {
@@ -93,7 +92,7 @@ export default function FolderPage() {
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-    });
+    }
   }
 
   if (!folder) {

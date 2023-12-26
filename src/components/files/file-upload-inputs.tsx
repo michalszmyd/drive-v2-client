@@ -1,9 +1,9 @@
-import { CloseCircleOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import {Checkbox, Col, Image, Input} from "antd";
+import {Checkbox, Col, Input} from "antd";
 import {ChangeEvent} from "react";
 import DriveFileModelForm from "../../models/forms/drive-file-model-form";
 import FilePreview from "./file-preview";
+import RichTextEditor, { RichEditorChangeEvent } from "../shared/rich-text-editor";
 
 export default function FileUploadInputs({
   fileForm,
@@ -20,11 +20,11 @@ export default function FileUploadInputs({
     fileForm,
     event
   }: {
-    fileForm: DriveFileModelForm,
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    fileForm: DriveFileModelForm;
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | RichEditorChangeEvent;
   }) => void;
 }) {
-  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | RichEditorChangeEvent) => {
     onFileChange({fileForm, event});
   }
 
@@ -60,12 +60,9 @@ export default function FileUploadInputs({
             value={name}
             onChange={onChange}
           />
-          <Input.TextArea
-            rows={4}
-            className={styles.inputField}
-            placeholder="body"
-            name="body"
+          <RichTextEditor
             value={body}
+            name="body"
             onChange={onChange}
           />
         </>

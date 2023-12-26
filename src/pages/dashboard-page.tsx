@@ -161,7 +161,7 @@ function ItemPreview({item}: {item: ItemModel}) {
     />
   }
   if (item.isVideo) {
-    return <video className={styles.filePreview} src={item.sourceUrl} controls />
+    return <video className={styles.filePreview} src={item.sourceUrl} controls controlsList="play" />
   }
 
   return null;

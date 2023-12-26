@@ -80,14 +80,23 @@ export default function FileForm({
     setFiles((state) => {
       if (state.length === 1) {
         const element = state[0];
-        element.attachment = null;
 
-        return [element];
+        const newModelData = new DriveFileModelForm();
+        newModelData.name = element.name;
+        newModelData.body = element.body;
+
+        return [newModelData];
       }
 
-      return state.filter((element) => {
+      const list = state.filter((element) => {
         return element.uniqueId !== fileForm.uniqueId;
-      })
+      });
+
+      if (list.length <= 1) {
+        setShowPreview(true);
+      }
+
+      return list;
     });
   }
 
@@ -108,28 +117,32 @@ export default function FileForm({
   }
 
   const onPushFile = (filesArray: UploadFile[]) => {
-    let [firstStateElement, ...restStateElements] = files;
+    setFiles((state) => {
+      let firstStateElement = state[0];
 
-    if (!firstStateElement.attachment) {
-      const firstFile = filesArray[0];
+      if (!firstStateElement.attachment) {
+        const firstFile = filesArray[0];
 
-      firstStateElement.attachment = firstFile;
-      firstStateElement.name = StringHelper.isBlank(firstStateElement.name) ? firstFile.file.name : firstStateElement.name;
-      filesArray.shift();
-    }
+        firstStateElement.attachment = firstFile;
+        firstStateElement.name = StringHelper.isBlank(firstStateElement.name) ? firstFile.file.name : firstStateElement.name;
+        filesArray.shift();
+      }
 
-    const newElements = filesArray.map((uploadedFile: UploadFile) => (
-      new DriveFileModelForm({
-        name: uploadedFile.file.name,
-        attachment: uploadedFile,
-      })
-    ));
+      const newElements = filesArray.map((uploadedFile: UploadFile) => (
+        new DriveFileModelForm({
+          name: uploadedFile.file.name,
+          attachment: uploadedFile,
+        })
+      ));
 
-    setFiles([
-      firstStateElement,
-      ...restStateElements,
-      ...newElements,
-    ]);
+      return state.map((element) => {
+        if (element.uniqueId === firstStateElement.uniqueId) {
+          return {...firstStateElement}
+        }
+
+        return element
+      }).concat(newElements)
+    })
   }
 
   const onTogglePinned = (
@@ -159,8 +172,8 @@ export default function FileForm({
       event,
       fileForm,
     }: {
-      fileForm: DriveFileModelForm,
-      event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      fileForm: DriveFileModelForm;
+      event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | {target: {value: string; name: string}};
     }
   ) => {
     const {

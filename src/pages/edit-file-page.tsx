@@ -8,13 +8,12 @@ import DriveFilesService from "../services/drive-files-service";
 import { ResolvePreview } from "../components/files/resolve-preview";
 import { css } from "@emotion/css";
 import { colors } from "../consts/colors";
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
-import { CheckOutlined, FolderAddFilled, FolderOutlined } from "@ant-design/icons";
+import { CheckOutlined, FolderOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import FoldersService from "../services/folders-service";
 import FolderModel from "../models/folder-model";
 import ArrayHelper from "../helpers/array-helper";
+import RichTextEditor from "../components/shared/rich-text-editor";
 
 export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -140,7 +139,11 @@ export default function EditFilePage() {
         <div className={styles.container}>
           <Row gutter={[16, 16]}>
             <Col span={24}>
-              <ReactQuill theme="snow" value={editableBody} onChange={setEditableBody} />
+              <RichTextEditor
+                name="body"
+                value={editableBody}
+                onChange={({target: {value}}) => setEditableBody(value)}
+              />
             </Col>
             <Col span={24}>
               <ResolvePreview item={file} />
