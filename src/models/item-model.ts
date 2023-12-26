@@ -6,6 +6,7 @@ export enum ItemModelRecordType {
 }
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+const VideoExtensions = ['mp4'];
 
 export default class ItemModel {
   id: number;
@@ -62,6 +63,14 @@ export default class ItemModel {
     }
 
     return ImageExtensions.includes(this.fileType);
+  }
+
+  get isVideo(): boolean {
+    if (!this.fileType) {
+      return false
+    }
+
+    return VideoExtensions.includes(this.fileType);
   }
 
   get fileType(): null | string {

@@ -8,6 +8,7 @@ import Text from "../components/shared/text";
 import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";
+import { css } from "@emotion/css";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -149,14 +150,28 @@ function ItemRow({item}: {item: ItemModel}) {
 }
 
 function ItemPreview({item}: {item: ItemModel}) {
-  if (!item.isImage || !item.sourceUrl) {
+  if (!item.sourceUrl) {
     return null;
   }
 
-  return <Image
-    width={200}
-    src={item.sourceUrl}
-  />
+  if (item.isImage) {
+    return <Image
+      className={styles.filePreview}
+      src={item.sourceUrl}
+    />
+  }
+  if (item.isVideo) {
+    return <video className={styles.filePreview} src={item.sourceUrl} controls />
+  }
+
+  return null;
+}
+
+const styles = {
+  filePreview: css({
+    maxHeight: '100px',
+    maxWidth: '100px',
+  })
 }
 
 function ItemLabel({item}: {item: ItemModel}) {

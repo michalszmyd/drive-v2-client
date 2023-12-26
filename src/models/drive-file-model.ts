@@ -1,12 +1,30 @@
 import FolderModel from "./folder-model";
 import { resolveBaseURL } from "./helpers/methods";
+import Model from "./model";
 import UserModel from "./user-model";
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 const VideoExtensions = ['mp4', 'mp3', 'mpeg', 'm4a'];
 
-export default class DriveFileModel {
-  id: number;
+const DEFAULT_PARAMS = {
+  id: null,
+  archived: false,
+  body: null,
+  file_name: null,
+  folder_id: null,
+  name: '',
+  pinned: false,
+  source_url: null,
+  user_id: null,
+  vibrant_color: null,
+  folder: null,
+  user: null,
+  created_at: '',
+  updated_at: '',
+}
+
+export default class DriveFileModel extends Model {
+  id: number | null;
   archived: boolean;
   body: string | null;
   fileName: string | null;
@@ -14,7 +32,7 @@ export default class DriveFileModel {
   name: string;
   pinned: boolean;
   sourceUrl: string | null;
-  userId: number;
+  userId: number | null;
   vibrantColor: string | null;
   folder: FolderModel | null;
   user: UserModel | null;
@@ -37,7 +55,7 @@ export default class DriveFileModel {
     created_at,
     updated_at,
   }: {
-    id: number;
+    id: number | null;
     archived: boolean;
     body: string | null;
     file_name: string | null;
@@ -45,13 +63,15 @@ export default class DriveFileModel {
     name: string;
     pinned: boolean;
     source_url: string | null;
-    user_id: number;
+    user_id: number| null;
     vibrant_color: string | null;
     folder: null | any;
     user: null | any;
     created_at: string;
     updated_at: string;
-  }) {
+  } = DEFAULT_PARAMS) {
+    super();
+
     this.archived = archived;
     this.body = body;
     this.fileName = file_name;

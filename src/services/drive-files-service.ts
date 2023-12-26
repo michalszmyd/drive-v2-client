@@ -1,3 +1,4 @@
+import ObjectHelper from "../helpers/object-helper";
 import DriveFileModel from "../models/drive-file-model";
 import { mapPagesToResponsePages, ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
@@ -20,16 +21,21 @@ export default class DriveFilesService {
   }
 
   static async update(file: DriveFileModel, {
-    body
+    body,
+    folderId,
   }: {
-    body: string;
+    body?: string;
+    folderId?: number;
   }): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
+    const reducedParams = ObjectHelper.rejectBlank({
+      body,
+      folder_id: folderId,
+    })
+
     const {data} = await instance.put(`files/${file.id}`, {
-      drive_file: {
-        body
-      }
+      drive_file: reducedParams,
     });
 
     return new DriveFileModel(data);

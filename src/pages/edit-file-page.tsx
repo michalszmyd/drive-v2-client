@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Descriptions, Row } from "antd";
+import { Button, Col, Descriptions, Popover, Row, Space } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -10,13 +10,17 @@ import { css } from "@emotion/css";
 import { colors } from "../consts/colors";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
-import { CheckOutlined } from "@ant-design/icons";
+import { CheckOutlined, FolderAddFilled, FolderOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import FoldersService from "../services/folders-service";
+import FolderModel from "../models/folder-model";
+import ArrayHelper from "../helpers/array-helper";
 
 export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [file, setFile] = useState<DriveFileModel | null>(null);
   const [editableBody, setEditableBody] = useState<string>('');
+  const [moveToFolders, setMoveToFolders] = useState<FolderModel[]>([]);
 
   const {id} = useParams();
 
@@ -77,13 +81,53 @@ export default function EditFilePage() {
     });
   }
 
+  const moveToFolder = async (folderId: number | null) => {
+    if (folderId === null) {
+      return;
+    }
+
+    await DriveFilesService.update(file, {folderId}).then((updatedFile) => {
+      toast.success('File moved');
+
+      setFile(updatedFile);
+    })
+    .catch(({message}) => {
+      toast.error(`There was an error while trying to move, ${message}`);
+
+      return null;
+    });
+  }
+
+  const onFoldersLoad = () => {
+    if (ArrayHelper.isAny(moveToFolders)) {
+      return;
+    }
+
+    FoldersService.me({page: 1, per: 100}).then(({records}) => {
+      setMoveToFolders(records);
+    })
+  }
+
   return (
     <AuthenticatedRoute>
       <MainAppWrapper breadcrumbs={buildBreadcrumbs()}>
         <Descriptions bordered title={file.name} extra={
-          <Button icon={<CheckOutlined color={colors.green} />} shape="round" onClick={onSave} />
+          <Space>
+            <Popover content={
+              <div className={styles.popoverContent}>
+                {moveToFolders.map((folder: FolderModel) => (
+                  <p>
+                    <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
+                  </p>
+                ))}
+              </div>
+            } title="Move to folder" trigger="click">
+              <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
+            </Popover>
+            <Button icon={<CheckOutlined color={colors.green} />} shape="circle" type="primary" onClick={onSave} />
+          </Space>
         }>
-          <Descriptions.Item label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
+          <Descriptions.Item key={file.folderId || 'file-folder'} label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
           <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
           <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
 
@@ -118,5 +162,9 @@ const styles = {
     marginTop: 16,
     textAlign: 'justify',
     textJustify: 'inter-word',
+  }),
+  popoverContent: css({
+    maxHeight: '400px',
+    overflow: 'auto',
   })
 }
