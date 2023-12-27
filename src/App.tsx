@@ -7,6 +7,8 @@ import CurrentUserHelper from './helpers/current-user-helper';
 import UserModel from './models/user-model';
 import RootRouter from './routers/root-router';
 import UsersService from './services/users-service';
+import Loading from './components/shared/loading';
+import PageWrapper from './components/guest/pages/page-wrapper';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<UserModel | null>(null);
@@ -28,7 +30,11 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading</div>;
+    return (
+      <PageWrapper>
+        <Loading />
+      </PageWrapper>
+    )
   }
 
   return (

@@ -9,7 +9,7 @@ export function ResolvePreview({item}: {item: DriveFileModel}) {
   }
 
   if (item.isVideo) {
-    return <video onClick={() => {}} controls className={styles.videoPreview} src={item.sourceUrl} />
+    return <video onClick={() => {}} controls className={`item-video ${styles.videoPreview}`} src={item.sourceUrl} />
   }
 
   if (item.isImage) {

@@ -12,11 +12,13 @@ import FolderModel from "../models/folder-model";
 import CreateFolderModalForm from "./folders/create-folder-modal-form";
 import { H1 } from "./shared/text-components";
 import CurrentUserContext from "../contexts/current-user-context";
+import Loading from "./shared/loading";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
   breadcrumbs?: Array<string | BreadcrumbElement>;
   title?: string;
+  isLoading?: boolean;
 }
 
 type BreadcrumbElement = {
@@ -28,6 +30,7 @@ export default function MainAppWrapper({
   children,
   breadcrumbs = [],
   title = undefined,
+  isLoading = false,
 }: MainAppWrapperParams) {
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
@@ -136,7 +139,7 @@ export default function MainAppWrapper({
             </Breadcrumb>
             <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
               {title && <H1>{title}</H1>}
-              {children}
+              {isLoading ? <Loading color={colors.textBlack} /> : children}
             </Content>
           </Layout>
         </Layout>

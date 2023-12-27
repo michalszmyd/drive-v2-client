@@ -37,12 +37,6 @@ export default function EditFilePage() {
     }
   }, [id]);
 
-  if (isLoading) {
-    return (
-      <span>Loading...</span>
-    )
-  }
-
   if (!file) {
     return (
       <span>Not found</span>
@@ -109,7 +103,7 @@ export default function EditFilePage() {
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={buildBreadcrumbs()}>
+      <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()}>
         <Descriptions bordered title={file.name} extra={
           <Space>
             <Popover content={

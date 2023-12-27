@@ -28,12 +28,6 @@ export default function FilePage() {
     }
   }, [id]);
 
-  if (isLoading) {
-    return (
-      <span>Loading...</span>
-    )
-  }
-
   if (!file) {
     return (
       <span>Not found</span>
@@ -77,7 +71,7 @@ export default function FilePage() {
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={buildBreadcrumbs()} >
+      <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()} >
         <Descriptions title={file.name} bordered extra={
           <CardExtraActions
             editLinkTo={`/files/${file.id}/edit`}
