@@ -22,15 +22,18 @@ export default class DriveFilesService {
 
   static async update(file: DriveFileModel, {
     body,
+    name,
     folderId,
   }: {
-    body?: string;
+    body?: string | null | undefined;
+    name?: string | null | undefined;
     folderId?: number;
   }): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
     const reducedParams = ObjectHelper.rejectBlank({
       body,
+      name,
       folder_id: folderId,
     })
 

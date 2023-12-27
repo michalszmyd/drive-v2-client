@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Descriptions, Popover, Row, Space } from "antd";
+import { Button, Col, Descriptions, Input, Popover, Row, Space } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -17,8 +17,7 @@ import RichTextEditor from "../components/shared/rich-text-editor";
 
 export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [file, setFile] = useState<DriveFileModel | null>(null);
-  const [editableBody, setEditableBody] = useState<string>('');
+  const [file, setFile] = useState<DriveFileModel>(new DriveFileModel());
   const [moveToFolders, setMoveToFolders] = useState<FolderModel[]>([]);
 
   const {id} = useParams();
@@ -31,7 +30,6 @@ export default function EditFilePage() {
         .find(id)
         .then((file) => {
           setFile(file);
-          setEditableBody(file.body || '');
         })
         .finally(() => setIsLoading(false));
     }
@@ -60,8 +58,10 @@ export default function EditFilePage() {
   }
 
   const onSave = () => {
+    const {body, name} = file;
+
     DriveFilesService.update(file, {
-      body: editableBody,
+      body, name,
     }).then(() => {
       toast.success('File saved.');
 
@@ -101,10 +101,22 @@ export default function EditFilePage() {
     })
   }
 
+  const onChange = ({target: {value, name}}: {target: {value: string; name: string;}}) => {
+    setFile((state) => {
+      const driveFile = new DriveFileModel()
+      driveFile.assignAttributes(state);
+      driveFile[name] = value;
+
+      return driveFile;
+    })
+  }
+
   return (
     <AuthenticatedRoute>
       <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()}>
-        <Descriptions bordered title={file.name} extra={
+        <Descriptions bordered title={
+          <Input name="name" value={file.name} onChange={onChange} />
+        } extra={
           <Space>
             <Popover content={
               <div className={styles.popoverContent}>
@@ -135,8 +147,8 @@ export default function EditFilePage() {
             <Col span={24}>
               <RichTextEditor
                 name="body"
-                value={editableBody}
-                onChange={({target: {value}}) => setEditableBody(value)}
+                value={file.body || ''}
+                onChange={onChange}
               />
             </Col>
             <Col span={24}>
