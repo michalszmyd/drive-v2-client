@@ -1,6 +1,6 @@
-import { BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, UserOutlined } from "@ant-design/icons";
+import { ApiOutlined, BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, UserOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { Breadcrumb, Button, Col, Dropdown, Layout, Menu, MenuProps, Row } from "antd";
+import { Breadcrumb, Button, Col, Dropdown, Layout, Menu, MenuProps, Row, Space, Tag } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
@@ -17,7 +17,7 @@ import Loading from "./shared/loading";
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
   breadcrumbs?: Array<string | BreadcrumbElement>;
-  title?: string;
+  title?: string | React.ReactElement;
   isLoading?: boolean;
 }
 
@@ -53,35 +53,60 @@ export default function MainAppWrapper({
 
   const lowerMenuItems: MenuProps['items'] = [
     {
-      key: 1,
+      key: '1',
       label:  <Link to="/dashboard">My drive</Link>,
       icon: <FileProtectOutlined />
     },
     {
-      key: 2,
-      label: <Link to="/folders">Folders</Link>,
+      key: '2',
+      label: 'Folders',
       children: [
         {
-          key: 2.1,
+          key: '2.1',
+          label: <Link to="/folders">All folders</Link>
+        },
+        {
+          key: '2.2',
           label: <Link to="/my-folders">My Folders</Link>,
-        }
+        },
+        {
+          key: '2.3',
+          label: <a onClick={openModal}>Create folder</a>,
+          icon: <FolderAddOutlined />
+        },
       ],
       icon: <FolderOpenOutlined />
     },
     {
-      key: 3,
-      label: <a onClick={openModal}>Create folder</a>,
-      icon: <FolderAddOutlined />
+      key: '3',
+      label: 'Applications',
+      icon: <ApiOutlined />,
+      children: [
+        {
+
+          key: '3.1',
+          label: <Link to="/applications">
+            <Space>
+              Applications
+              <Tag color="cyan">API</Tag>
+            </Space>
+          </Link>,
+        },
+        {
+          key: '3.2',
+          label: <Link to="/applications/api-docs">Api docs</Link>
+        }
+      ]
     }
   ]
 
   const adminPanelMenuItems = {
-    key: 4,
+    key: '4',
     label: 'Admin',
     icon: <BankOutlined />,
     children: [
       {
-        key: 4.1,
+        key: '4.1',
         label: <Link to="/admin/users">Users</Link>,
       }
     ]

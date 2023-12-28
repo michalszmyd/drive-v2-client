@@ -1,4 +1,4 @@
-import { Button, Col, Collapse, Descriptions, Divider, List, Row } from "antd";
+import { Button, Col, Collapse, Descriptions, List, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,8 +12,6 @@ import DriveFileModelForm, { UploadingStatus } from "../models/forms/drive-file-
 import { ResponsePages } from "../services/api-service";
 import DriveFilesService from "../services/drive-files-service";
 import FoldersService from "../services/folders-service";
-import { colors } from "../consts/colors";
-import { css } from "@emotion/css";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import UploadingFileProgress from "../components/files/uploading-file-progress";
 import ArrayHelper from "../helpers/array-helper";

@@ -15,6 +15,8 @@ import EditFolderPage from "../pages/edit-folder-page";
 import EditFilePage from "../pages/edit-file-page";
 import ProfilePage from "../pages/profile-page";
 import AdminUsersPage from "../pages/admin/users-page";
+import ApplicationsPage from "../pages/applications-page";
+import ApplicationsApiDocsPage from "../pages/applications-api-docs-page";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
   {
     path: "/files/:id/edit",
     element: <EditFilePage />
+  },
+  {
+    path: "/applications",
+    element: <ApplicationsPage />,
+  },
+  {
+    path: "/applications/api-docs",
+    element: <ApplicationsApiDocsPage />,
   },
   {
     path: "/admin/users",
