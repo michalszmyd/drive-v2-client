@@ -94,7 +94,7 @@ export default function MainAppWrapper({
         },
         {
           key: '3.2',
-          label: <Link to="/applications/api-docs">Api docs</Link>
+          label: <Link to="/applications/api-docs">API Docs</Link>
         }
       ]
     }

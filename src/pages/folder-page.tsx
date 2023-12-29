@@ -1,4 +1,4 @@
-import { Button, Col, Collapse, Descriptions, List, Row } from "antd";
+import { Button, Col, Collapse, Descriptions, Image, List, Row } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -165,30 +165,32 @@ export default function FolderPage() {
             <FileForm onSave={onFileFormSave} />
           </Col>
         </Row>
-        <List
-          style={{marginTop: 15}}
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 1,
-            md: 1,
-            lg: 2,
-            xl: 3,
-            xxl: 3,
-          }}
-          dataSource={files}
-          rowKey='id'
-          renderItem={(item) => (
-            <ListItem
-              onClick={onFilesClick}
-              onDelete={() => onFileDelete(item)}
-              item={item}
-            />
-          )}
-          loadMore={
-            <Button onClick={onLoadMore}>Load more</Button>
-          }
-        />
+        <Image.PreviewGroup>
+          <List
+            style={{marginTop: 15}}
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 1,
+              md: 1,
+              lg: 2,
+              xl: 3,
+              xxl: 3,
+            }}
+            dataSource={files}
+            rowKey='id'
+            renderItem={(item) => (
+              <ListItem
+                onClick={onFilesClick}
+                onDelete={() => onFileDelete(item)}
+                item={item}
+              />
+            )}
+            loadMore={
+              <Button onClick={onLoadMore}>Load more</Button>
+            }
+          />
+        </Image.PreviewGroup>
       </MainAppWrapper>
     </AuthenticatedRoute>
   )

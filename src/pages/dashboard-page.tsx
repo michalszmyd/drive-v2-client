@@ -104,15 +104,18 @@ export default function DashboardPage() {
         <Divider orientation="left">Files list</Divider>
         <Row gutter={16}>
           <Col span={24}>
-            <Table
-              columns={tableHeader}
-              loading={isLoading}
-              onChange={onTableChange}
-              pagination={tableParams.pagination}
-              dataSource={items.map((item) => (
-                ItemRow({item})
-              ))}
-            />
+            <Image.PreviewGroup>
+              <Table
+                columns={tableHeader}
+                loading={isLoading}
+                onChange={onTableChange}
+                pagination={tableParams.pagination}
+                className={styles.table}
+                dataSource={items.map((item) => (
+                  ItemRow({item})
+                ))}
+              />
+            </Image.PreviewGroup>
           </Col>
         </Row>
       </MainAppWrapper>
@@ -156,22 +159,27 @@ function ItemPreview({item}: {item: ItemModel}) {
 
   if (item.isImage) {
     return <Image
-      className={styles.filePreview}
       src={item.sourceUrl}
     />
   }
   if (item.isVideo) {
-    return <video className={styles.filePreview} src={item.sourceUrl} controls controlsList="play" />
+    return <video  src={item.sourceUrl} controls controlsList="play" />
   }
 
   return null;
 }
 
 const styles = {
-  filePreview: css({
-    maxHeight: '100px',
-    maxWidth: '100px',
-  })
+  table: css(`
+    img, .ant-image-mask, video {
+      max-height: 100px;
+      max-width: 100px;
+      border-radius: 10px;
+      .ant-image-mask {
+        border-radius: 10px;
+      }
+    }
+  `)
 }
 
 function ItemLabel({item}: {item: ItemModel}) {
