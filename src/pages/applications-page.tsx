@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ApplicationsService from "../services/applications-service";
 import ApplicationModel, { ApplicationStatus } from "../models/application-model";
-import AuthenticatedAdminRoute from "../components/authenticated/authenticated-admin-route";
 import MainAppWrapper from "../components/main-app-wrapper";
 import { Button, Col, Popover, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
 import Column from "antd/es/table/Column";
@@ -10,6 +9,7 @@ import { H1 } from "../components/shared/text-components";
 import CreateApplicationModal from "../components/applications/create-application-modal";
 import { toast } from "react-toastify";
 import { css } from "@emotion/css";
+import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -172,7 +172,7 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <AuthenticatedAdminRoute>
+    <AuthenticatedRoute>
       <MainAppWrapper breadcrumbs={['Applications', 'Your applications']}>
         <CreateApplicationModal
           onSubmit={onApplicationFormSubmit}
@@ -224,7 +224,7 @@ export default function ApplicationsPage() {
           />
         </Table>
       </MainAppWrapper>
-    </AuthenticatedAdminRoute>
+    </AuthenticatedRoute>
   )
 }
 

@@ -1,4 +1,3 @@
-import AuthenticatedAdminRoute from "../components/authenticated/authenticated-admin-route";
 import MainAppWrapper from "../components/main-app-wrapper";
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
@@ -6,6 +5,7 @@ import SETTINGS from "../consts/settings";
 import { useEffect, useState } from "react";
 import ApplicationsService from "../services/applications-service";
 import Loading from "../components/shared/loading";
+import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 
 export default function ApplicationsApiDocsPage() {
   const url = `${SETTINGS.API_URL}/api/v1/applications/docs`;
@@ -23,7 +23,7 @@ export default function ApplicationsApiDocsPage() {
   console.log({schema});
 
   return (
-    <AuthenticatedAdminRoute>
+    <AuthenticatedRoute>
       <MainAppWrapper title="API Docs" breadcrumbs={['Applications', 'API Docs']}>
         {
           isLoading ? (
@@ -33,6 +33,6 @@ export default function ApplicationsApiDocsPage() {
           )
         }
       </MainAppWrapper>
-    </AuthenticatedAdminRoute>
+    </AuthenticatedRoute>
   )
 }
