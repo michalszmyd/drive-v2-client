@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import ApplicationsService from "../services/applications-service";
-import ApplicationModel, { ApplicationStatus } from "../models/application-model";
-import AuthenticatedAdminRoute from "../components/authenticated/authenticated-admin-route";
-import MainAppWrapper from "../components/main-app-wrapper";
 import { Button, Col, Popover, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
 import Column from "antd/es/table/Column";
-import { ApiOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, ReloadOutlined, SlidersOutlined, SyncOutlined } from "@ant-design/icons";
-import { H1 } from "../components/shared/text-components";
-import CreateApplicationModal from "../components/applications/create-application-modal";
+import { ApiOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, SlidersOutlined, SyncOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { css } from "@emotion/css";
+import ApplicationModel, { ApplicationStatus } from "../../models/application-model";
+import AdminApplicationsService from "../../services/admin-applications-service";
+import AuthenticatedAdminRoute from "../../components/authenticated/authenticated-admin-route";
+import MainAppWrapper from "../../components/main-app-wrapper";
+import CreateApplicationModal from "../../components/applications/create-application-modal";
+import { H1 } from "../../components/shared/text-components";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
 }
 
-export default function ApplicationsPage() {
+export default function AdminApplicationsPage() {
   const [applications, setApplications] = useState<ApplicationModel[]>([]);
-  const [isAddApplicationModalOpen, setIsAddApplicationModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -27,7 +26,7 @@ export default function ApplicationsPage() {
   });
 
   const fetchData = ({page, per}: {page: number; per: number}) => {
-    ApplicationsService
+    AdminApplicationsService
       .all({page, per})
       .then(({records, pages}) => {
         setApplications(records);
@@ -57,15 +56,29 @@ export default function ApplicationsPage() {
   }, []);
 
   const userToTableItem = (application: ApplicationModel) => {
-    const {id, status, name, description, privateKey, publicKey, createdAt, updatedAt, lastUsedAt} = application;
-
-    return {
-      key: id,
+    const {
       id,
       status,
       name,
       description,
-      privateKey,
+      publicKey,
+      createdAt,
+      updatedAt,
+      lastUsedAt,
+      user: {
+        name: userName = '',
+        id: userId = '',
+      } = {}
+    } = application;
+
+    return {
+      key: id,
+      id,
+      userName,
+      userId,
+      status,
+      name,
+      description,
       publicKey,
       lastUsedAt,
       createdAt,
@@ -97,44 +110,10 @@ export default function ApplicationsPage() {
       })
   }
 
-  const onToggleAddApplicationModal = () => {
-    setIsAddApplicationModalOpen((state) => !state);
-  };
-
-  const onApplicationFormSubmit = (application: ApplicationModel) => {
-    ApplicationsService.create(application.toParams()).then((createdApplication: ApplicationModel) => {
-      toast.success('Application created.');
-
-      setApplications((state) => [createdApplication].concat(state));
-    })
-    .catch((e) => {
-      const {data} = JSON.parse(e.message);
-
-      toast.error(`Error: ${JSON.stringify(data)}`);
-    });
-  }
-
-  const onReloadPrivateApiKey = (record: ApplicationModel) => {
-    if (!record.id) return;
-
-    ApplicationsService
-      .regeneratePrivateApiKey(record.id)
-      .then((updatedApplicationModel: ApplicationModel) => {
-        toast.success('Application updated.');
-
-        updateApplicationsElement(record, {attribute: 'privateKey', value: updatedApplicationModel.privateKey});
-      })
-      .catch((e) => {
-        const {data} = JSON.parse(e.message);
-
-        toast.error(`Error: ${JSON.stringify(data)}`);
-      });
-  }
-
   const onRemoveApplication = (record: ApplicationModel) => {
     if (!record.id) return;
 
-    ApplicationsService
+    AdminApplicationsService
       .delete(record.id)
       .then(() => {
         toast.success('Application removed.');
@@ -155,7 +134,7 @@ export default function ApplicationsPage() {
 
     updateApplicationsElement(record, {attribute: 'status', value: ApplicationStatus.Waiting});
 
-    ApplicationsService
+    AdminApplicationsService
       .toggleStatus(record.id)
       .then((updatedApplicationModel: ApplicationModel) => {
         toast.success('Application updated.');
@@ -174,19 +153,9 @@ export default function ApplicationsPage() {
   return (
     <AuthenticatedAdminRoute>
       <MainAppWrapper breadcrumbs={['Applications', 'Your applications']}>
-        <CreateApplicationModal
-          onSubmit={onApplicationFormSubmit}
-          onCancel={onToggleAddApplicationModal}
-          open={isAddApplicationModalOpen}
-        />
         <Row align="middle">
           <Col className={styles.titleContainer}>
             <H1>Applications</H1>
-          </Col>
-          <Col>
-            <Button icon={<ApiOutlined />} onClick={onToggleAddApplicationModal}>
-              Add
-            </Button>
           </Col>
         </Row>
         <Table onChange={onTableChange} loading={isLoading} pagination={tableParams.pagination} dataSource={tableItems}>
@@ -200,8 +169,9 @@ export default function ApplicationsPage() {
           />
           <Column key='application-name' title='Name' dataIndex='name' />
           <Column key='application-description' title='Description' dataIndex='description' />
+          <Column key='application-userId' title='User ID' dataIndex='userId' />
+          <Column key='application-userName' title='User' dataIndex='userName' />
           <Column key='application-publicKey' title='Public key' dataIndex='publicKey' />
-          <Column key='application-privateKey' title='Private key' dataIndex='privateKey' />
           <Column key='application-lastUsedAt' title='Last used at' dataIndex='lastUsedAt' />
           <Column key='application-createdAt' title='Created At' dataIndex='createdAt' />
           <Column key='application-updatedAt' title='Updated At' dataIndex='updatedAt' />
@@ -210,9 +180,6 @@ export default function ApplicationsPage() {
             key="action"
             render={(_: any, record: ApplicationModel) => (
               <Space size="middle">
-                <Popover title="Recreate private key">
-                  <Button onClick={() => onReloadPrivateApiKey(record)} shape="circle" icon={<ReloadOutlined />} />
-                </Popover>
                 <Popover title="Toggle app status">
                   <Button onClick={() => onStatusToggleApplication(record)} shape="circle" icon={<SlidersOutlined />} />
                 </Popover>

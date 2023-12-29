@@ -7,7 +7,7 @@ type RequestApplicationParams = {
   description?: string;
 }
 
-export default class ApplicationsService {
+export default class AdminApplicationsService {
   static async all({
     page,
     per,
@@ -26,7 +26,7 @@ export default class ApplicationsService {
         records,
         pages,
       }
-    } = await instance.get(`applications?${params.toString()}`);
+    } = await instance.get(`admin/applications?${params.toString()}`);
 
     return {
       pages: mapPagesToResponsePages(pages),
@@ -37,7 +37,7 @@ export default class ApplicationsService {
   static async create(params: RequestApplicationParams) {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.post('applications', {application: params});
+    const {data} = await instance.post('admin/applications', {application: params});
 
     return new ApplicationModel(data);
   }
@@ -45,21 +45,13 @@ export default class ApplicationsService {
   static async delete(applicationId: number) {
     const instance = await AuthenticatedApiService.default();
 
-    return await instance.delete(`applications/${applicationId}`);
+    return await instance.delete(`admin/applications/${applicationId}`);
   }
 
   static async toggleStatus(applicationId: number) {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.put(`applications/${applicationId}/toggle_status`);
-
-    return new ApplicationModel(data);
-  }
-
-  static async regeneratePrivateApiKey(applicationId: number) {
-    const instance = await AuthenticatedApiService.default();
-
-    const {data} = await instance.put(`applications/${applicationId}/regenerate_private_api_key`);
+    const {data} = await instance.put(`admin/applications/${applicationId}/toggle_status`);
 
     return new ApplicationModel(data);
   }

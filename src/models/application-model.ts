@@ -1,4 +1,5 @@
 import Model from "./model";
+import UserModel from "./user-model";
 
 const DEFAULT_PARAMS = {
   name: '',
@@ -18,7 +19,9 @@ export default class ApplicationModel extends Model {
   privateKey?: string;
   createdAt?: string;
   updatedAt?: string;
+  lastUsedAt?: string;
   status: ApplicationStatus;
+  user?: UserModel;
 
   constructor({
     id,
@@ -28,7 +31,9 @@ export default class ApplicationModel extends Model {
     private_key,
     created_at,
     updated_at,
+    last_used_at,
     status,
+    user,
   }: {
     id?: number,
     name: string;
@@ -37,7 +42,9 @@ export default class ApplicationModel extends Model {
     private_key?: string;
     created_at?: string;
     updated_at?: string;
+    last_used_at?: string;
     status?: ApplicationStatus;
+    user?: any;
   } = DEFAULT_PARAMS) {
     super();
     this.id = id;
@@ -47,7 +54,9 @@ export default class ApplicationModel extends Model {
     this.privateKey = private_key;
     this.createdAt = created_at;
     this.updatedAt = updated_at;
+    this.lastUsedAt = last_used_at;
     this.status = status || ApplicationStatus.Disabled;
+    this.user = new UserModel(user);
   }
 
   toParams() {

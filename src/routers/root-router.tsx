@@ -17,6 +17,7 @@ import ProfilePage from "../pages/profile-page";
 import AdminUsersPage from "../pages/admin/users-page";
 import ApplicationsPage from "../pages/applications-page";
 import ApplicationsApiDocsPage from "../pages/applications-api-docs-page";
+import AdminApplicationsPage from "../pages/admin/applications-page";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/users",
     element: <AdminUsersPage />
+  },
+  {
+    path: "/admin/applications",
+    element: <AdminApplicationsPage />
   }
 ]);
 

@@ -108,6 +108,10 @@ export default function MainAppWrapper({
       {
         key: '4.1',
         label: <Link to="/admin/users">Users</Link>,
+      },
+      {
+        key: '4.2',
+        label: <Link to="/admin/applications">Applications</Link>,
       }
     ]
   }
