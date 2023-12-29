@@ -39,7 +39,7 @@ export default class ApplicationsService {
     const instance = await AuthenticatedApiService.default();
     const {data} = await instance.get(`applications/docs`);
 
-    data.host = SETTINGS.API_URL;
+    data.host = SETTINGS.API_ORIGIN;
 
     return data;
   }
