@@ -1,10 +1,9 @@
-import { FileOutlined, FolderOpenOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Image, Input, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
+import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
+import { Col, Divider, Image, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route"
 import MainAppWrapper from "../components/main-app-wrapper";
-import Text from "../components/shared/text";
 import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";

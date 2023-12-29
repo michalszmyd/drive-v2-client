@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Descriptions, Image } from "antd";
+import { Descriptions } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
