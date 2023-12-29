@@ -10,6 +10,7 @@ import { colors } from '../../consts/colors';
 import { toast } from 'react-toastify';
 import UserResetPasswordModel from '../../models/user-reset-password-model';
 import ArrayHelper from '../../helpers/array-helper';
+import tableStyles from '../../styles/table';
 
 type ResetPassword = {
   user: UserModel,
@@ -69,7 +70,7 @@ export default function UsersPage() {
     <AuthenticatedAdminRoute>
       <MainAppWrapper title="Users" breadcrumbs={['All users']}>
         <ResetPasswordTable resetPasswordUsers={resetPasswordUsers} />
-        <Table dataSource={tableItems}>
+        <Table className={tableStyles.table} dataSource={tableItems}>
           <Column key='user-id' title='ID' dataIndex='id' />
           <Column key='user-name' title='Name' dataIndex='name' />
           <Column key='user-email' title='Email' dataIndex='email' />
@@ -106,7 +107,7 @@ function ResetPasswordTable({resetPasswordUsers}: {resetPasswordUsers: ResetPass
       <Divider orientation='left'>
         ResetPassword
       </Divider>
-      <Table dataSource={resetPasswordUsers}>
+      <Table className={tableStyles.table} dataSource={resetPasswordUsers}>
         <Column key='user-reset-id' title='ID' dataIndex='user.id' render={(_, record: ResetPassword) => record.user.id} />
         <Column key='user-reset-name' title='Name' dataIndex='user.name' render={(_, record: ResetPassword) => record.user.name} />
         <Column key='user-reset-email' title='Email' dataIndex='user.email' render={(_, record: ResetPassword) => record.user.email} />

@@ -1,8 +1,8 @@
-import { ApiOutlined, BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, UserOutlined } from "@ant-design/icons";
+import { ApiOutlined, BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, MenuUnfoldOutlined, MobileFilled, UserOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { Breadcrumb, Button, Col, Dropdown, Layout, Menu, MenuProps, Row, Space, Tag } from "antd";
+import { Breadcrumb, Button, Col, Drawer, Dropdown, Layout, Menu, MenuProps, Row, Space, Tag } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import Sider from "antd/es/layout/Sider";
+import Sider, { SiderTheme } from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { colors, resolveThemeColor, Theme } from "../consts/colors";
@@ -13,6 +13,9 @@ import CreateFolderModalForm from "./folders/create-folder-modal-form";
 import { H1 } from "./shared/text-components";
 import CurrentUserContext from "../contexts/current-user-context";
 import Loading from "./shared/loading";
+import { MobileOnlyView } from "react-device-detect";
+import {isMobile} from 'react-device-detect';
+import OverflowButton from "./shared/overflow-button";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
@@ -150,16 +153,12 @@ export default function MainAppWrapper({
           </Row>
         </Header>
         <Layout>
-          <Sider theme={theme} width={200} collapsible collapsed={leftBarMenuCollapsed} onCollapse={setLeftBarMenuCollapsed}>
-            <Menu
-              theme={theme}
-              mode="inline"
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub1']}
-              style={{ height: '100%', borderRight: 0 }}
-              items={lowerMenuItems}
-            />
-          </Sider>
+          <Leftbar
+            theme={theme}
+            leftBarMenuCollapsed={leftBarMenuCollapsed}
+            setLeftBarMenuCollapsed={setLeftBarMenuCollapsed}
+            lowerMenuItems={lowerMenuItems}
+          />
           <Layout style={{ background: themeColors.backgroundSecondary, padding: '0 14px 14px', flex: 1, display: 'flex' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               {breadcrumbs.map((breadcrumb) => (
@@ -170,6 +169,9 @@ export default function MainAppWrapper({
               {title && <H1>{title}</H1>}
               {isLoading ? <Loading color={colors.textBlack} /> : children}
             </Content>
+            <MobileOnlyView>
+              <OverflowButton onClick={() => setLeftBarMenuCollapsed(true)} icon={<MenuUnfoldOutlined />} />
+            </MobileOnlyView>
           </Layout>
         </Layout>
       </Layout>
@@ -196,6 +198,52 @@ function BreadcrumbItem({
 
     </Breadcrumb.Item>
   )
+}
+
+function Leftbar({
+  theme,
+  leftBarMenuCollapsed,
+  setLeftBarMenuCollapsed,
+  lowerMenuItems,
+}: {
+  theme: SiderTheme | undefined;
+  leftBarMenuCollapsed: boolean;
+  setLeftBarMenuCollapsed: (value: boolean) => void;
+  lowerMenuItems: MenuProps['items'];
+}) {
+  if (!isMobile) {
+    return (
+      <Sider theme={theme} width={200} collapsible collapsed={leftBarMenuCollapsed} onCollapse={setLeftBarMenuCollapsed}>
+        <Menu
+          theme={theme}
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['sub1']}
+          style={{ height: '100%', borderRight: 0 }}
+          items={lowerMenuItems}
+        />
+      </Sider>
+    )
+  }
+
+  return (
+    <Drawer
+      title="Menu"
+      placement="left"
+      onClose={() => setLeftBarMenuCollapsed(false)}
+      open={leftBarMenuCollapsed}
+      key="left"
+    >
+      <Menu
+        theme={theme}
+        mode="inline"
+        defaultSelectedKeys={['1']}
+        defaultOpenKeys={['sub1']}
+        style={{ height: '100%', borderRight: 0 }}
+        items={lowerMenuItems}
+      />
+    </Drawer>
+  );
 }
 
 const styles = {

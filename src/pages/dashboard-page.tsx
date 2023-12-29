@@ -8,6 +8,7 @@ import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";
 import { css } from "@emotion/css";
+import tableStyles from "../styles/table";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -109,7 +110,7 @@ export default function DashboardPage() {
                 loading={isLoading}
                 onChange={onTableChange}
                 pagination={tableParams.pagination}
-                className={styles.table}
+                className={`${tableStyles.table} ${styles.table}`}
                 dataSource={items.map((item) => (
                   ItemRow({item})
                 ))}

@@ -10,6 +10,7 @@ import AuthenticatedAdminRoute from "../../components/authenticated/authenticate
 import MainAppWrapper from "../../components/main-app-wrapper";
 import CreateApplicationModal from "../../components/applications/create-application-modal";
 import { H1 } from "../../components/shared/text-components";
+import tableStyles from "../../styles/table";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -160,6 +161,7 @@ export default function AdminApplicationsPage() {
         </Row>
         <Table onChange={onTableChange} loading={isLoading} pagination={tableParams.pagination} dataSource={tableItems}>
           <Column
+            className={tableStyles.table}
             key='application-status'
             title='Status'
             dataIndex='status'

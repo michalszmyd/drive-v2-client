@@ -10,6 +10,7 @@ import CreateApplicationModal from "../components/applications/create-applicatio
 import { toast } from "react-toastify";
 import { css } from "@emotion/css";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
+import tableStyles from "../styles/table";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -189,7 +190,7 @@ export default function ApplicationsPage() {
             </Button>
           </Col>
         </Row>
-        <Table onChange={onTableChange} loading={isLoading} pagination={tableParams.pagination} dataSource={tableItems}>
+        <Table className={tableStyles.table} onChange={onTableChange} loading={isLoading} pagination={tableParams.pagination} dataSource={tableItems}>
           <Column
             key='application-status'
             title='Status'

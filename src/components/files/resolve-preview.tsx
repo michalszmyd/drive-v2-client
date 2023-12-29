@@ -29,6 +29,7 @@ const styles = {
   videoPreview: css({
     height: '100%',
     width: 'auto',
+    maxWidth: '100%',
   }),
   noPreview: css({
     padding: 12,
