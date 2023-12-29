@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space } from "antd";
+import { Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space, Tooltip } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -140,9 +140,9 @@ export default function EditFilePage() {
               } title="Move to folder" trigger="click">
                 <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
               </Popover>
-              <Popover title="Save">
+              <Tooltip title="Save">
                 <Button icon={<CheckOutlined color={colors.green} />} shape="circle" onClick={onSave} />
-              </Popover>
+              </Tooltip>
             </Space>
           </div>
         }>

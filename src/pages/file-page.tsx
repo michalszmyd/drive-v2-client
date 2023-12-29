@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Descriptions } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
@@ -10,13 +10,14 @@ import { css } from "@emotion/css";
 import { colors } from "../consts/colors";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import { toast } from "react-toastify";
+import CurrentUserContext from "../contexts/current-user-context";
 
 export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [file, setFile] = useState<DriveFileModel | null>(null);
 
   const {id} = useParams();
-
+  const {currentUser} = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,13 +76,13 @@ export default function FilePage() {
         <Descriptions title={file.name} bordered extra={
           <CardExtraActions
             editLinkTo={`/files/${file.id}/edit`}
+            manageActionsEnabled={file.userId === currentUser?.id}
             deleteOnClick={onFileDelete}
           />
         }>
           <Descriptions.Item label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
           <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
           <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
-
           <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
           <Descriptions.Item label="Archived">{file.archived ? 'Yes' : 'No'}</Descriptions.Item>
           <Descriptions.Item label="Private">{file.folder?.folderPrivate ? 'Yes' : 'No'}</Descriptions.Item>

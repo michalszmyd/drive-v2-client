@@ -3,8 +3,9 @@ import DriveFileModel from "../../../models/drive-file-model";
 import { ResolvePreview } from "../../files/resolve-preview";
 import CardExtraActions from "../card-extra-actions";
 import { css } from "@emotion/css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { colors } from "../../../consts/colors";
+import CurrentUserContext from "../../../contexts/current-user-context";
 
 const MAX_HEIGHT_CARD = 600;
 
@@ -19,7 +20,7 @@ export function ListItem({
 }) {
   const cardItemRef = useRef<HTMLDivElement>(null);
   const [loadMore, setLoadMore] = useState<boolean>(false);
-
+  const {currentUser} = useContext(CurrentUserContext);
   const onCardClick = (e: React.MouseEvent) => {
     const { target } = e;
 
@@ -54,6 +55,7 @@ export function ListItem({
         extra={
           <CardExtraActions
             editLinkTo={`/files/${item.id}/edit`}
+            manageActionsEnabled={item.userId === currentUser?.id}
             deleteOnClick={onDelete}
           />
         }

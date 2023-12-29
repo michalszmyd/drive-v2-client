@@ -1,5 +1,5 @@
 import { Button, Col, Collapse, Descriptions, Image, List, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
@@ -15,6 +15,7 @@ import FoldersService from "../services/folders-service";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import UploadingFileProgress from "../components/files/uploading-file-progress";
 import ArrayHelper from "../helpers/array-helper";
+import CurrentUserContext from "../contexts/current-user-context";
 
 export default function FolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
@@ -23,6 +24,7 @@ export default function FolderPage() {
   const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
 
   const {id} = useParams();
+  const {currentUser} = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -137,6 +139,7 @@ export default function FolderPage() {
               extra={
                 <CardExtraActions
                   editLinkTo={`/folders/${folder.id}/edit`}
+                  manageActionsEnabled={folder.userId === currentUser?.id}
                   deleteOnClick={() => {}}
                 />
               }

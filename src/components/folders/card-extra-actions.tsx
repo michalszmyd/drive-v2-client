@@ -1,4 +1,4 @@
-import { CodeOutlined, CodeSandboxOutlined, CopyOutlined, DeleteOutlined, DownloadOutlined, EditOutlined } from "@ant-design/icons";
+import { CopyOutlined, DeleteOutlined, DownloadOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Space, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import { colors } from "../../consts/colors";
@@ -7,11 +7,13 @@ import { css } from "@emotion/css";
 export default function CardExtraActions({
   editLinkTo,
   editTitle = "Edit",
+  manageActionsEnabled = false,
   deleteOnClick,
   deleteTitle = "Delete",
 }: {
   editLinkTo: string;
   editTitle?: string;
+  manageActionsEnabled?: boolean;
   deleteOnClick: () => void;
   deleteTitle?: string;
 }) {
@@ -29,13 +31,14 @@ export default function CardExtraActions({
       </Tooltip>
       <Link to={editLinkTo}>
         <Tooltip title={editTitle}>
-          <Button shape="circle" type="link">
+          <Button disabled={!manageActionsEnabled} shape="circle" type="link">
             <EditOutlined />
           </Button>
         </Tooltip>
       </Link>
       <Tooltip title={deleteTitle}>
         <Button
+          disabled={!manageActionsEnabled}
           onClick={deleteOnClick}
           shape="circle"
           type="link"
