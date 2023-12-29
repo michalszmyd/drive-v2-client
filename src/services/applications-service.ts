@@ -1,3 +1,4 @@
+import SETTINGS from "../consts/settings";
 import ApplicationModel from "../models/application-model";
 import { ResponsePages, mapPagesToResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
@@ -32,6 +33,15 @@ export default class ApplicationsService {
       pages: mapPagesToResponsePages(pages),
       records: records.map((record: any) => new ApplicationModel(record)),
     }
+  }
+
+  static async docs() {
+    const instance = await AuthenticatedApiService.default();
+    const {data} = await instance.get(`applications/docs`);
+
+    data.host = SETTINGS.API_URL;
+
+    return data;
   }
 
   static async create(params: RequestApplicationParams) {
