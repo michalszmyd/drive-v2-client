@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Descriptions, Input, Popover, Row, Space } from "antd";
+import { Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -58,10 +58,10 @@ export default function EditFilePage() {
   }
 
   const onSave = () => {
-    const {body, name} = file;
+    const {body, name, pinned} = file;
 
     DriveFilesService.update(file, {
-      body, name,
+      body, name, pinned,
     }).then(() => {
       toast.success('File saved.');
 
@@ -109,6 +109,16 @@ export default function EditFilePage() {
 
       return driveFile;
     })
+  };
+
+  const onTogglePinned = () => {
+    setFile((state) => {
+      const driveFile = new DriveFileModel()
+      driveFile.assignAttributes(state);
+      driveFile.pinned = !state.pinned;
+
+      return driveFile;
+    })
   }
 
   return (
@@ -117,25 +127,28 @@ export default function EditFilePage() {
         <Descriptions bordered title={
           <Input name="name" value={file.name} onChange={onChange} />
         } extra={
-          <Space>
-            <Popover content={
-              <div className={styles.popoverContent}>
-                {moveToFolders.map((folder: FolderModel) => (
-                  <p>
-                    <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
-                  </p>
-                ))}
-              </div>
-            } title="Move to folder" trigger="click">
-              <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
-            </Popover>
-            <Button icon={<CheckOutlined color={colors.green} />} shape="circle" type="primary" onClick={onSave} />
-          </Space>
+          <div className={styles.descriptionExtra}>
+            <Space>
+              <Popover content={
+                <div className={styles.popoverContent}>
+                  {moveToFolders.map((folder: FolderModel) => (
+                    <p>
+                      <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
+                    </p>
+                  ))}
+                </div>
+              } title="Move to folder" trigger="click">
+                <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
+              </Popover>
+              <Popover title="Save">
+                <Button icon={<CheckOutlined color={colors.green} />} shape="circle" onClick={onSave} />
+              </Popover>
+            </Space>
+          </div>
         }>
           <Descriptions.Item key={file.folderId || 'file-folder'} label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
           <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
           <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
-
           <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
           <Descriptions.Item label="Archived">{file.archived ? 'Yes' : 'No'}</Descriptions.Item>
           <Descriptions.Item label="Private">{file.folder?.folderPrivate ? 'Yes' : 'No'}</Descriptions.Item>
@@ -144,6 +157,16 @@ export default function EditFilePage() {
         </Descriptions>
         <div className={styles.container}>
           <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Checkbox
+                className={styles.inputField}
+                checked={file.pinned}
+                name="pinned"
+                onChange={onTogglePinned}
+              >
+                Pinned
+              </Checkbox>
+            </Col>
             <Col span={24}>
               <RichTextEditor
                 name="body"
@@ -175,5 +198,11 @@ const styles = {
   popoverContent: css({
     maxHeight: '400px',
     overflow: 'auto',
-  })
+  }),
+  inputField: css({
+    margin: '6px 0',
+  }),
+  descriptionExtra: css({
+    margin: '0 5px',
+  }),
 }

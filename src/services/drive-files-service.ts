@@ -24,9 +24,11 @@ export default class DriveFilesService {
     body,
     name,
     folderId,
+    pinned,
   }: {
     body?: string | null | undefined;
     name?: string | null | undefined;
+    pinned?: boolean;
     folderId?: number;
   }): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
@@ -34,6 +36,7 @@ export default class DriveFilesService {
     const reducedParams = ObjectHelper.rejectBlank({
       body,
       name,
+      pinned,
       folder_id: folderId,
     })
 
