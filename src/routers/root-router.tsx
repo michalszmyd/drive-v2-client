@@ -18,6 +18,7 @@ import AdminUsersPage from "../pages/admin/users-page";
 import ApplicationsPage from "../pages/applications-page";
 import ApplicationsApiDocsPage from "../pages/applications-api-docs-page";
 import AdminApplicationsPage from "../pages/admin/applications-page";
+import SettingsPage from "../pages/settings-page";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
   {
     path: "/applications/api-docs",
     element: <ApplicationsApiDocsPage />,
+  },
+  {
+    path: '/settings',
+    element: <SettingsPage />,
   },
   {
     path: "/admin/users",

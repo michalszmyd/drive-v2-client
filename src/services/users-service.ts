@@ -1,4 +1,5 @@
 import UserModel from "../models/user-model";
+import UserSessionModel from "../models/user-session-model";
 import ApiService from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
@@ -29,6 +30,20 @@ export default class UsersService {
     const {data} = await instance.get('users/me');
 
     return new UserModel(data);
+  }
+
+  static async userSessions() {
+    const instance = await AuthenticatedApiService.default();
+
+    const {data} = await instance.get('me/sessions');
+
+    return data.map((element: any) => new UserSessionModel(element));
+  }
+
+  static async deleteUserSession(session: UserSessionModel) {
+    const instance = await AuthenticatedApiService.default();
+
+    return await instance.delete(`me/sessions/${session.id}`);
   }
 
   static async updateCurrentUser(user: UserModel) {
