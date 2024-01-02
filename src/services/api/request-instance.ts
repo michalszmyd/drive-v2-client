@@ -1,3 +1,6 @@
+import SETTINGS from "../../consts/settings";
+import { uuid } from "../../helpers/uuid-helper";
+
 interface RequestInstanceParams {
   baseUrl: string;
   headers?: object;
@@ -23,12 +26,49 @@ const DEFAULT_HEADERS = {
   'Accept': 'application/json',
 }
 
+class RequestsQueue {
+  queue: RequestInstance[];
+
+  constructor(queue: RequestInstance[]) {
+    this.queue = queue;
+  }
+
+  updateQueueHeaders(headers: any) {
+    this.queue.forEach((request) => {
+      request.headers = {...request.headers, ...headers};
+    });
+  }
+
+  findByUrl(url: string) {
+    return this.queue.find((element) => element.url === url);
+  }
+
+  findRefreshTokenRequest() {
+    return this.queue.find((element) => element.isRefreshToken);
+  }
+
+  remove(id: string) {
+    this.queue = this.queue.filter((element) => element.uniqueRequestId !== id);
+    return this.queue
+  }
+
+  push(request: RequestInstance) {
+    this.queue.push(request);
+  }
+}
+
 export default class RequestInstance {
+  static _queue = new RequestsQueue([]);
+
   baseUrl: string;
   method: RequestAction;
   url: string | null;
   data: RequestDataPaylaod;
   headers: {[key: string]: string;};
+  refreshTokenAction?: () => any;
+  uniqueRequestId: string;
+  isRefreshToken: boolean;
+  _retry: boolean;
 
   constructor({
     baseUrl,
@@ -40,6 +80,11 @@ export default class RequestInstance {
     this.url = null;
     this.method = RequestAction.Get;
     this.data = null;
+    this.uniqueRequestId = uuid();
+    this.isRefreshToken = false;
+    this._retry = false;
+
+    RequestInstance._queue.push(this);
   }
 
   prepareRequestData = () => {
@@ -59,6 +104,13 @@ export default class RequestInstance {
     }
   }
 
+  retryRequest = async(): Promise<RequestResponse> => {
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => {
+      this._retry = true;
+      return this.request();
+    })
+  };
+
   request = async (): Promise<RequestResponse> => {
     if (!this.url) {
       throw new Error('Url must be specified.');
@@ -76,8 +128,18 @@ export default class RequestInstance {
 
     this.headers = requestHeaders;
 
-    console.log(`Starting request ${this.url}: `);
-    console.log({instance: this, payloadParams});
+    if (SETTINGS.DEVELOPMENT) {
+      console.log(`Starting request ${this.url}: `);
+      console.log({instance: this, payloadParams});
+    }
+
+    if (this.refreshTokenAction && RequestInstance._queue.findRefreshTokenRequest() && !this._retry) {
+      if (SETTINGS.DEVELOPMENT) {
+        console.log(`delaying request ${this.url}, retry? ${this._retry}`);
+      }
+
+      this.retryRequest();
+    }
 
     const response = await fetch(`${this.baseUrl}${this.url}`, {
       headers: requestHeaders,
@@ -85,9 +147,9 @@ export default class RequestInstance {
       ...(payloadParams ? {body: payloadParams as BodyInit} : {}),
     });
 
-    console.log(`Response code: ${response.status}`);
-
     if (response.status >= 200 && response.status < 400) {
+      RequestInstance._queue.remove(this.uniqueRequestId);
+
       if ([201, 204].includes(response.status)) {
         return {
           instance: this,
@@ -104,6 +166,17 @@ export default class RequestInstance {
         instance: this,
       }
     } else if (response.status < 500) {
+      if (response.status === 401 && this.refreshTokenAction) {
+        if (!RequestInstance._queue.findRefreshTokenRequest()) {
+          return this.refreshTokenAction().then(() => {
+            this._retry = true;
+            return this.request();
+          });
+        } else if (!this._retry) {
+          this.retryRequest();
+        }
+      }
+
       const json = await response.json();
 
       const responseData = JSON.stringify({
@@ -112,8 +185,12 @@ export default class RequestInstance {
         instance: this,
       });
 
+      RequestInstance._queue.remove(this.uniqueRequestId);
+
       throw new Error(responseData);
     }
+
+    RequestInstance._queue.remove(this.uniqueRequestId);
 
     throw new Error('Server error');
   }

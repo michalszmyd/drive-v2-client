@@ -43,7 +43,7 @@ export default function SignInPage() {
         CurrentUserHelper.set({
           id: data.id,
           authenticationToken: data.authentication_token,
-          refreshAuthenticationToken: data.refres_authentication_token,
+          refreshAuthenticationToken: data.refresh_authentication_token,
         });
 
         const currentUser = await UsersService.me()

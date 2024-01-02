@@ -3,6 +3,7 @@ const SETTINGS = {
   API_ORIGIN: process.env.REACT_APP_API_ORIGIN,
   API_URL: process.env.REACT_APP_API_URL,
   API_PREFIX: process.env.REACT_APP_API_PREFIX,
+  DEVELOPMENT: process.env.NODE_ENV !== 'development',
 }
 
 export default SETTINGS;

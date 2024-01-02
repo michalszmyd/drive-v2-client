@@ -33,9 +33,11 @@ export default class ApiService {
   static async default({headers = {}}: {headers?: object} = {}): Promise<RequestInstance> {
     const baseUrl = `${SETTINGS.API_URL}/${API_PREFIX}`;
 
-    return new RequestInstance({
+    const requestInstance = new RequestInstance({
       baseUrl,
       headers,
     });
+
+    return requestInstance;
   }
 }
