@@ -109,4 +109,10 @@ export default class FoldersService {
 
     return new FolderModel(data);
   }
+
+  static async delete(folder: FolderModel) {
+    const instance = await AuthenticatedApiService.default();
+
+    return await instance.delete(`folders/${folder.id}`);
+  }
 }

@@ -127,6 +127,21 @@ export default function FolderPage() {
       });
   }
 
+  const onFolderDelete = () => {
+    FoldersService
+      .delete(folder)
+      .then(() => {
+        toast.success(`File '${folder.name}' removed.`);
+
+        navigate(-1);
+      })
+      .catch((e) => {
+        const {data} = JSON.parse(e.message);
+
+        toast.error(`Error: ${JSON.stringify(data)}`);
+      });
+  }
+
   return (
     <AuthenticatedRoute>
       <MainAppWrapper breadcrumbs={['Folder', folder.name]}>
@@ -140,7 +155,7 @@ export default function FolderPage() {
                 <CardExtraActions
                   editLinkTo={`/folders/${folder.id}/edit`}
                   manageActionsEnabled={folder.userId === currentUser?.id}
-                  deleteOnClick={() => {}}
+                  deleteOnClick={onFolderDelete}
                 />
               }
             >
