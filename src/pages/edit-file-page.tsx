@@ -36,12 +36,6 @@ export default function EditFilePage() {
     }
   }, [id]);
 
-  if (!file) {
-    return (
-      <NotFound />
-    )
-  }
-
   const buildBreadcrumbs = () => {
     if (file.folder) {
       return [
@@ -120,6 +114,12 @@ export default function EditFilePage() {
 
       return driveFile;
     })
+  }
+
+  if (!file.id && !isLoading) {
+    return (
+      <NotFound />
+    )
   }
 
   return (

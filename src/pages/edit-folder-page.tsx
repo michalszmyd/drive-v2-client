@@ -11,22 +11,17 @@ import FoldersService from "../services/folders-service";
 import NotFound from "../components/shared/not-found";
 
 export default function EditFolderPage() {
-  const [folder, setFolder] = useState<FolderModel | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [folder, setFolder] = useState<FolderModel>(new FolderModel());
 
   const {id} = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
-      FoldersService.find(id).then(setFolder);
+      FoldersService.find(id).then(setFolder).finally(() => setIsLoading(false));
     }
   }, [id]);
-
-  if (!folder) {
-    return (
-      <NotFound />
-    )
-  }
 
   const onChange = ({ target: { value, name }}: { target: { value: string; name: string }}) => {
     const newFolder = new FolderModel();
@@ -65,9 +60,15 @@ export default function EditFolderPage() {
     });
   }
 
+  if (!folder.id && !isLoading) {
+    return (
+      <NotFound />
+    )
+  }
+
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={['Folder', folder.name]}>
+      <MainAppWrapper isLoading={isLoading} breadcrumbs={['Folder', folder.name]}>
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Switch checkedChildren="Private" unCheckedChildren="Public" checked={folder.folderPrivate} onChange={onPrivateChange} />

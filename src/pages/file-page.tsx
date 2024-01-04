@@ -15,7 +15,7 @@ import NotFound from "../components/shared/not-found";
 
 export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [file, setFile] = useState<DriveFileModel | null>(null);
+  const [file, setFile] = useState<DriveFileModel>(new DriveFileModel());
 
   const {id} = useParams();
   const {currentUser} = useContext(CurrentUserContext);
@@ -29,12 +29,6 @@ export default function FilePage() {
         .finally(() => setIsLoading(false));
     }
   }, [id]);
-
-  if (!file) {
-    return (
-      <NotFound />
-    )
-  }
 
   const buildBreadcrumbs = () => {
     if (file.folder) {
@@ -69,6 +63,12 @@ export default function FilePage() {
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
+  }
+
+  if (!file.id && !isLoading) {
+    return (
+      <NotFound />
+    )
   }
 
   return (

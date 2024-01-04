@@ -19,7 +19,8 @@ import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
 
 export default function FolderPage() {
-  const [folder, setFolder] = useState<FolderModel | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [folder, setFolder] = useState<FolderModel>(new FolderModel());
   const [files, setFiles] = useState<DriveFileModel[]>([]);
   const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 20, total: 1});
   const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
@@ -30,11 +31,13 @@ export default function FolderPage() {
 
   useEffect(() => {
     if (id) {
-      FoldersService.find(id).then(setFolder);
+      FoldersService.find(id).then(setFolder).finally(() => setIsLoading(false));
       fetchDriveFiles()?.then(({records, pages}) => {
         setFiles(records);
         setPages(pages);
       });
+    } else {
+      setIsLoading(false);
     }
   }, [id]);
 
@@ -96,12 +99,6 @@ export default function FolderPage() {
     }
   }
 
-  if (!folder) {
-    return (
-      <NotFound />
-    )
-  }
-
   const onLoadMore = () => {
     const {currentPage, per} = pages;
 
@@ -143,9 +140,15 @@ export default function FolderPage() {
       });
   }
 
+  if (!folder.id && !isLoading) {
+    return (
+      <NotFound />
+    )
+  }
+
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={['Folder', folder.name]}>
+      <MainAppWrapper isLoading={isLoading} breadcrumbs={['Folder', folder.name]}>
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Descriptions
