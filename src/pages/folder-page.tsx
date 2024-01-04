@@ -16,6 +16,7 @@ import CardExtraActions from "../components/folders/card-extra-actions";
 import UploadingFileProgress from "../components/files/uploading-file-progress";
 import ArrayHelper from "../helpers/array-helper";
 import CurrentUserContext from "../contexts/current-user-context";
+import NotFound from "../components/shared/not-found";
 
 export default function FolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
@@ -97,7 +98,7 @@ export default function FolderPage() {
 
   if (!folder) {
     return (
-      <div>Not found</div>
+      <NotFound />
     )
   }
 

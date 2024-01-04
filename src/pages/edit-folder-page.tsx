@@ -8,6 +8,7 @@ import MainAppWrapper from "../components/main-app-wrapper";
 import FolderModel from "../models/folder-model";
 
 import FoldersService from "../services/folders-service";
+import NotFound from "../components/shared/not-found";
 
 export default function EditFolderPage() {
   const [folder, setFolder] = useState<FolderModel | null>(null);
@@ -23,7 +24,7 @@ export default function EditFolderPage() {
 
   if (!folder) {
     return (
-      <div>Not found</div>
+      <NotFound />
     )
   }
 

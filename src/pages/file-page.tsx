@@ -11,6 +11,7 @@ import { colors } from "../consts/colors";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import { toast } from "react-toastify";
 import CurrentUserContext from "../contexts/current-user-context";
+import NotFound from "../components/shared/not-found";
 
 export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,7 +32,7 @@ export default function FilePage() {
 
   if (!file) {
     return (
-      <span>Not found</span>
+      <NotFound />
     )
   }
 

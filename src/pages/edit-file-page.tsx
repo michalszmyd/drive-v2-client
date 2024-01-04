@@ -14,6 +14,7 @@ import FoldersService from "../services/folders-service";
 import FolderModel from "../models/folder-model";
 import ArrayHelper from "../helpers/array-helper";
 import RichTextEditor from "../components/shared/rich-text-editor";
+import NotFound from "../components/shared/not-found";
 
 export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -37,7 +38,7 @@ export default function EditFilePage() {
 
   if (!file) {
     return (
-      <span>Not found</span>
+      <NotFound />
     )
   }
 
