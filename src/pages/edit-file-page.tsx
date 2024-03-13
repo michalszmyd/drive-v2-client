@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space, Tooltip } from "antd";
+import { Badge, Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space, Tooltip } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -15,6 +15,8 @@ import FolderModel from "../models/folder-model";
 import ArrayHelper from "../helpers/array-helper";
 import RichTextEditor from "../components/shared/rich-text-editor";
 import NotFound from "../components/shared/not-found";
+import StringHelper from "../helpers/string-helper";
+import FileDescriptions from "../components/files/file-descriptions";
 
 export default function EditFilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -125,37 +127,31 @@ export default function EditFilePage() {
   return (
     <AuthenticatedRoute>
       <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()}>
-        <Descriptions bordered title={
-          <Input name="name" value={file.name} onChange={onChange} />
-        } extra={
-          <div className={styles.descriptionExtra}>
-            <Space>
-              <Popover content={
-                <div className={styles.popoverContent}>
-                  {moveToFolders.map((folder: FolderModel) => (
-                    <p>
-                      <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
-                    </p>
-                  ))}
-                </div>
-              } title="Move to folder" trigger="click">
-                <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
-              </Popover>
-              <Tooltip title="Save">
-                <Button icon={<CheckOutlined color={colors.green} />} shape="circle" onClick={onSave} />
-              </Tooltip>
-            </Space>
-          </div>
-        }>
-          <Descriptions.Item key={file.folderId || 'file-folder'} label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
-          <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
-          <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
-          <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
-          <Descriptions.Item label="Archived">{file.archived ? 'Yes' : 'No'}</Descriptions.Item>
-          <Descriptions.Item label="Private">{file.folder?.folderPrivate ? 'Yes' : 'No'}</Descriptions.Item>
-          <Descriptions.Item label="Created at">{file.createdAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{file.updatedAt}</Descriptions.Item>
-        </Descriptions>
+        <FileDescriptions
+          descriptionsParams={{
+            bordered: true,
+            title: <Input name="name" value={file.name} onChange={onChange} />,
+            extra: <div className={styles.descriptionExtra}>
+              <Space>
+                <Popover content={
+                  <div className={styles.popoverContent}>
+                    {moveToFolders.map((folder: FolderModel) => (
+                      <p>
+                        <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
+                      </p>
+                    ))}
+                  </div>
+                } title="Move to folder" trigger="click">
+                  <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
+                </Popover>
+                <Tooltip title="Save">
+                  <Button icon={<CheckOutlined color={colors.green} />} shape="circle" onClick={onSave} />
+                </Tooltip>
+              </Space>
+            </div>
+          }}
+          file={file}
+        />
         <div className={styles.container}>
           <Row gutter={[16, 16]}>
             <Col span={24}>

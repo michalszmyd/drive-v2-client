@@ -21,6 +21,7 @@ const DEFAULT_PARAMS = {
   user: null,
   created_at: '',
   updated_at: '',
+  hosting_source: null,
 }
 
 export default class DriveFileModel extends Model {
@@ -39,6 +40,7 @@ export default class DriveFileModel extends Model {
   createdAt: string;
   updatedAt: string;
   fileSourceName: string;
+  hostingSource: string | null;
 
   constructor({
     archived,
@@ -55,6 +57,7 @@ export default class DriveFileModel extends Model {
     user,
     created_at,
     updated_at,
+    hosting_source,
   }: {
     id: number | null;
     archived: boolean;
@@ -70,6 +73,7 @@ export default class DriveFileModel extends Model {
     user: null | any;
     created_at: string;
     updated_at: string;
+    hosting_source: string | null;
   } = DEFAULT_PARAMS) {
     super();
 
@@ -88,6 +92,7 @@ export default class DriveFileModel extends Model {
     this.vibrantColor = vibrant_color;
     this.folder = folder ? new FolderModel(folder) : null;
     this.user = user ? new UserModel(user) : null;
+    this.hostingSource = hosting_source;
   }
 
   get isImage() : boolean {

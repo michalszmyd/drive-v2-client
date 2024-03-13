@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Descriptions } from "antd";
+import { Badge, Descriptions } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -12,6 +12,8 @@ import CardExtraActions from "../components/folders/card-extra-actions";
 import { toast } from "react-toastify";
 import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
+import StringHelper from "../helpers/string-helper";
+import FileDescriptions from "../components/files/file-descriptions";
 
 export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -74,21 +76,21 @@ export default function FilePage() {
   return (
     <AuthenticatedRoute>
       <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()} >
-        <Descriptions title={file.name} bordered extra={
-          <CardExtraActions
-            sourceUrl={file.sourceUrl}
-            editLinkTo={`/files/${file.id}/edit`}
-            manageActionsEnabled={file.userId === currentUser?.id}
-            deleteOnClick={onFileDelete}
-          />
-        }>
-          <Descriptions.Item label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
-          <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
-          <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
-          <Descriptions.Item label="Archived">{file.archived ? 'Yes' : 'No'}</Descriptions.Item>
-          <Descriptions.Item label="Private">{file.folder?.folderPrivate ? 'Yes' : 'No'}</Descriptions.Item>
-          <Descriptions.Item label="Created at">{file.createdAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{file.updatedAt}</Descriptions.Item>
+        <FileDescriptions
+          file={file}
+          descriptionsParams={{
+            title: file.name,
+            bordered: true,
+            extra:
+              <CardExtraActions
+                sourceUrl={file.sourceUrl}
+                editLinkTo={`/files/${file.id}/edit`}
+                manageActionsEnabled={file.userId === currentUser?.id}
+                deleteOnClick={onFileDelete}
+              />
+          }}
+        />
+        <Descriptions>
         </Descriptions>
         <div className={styles.container}>
           <p dangerouslySetInnerHTML={{__html: file.body || ''}} />
