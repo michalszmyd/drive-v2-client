@@ -1,5 +1,5 @@
 import FolderModel from "./folder-model";
-import { resolveBaseURL } from "./helpers/methods";
+import { getFileExt, resolveBaseURL } from "./helpers/methods";
 import Model from "./model";
 import UserModel from "./user-model";
 
@@ -118,13 +118,6 @@ export default class DriveFileModel extends Model {
   get fileType(): null | string {
     const source = this.fileSourceName;
 
-    if (!source) {
-      return null;
-    }
-
-    const regex = /(?:\.([^.]+))?$/;
-    const result = regex.exec(source);
-
-    return result && result[1];
+    return getFileExt(source);
   }
 }
