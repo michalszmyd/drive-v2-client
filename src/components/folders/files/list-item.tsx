@@ -42,7 +42,7 @@ export function ListItem({
   const title = <b>{item.pinned && <Tag color="yellow">Pinned</Tag>}{item.name}</b>
 
   return (
-    <List.Item ref={cardItemRef}>
+    <List.Item className={styles.listItem} ref={cardItemRef}>
       <Card
         className={styles.card}
         ref={cardItemRef}
@@ -54,6 +54,7 @@ export function ListItem({
         hoverable
         extra={
           <CardExtraActions
+            sourceUrl={item.sourceUrl}
             editLinkTo={`/files/${item.id}/edit`}
             manageActionsEnabled={item.userId === currentUser?.id}
             deleteOnClick={onDelete}
@@ -78,6 +79,14 @@ export function ListItem({
 }
 
 const styles = {
+  listItem: css(
+    `
+      padding 0 !important;
+      @media (max-width:801px) {
+        padding 0 !important;
+      }
+    `
+  ),
   card: css({
     maxHeight: `${MAX_HEIGHT_CARD}px`,
     overflow: 'hidden',

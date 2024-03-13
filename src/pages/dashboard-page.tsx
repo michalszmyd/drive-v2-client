@@ -1,6 +1,6 @@
 import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
 import { Col, Divider, Image, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route"
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -9,6 +9,10 @@ import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";
 import { css } from "@emotion/css";
 import tableStyles from "../styles/table";
+import CardExtraActions from "../components/folders/card-extra-actions";
+import CurrentUserContext from "../contexts/current-user-context";
+import UserModel from "../models/user-model";
+import { colors } from "../consts/colors";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -25,6 +29,8 @@ export default function DashboardPage() {
   });
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  const {currentUser} = useContext(CurrentUserContext);
 
   const fetchData = ({page, per}: {page: number; per: number}) => {
     ItemsService
@@ -106,13 +112,14 @@ export default function DashboardPage() {
           <Col span={24}>
             <Image.PreviewGroup>
               <Table
+                scroll={{ x: '100%' }}
                 columns={tableHeader}
                 loading={isLoading}
                 onChange={onTableChange}
                 pagination={tableParams.pagination}
                 className={`${tableStyles.table} ${styles.table}`}
                 dataSource={items.map((item) => (
-                  ItemRow({item})
+                  ItemRow({item, currentUser})
                 ))}
               />
             </Image.PreviewGroup>
@@ -123,19 +130,17 @@ export default function DashboardPage() {
   );
 }
 
-function ItemRow({item}: {item: ItemModel}) {
+function ItemRow({item, currentUser}: {item: ItemModel, currentUser: UserModel | null}) {
   if (item.recordType === 'folder') {
     return              {
       key: item.id,
       type: <ItemLabel item={item} />,
       preview: <ItemPreview item={item} />,
       userName: item.userName,
-      name: <Link to={`/folders/${item.id}`}>{item.name}</Link>,
+      name: <Link className={styles.folderLink} to={`/folders/${item.id}`}>{item.name}</Link>,
       folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
       folder: <b>{item.folderId}</b>,
       pinned: <></>,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
     };
   }
 
@@ -145,10 +150,13 @@ function ItemRow({item}: {item: ItemModel}) {
     preview: <ItemPreview item={item} />,
     name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
     userName: item.userName,
-    folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
+    folderName: <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
     pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
+    actions: <CardExtraActions
+      manageActionsEnabled={currentUser?.id === item.userId}
+      sourceUrl={item.sourceUrl}
+      editLinkTo={`/files/${item.id}/edit`}
+    />
   }
 }
 
@@ -179,16 +187,17 @@ const styles = {
         border-radius: 10px;
       }
     }
-  `)
+  `),
+  folderLink: css({
+    fontWeight: 700,
+    color: colors.main,
+  }),
 }
 
 function ItemLabel({item}: {item: ItemModel}) {
   if (item.recordType === 'folder') {
     return (
-      <Space>
-        <FolderOpenOutlined />
-        <b>Folder</b>
-      </Space>
+      <FolderOpenOutlined />
     )
   }
 
@@ -229,13 +238,8 @@ const tableHeader = [
     key: 'pinned',
   },
   {
-    title: 'Created at',
-    dataIndex: 'createdAt',
-    key: 'createdAt'
-  },
-  {
-    title: 'Updated at',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt'
+    title: 'Actions',
+    dataIndex: 'actions',
+    key: 'actions'
   }
 ]

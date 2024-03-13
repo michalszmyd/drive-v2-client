@@ -22,7 +22,7 @@ export default function FolderPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [folder, setFolder] = useState<FolderModel>(new FolderModel());
   const [files, setFiles] = useState<DriveFileModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 20, total: 1});
+  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 9, total: 1});
   const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
 
   const {id} = useParams();
@@ -31,17 +31,22 @@ export default function FolderPage() {
 
   useEffect(() => {
     if (id) {
-      FoldersService.find(id).then(setFolder).finally(() => setIsLoading(false));
-      fetchDriveFiles()?.then(({records, pages}) => {
-        setFiles(records);
-        setPages(pages);
-      });
+      FoldersService.find(id)
+        .then((folder) => {
+          setFolder(folder);
+
+          fetchDriveFiles()?.then(({records, pages}) => {
+            setFiles(records);
+            setPages(pages);
+          });
+        })
+        .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
   }, [id]);
 
-  const fetchDriveFiles = ({page = 1, per = 20}: {page: number; per: number;} = {page: 1, per: 20}) => {
+  const fetchDriveFiles = ({page = 1, per = 9}: {page: number; per: number;} = {page: 1, per: 9}) => {
     if (id) {
       return DriveFilesService.folderFiles(id, {page, per}).then(({records, pages}) => {
         return {records, pages}
@@ -140,6 +145,10 @@ export default function FolderPage() {
       });
   }
 
+  const onFolderDownload = () => {
+    window.open(`http://localhost:3000/api/v1/folders/${folder.id}/download`, "_blank")
+  }
+
   if (!folder.id && !isLoading) {
     return (
       <NotFound />
@@ -159,6 +168,7 @@ export default function FolderPage() {
                 <CardExtraActions
                   editLinkTo={`/folders/${folder.id}/edit`}
                   manageActionsEnabled={folder.userId === currentUser?.id}
+                  downloadOnClick={onFolderDownload}
                   deleteOnClick={onFolderDelete}
                 />
               }
@@ -171,16 +181,16 @@ export default function FolderPage() {
             </Descriptions>
           </Col>
           {ArrayHelper.isAny(uploadingFiles) && (
-            <Col span={24} >
-            <Collapse defaultActiveKey={['uploading-1']}>
-              <Collapse.Panel header="Uploading files progress" key="uploading-1">
-                {uploadingFiles.map((uploadingFile) => (
-                  <Col span={24}>
-                    <UploadingFileProgress driveFileForm={uploadingFile} key={uploadingFile.uniqueId} />
-                  </Col>
-                ))}
-              </Collapse.Panel>
-            </Collapse>
+            <Col span={24}>
+              <Collapse defaultActiveKey={['uploading-1']}>
+                <Collapse.Panel header="Uploading files progress" key="uploading-1">
+                  {uploadingFiles.map((uploadingFile) => (
+                    <Col span={24}>
+                      <UploadingFileProgress driveFileForm={uploadingFile} key={uploadingFile.uniqueId} />
+                    </Col>
+                  ))}
+                </Collapse.Panel>
+              </Collapse>
             </Col>
           )}
           <Col span={24}>
@@ -191,12 +201,12 @@ export default function FolderPage() {
           <List
             style={{marginTop: 15}}
             grid={{
-              gutter: 16,
+              // gutter: 16,
               xs: 1,
               sm: 1,
-              md: 1,
+              md: 2,
               lg: 2,
-              xl: 3,
+              xl: 2,
               xxl: 3,
             }}
             dataSource={files}

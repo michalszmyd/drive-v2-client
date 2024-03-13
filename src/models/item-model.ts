@@ -1,4 +1,4 @@
-import { resolveBaseURL } from "./helpers/methods";
+import { getFileExt, resolveBaseURL } from "./helpers/methods";
 
 export enum ItemModelRecordType {
   Folder = 'folder',
@@ -19,6 +19,7 @@ export default class ItemModel {
   updatedAt: string;
   folderName: string | null;
   userName: string;
+  userId: number;
 
   constructor(
     {
@@ -27,6 +28,7 @@ export default class ItemModel {
       source_url,
       folder_id,
       user_name,
+      user_id,
       folder_name,
       pinned,
       record_type,
@@ -40,6 +42,7 @@ export default class ItemModel {
       pinned: boolean;
       folder_name: string | null;
       user_name: string;
+      user_id: number;
       record_type: ItemModelRecordType;
       updated_at: string;
       created_at: string;
@@ -47,9 +50,10 @@ export default class ItemModel {
   ) {
     this.id = id;
     this.name = name;
-    this.sourceUrl = resolveBaseURL(source_url) || "";
+    this.sourceUrl = source_url || "";
     this.folderName = folder_name;
     this.userName = user_name;
+    this.userId = user_id;
     this.folderId = folder_id || null;
     this.pinned = pinned;
     this.recordType = record_type;
@@ -76,13 +80,6 @@ export default class ItemModel {
   get fileType(): null | string {
     const source = this.sourceUrl;
 
-    if (!source) {
-      return null;
-    }
-
-    const regex = /(?:\.([^.]+))?$/;
-    const result = regex.exec(source);
-
-    return result && result[1];
+    return getFileExt(source);
   }
 }

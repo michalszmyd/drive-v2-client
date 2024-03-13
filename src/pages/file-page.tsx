@@ -76,13 +76,13 @@ export default function FilePage() {
       <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()} >
         <Descriptions title={file.name} bordered extra={
           <CardExtraActions
+            sourceUrl={file.sourceUrl}
             editLinkTo={`/files/${file.id}/edit`}
             manageActionsEnabled={file.userId === currentUser?.id}
             deleteOnClick={onFileDelete}
           />
         }>
           <Descriptions.Item label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
-          <Descriptions.Item label="Source" span={3}>{file.sourceUrl}</Descriptions.Item>
           <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
           <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
           <Descriptions.Item label="Archived">{file.archived ? 'Yes' : 'No'}</Descriptions.Item>

@@ -38,6 +38,7 @@ export default class DriveFileModel extends Model {
   user: UserModel | null;
   createdAt: string;
   updatedAt: string;
+  fileSourceName: string;
 
   constructor({
     archived,
@@ -79,7 +80,8 @@ export default class DriveFileModel extends Model {
     this.id = id;
     this.name = name;
     this.pinned = pinned;
-    this.sourceUrl = resolveBaseURL(source_url);
+    this.sourceUrl = source_url || '';
+    this.fileSourceName = resolveBaseURL(source_url) || '';
     this.userId = user_id;
     this.createdAt = created_at;
     this.updatedAt = updated_at;
@@ -109,7 +111,7 @@ export default class DriveFileModel extends Model {
   }
 
   get fileType(): null | string {
-    const source = this.sourceUrl;
+    const source = this.fileSourceName;
 
     if (!source) {
       return null;

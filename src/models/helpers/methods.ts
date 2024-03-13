@@ -8,3 +8,16 @@ export function resolveBaseURL(sourceUrl: string | null | undefined) : string | 
 
   return null;
 }
+
+export function getFileExt(filename: string | null | undefined) : string | null {
+  const source = resolveBaseURL(filename);
+
+  if (!source) {
+    return null;
+  }
+
+  const regex = /(?:\.([^.]+))?$/;
+  const result = regex.exec(source);
+
+  return result && result[1];
+}

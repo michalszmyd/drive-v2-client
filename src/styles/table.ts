@@ -2,13 +2,12 @@ import { css } from "@emotion/css";
 
 const tableStyles = {
   table: css(`
-    @media (max-width:801px)  {
-      overflow-x: scroll !important;
-      td * {
-        word-break: break-all !imporant;
-      }
-      tr * {
-        width: auto !imporant;
+    @media (max-width:1020px)  {
+      td.ant-table-cell {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 150px;
       }
     }
   `)
