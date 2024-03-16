@@ -8,7 +8,7 @@ const VideoExtensions = ['mp4', 'mp3', 'mpeg', 'm4a'];
 
 const DEFAULT_PARAMS = {
   id: null,
-  archived: false,
+  deleted_at: null,
   body: null,
   file_name: null,
   folder_id: null,
@@ -26,7 +26,7 @@ const DEFAULT_PARAMS = {
 
 export default class DriveFileModel extends Model {
   id: number | null;
-  archived: boolean;
+  deletedAt?: string | null;
   body: string | null;
   fileName: string | null;
   folderId: number | null;
@@ -43,7 +43,7 @@ export default class DriveFileModel extends Model {
   hostingSource: string | null;
 
   constructor({
-    archived,
+    deleted_at,
     body,
     file_name,
     folder_id,
@@ -60,7 +60,7 @@ export default class DriveFileModel extends Model {
     hosting_source,
   }: {
     id: number | null;
-    archived: boolean;
+    deleted_at: string | null;
     body: string | null;
     file_name: string | null;
     folder_id: number | null;
@@ -77,7 +77,7 @@ export default class DriveFileModel extends Model {
   } = DEFAULT_PARAMS) {
     super();
 
-    this.archived = archived;
+    this.deletedAt = deleted_at;
     this.body = body;
     this.fileName = file_name;
     this.folderId = folder_id;

@@ -1,4 +1,4 @@
-import { ApiOutlined, BankOutlined, FileProtectOutlined, FolderAddOutlined, FolderOpenOutlined, MenuUnfoldOutlined, MobileFilled, UserOutlined } from "@ant-design/icons";
+import { ApiOutlined, BankOutlined, CompassOutlined, ControlOutlined, DeleteOutlined, FolderAddOutlined, FolderOpenOutlined, MenuUnfoldOutlined, ProfileOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
 import { Breadcrumb, Button, Col, Drawer, Dropdown, Layout, Menu, MenuProps, Row, Space, Tag } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
@@ -58,7 +58,7 @@ export default function MainAppWrapper({
     {
       key: '1',
       label:  <Link to="/dashboard">My drive</Link>,
-      icon: <FileProtectOutlined />
+      icon: <CompassOutlined />
     },
     {
       key: '2',
@@ -100,21 +100,40 @@ export default function MainAppWrapper({
           label: <Link to="/applications/api-docs">API Docs</Link>
         }
       ]
+    },
+    {
+      key: '4',
+      label: <Link to="/deleted-files">Deleted Files</Link>,
+      icon: <DeleteOutlined />,
     }
   ]
 
   const adminPanelMenuItems = {
-    key: '4',
+    key: '5',
     label: 'Admin',
     icon: <BankOutlined />,
     children: [
       {
-        key: '4.1',
+        key: '5.1',
         label: <Link to="/admin/users">Users</Link>,
+        icon: <UserSwitchOutlined />,
       },
       {
-        key: '4.2',
+        key: '5.2',
         label: <Link to="/admin/applications">Applications</Link>,
+        icon: <ControlOutlined />,
+      },
+      {
+        key: '5.3',
+        label: 'Files',
+        icon: <ProfileOutlined />,
+        children: [
+          {
+            key: '5.3.1',
+            label:  <Link to="/admin/deleted-files">Deleted files</Link>,
+            icon: <DeleteOutlined />,
+          }
+        ]
       }
     ]
   }

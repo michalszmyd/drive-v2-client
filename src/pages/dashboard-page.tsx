@@ -1,5 +1,5 @@
 import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
-import { Col, Divider, Image, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
+import { Col, Divider, Image, Row, TablePaginationConfig, Tag } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route"
@@ -8,15 +8,12 @@ import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";
 import { css } from "@emotion/css";
-import tableStyles from "../styles/table";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import CurrentUserContext from "../contexts/current-user-context";
 import UserModel from "../models/user-model";
-import { colors } from "../consts/colors";
-
-interface TableParams {
-  pagination?: TablePaginationConfig;
-}
+import { colors, fileExtensionsColors } from "../consts/colors";
+import { ItemPreview } from "../components/files/item-preview";
+import TableItemsList, { TableParams } from "../components/files/table-list";
 
 export default function DashboardPage() {
   const [items, setItems] = useState<ItemModel[]>([]);
@@ -111,13 +108,11 @@ export default function DashboardPage() {
         <Row gutter={16}>
           <Col span={24}>
             <Image.PreviewGroup>
-              <Table
-                scroll={{ x: '100%' }}
+              <TableItemsList
                 columns={tableHeader}
-                loading={isLoading}
+                isLoading={isLoading}
                 onChange={onTableChange}
                 pagination={tableParams.pagination}
-                className={`${tableStyles.table} ${styles.table}`}
                 dataSource={items.map((item) => (
                   ItemRow({item, currentUser})
                 ))}
@@ -150,7 +145,15 @@ function ItemRow({item, currentUser}: {item: ItemModel, currentUser: UserModel |
     preview: <ItemPreview item={item} />,
     name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
     userName: item.userName,
-    folderName: <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
+    folderName:
+        item.folderId && (
+          <Tag color={colors.secondary}>
+            <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>
+              {item.folderName}
+            </Link>
+          </Tag>
+        )
+    ,
     pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
     actions: <CardExtraActions
       manageActionsEnabled={currentUser?.id === item.userId}
@@ -158,23 +161,6 @@ function ItemRow({item, currentUser}: {item: ItemModel, currentUser: UserModel |
       editLinkTo={`/files/${item.id}/edit`}
     />
   }
-}
-
-function ItemPreview({item}: {item: ItemModel}) {
-  if (!item.sourceUrl) {
-    return null;
-  }
-
-  if (item.isImage) {
-    return <Image
-      src={item.sourceUrl}
-    />
-  }
-  if (item.isVideo) {
-    return <video  src={item.sourceUrl} controls controlsList="play" />
-  }
-
-  return null;
 }
 
 const styles = {
@@ -189,38 +175,37 @@ const styles = {
     }
   `),
   folderLink: css({
-    fontWeight: 700,
-    color: colors.main,
+    fontWeight: 600,
   }),
 }
 
 function ItemLabel({item}: {item: ItemModel}) {
   if (item.recordType === 'folder') {
     return (
-      <FolderOpenOutlined />
+      <Tag>folder</Tag>
     )
   }
 
-  return (
-    <FileOutlined />
-  )
+  if (item.fileType) {
+    return (
+      <Tag color={fileExtensionsColors[item.fileType] || '#A4F5C5'}>{item.fileType}</Tag>
+    )
+  }
+
+  return <Tag color="#88878A">file</Tag>
 }
 
 const tableHeader = [
   {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
+    title: 'Preview',
+    dataIndex: 'preview',
+    key: 'preview',
+    align: 'center'
   },
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
-  },
-  {
-    title: 'Preview',
-    dataIndex: 'preview',
-    key: 'preview',
   },
   {
     title: 'Created by',
@@ -236,6 +221,11 @@ const tableHeader = [
     title: 'Pinned',
     dataIndex: 'pinned',
     key: 'pinned',
+  },
+  {
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
   },
   {
     title: 'Actions',

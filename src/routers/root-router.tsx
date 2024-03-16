@@ -19,6 +19,8 @@ import ApplicationsPage from "../pages/applications-page";
 import ApplicationsApiDocsPage from "../pages/applications-api-docs-page";
 import AdminApplicationsPage from "../pages/admin/applications-page";
 import SettingsPage from "../pages/settings-page";
+import DeletedFilesPage from "../pages/deleted-files-page";
+import AdminDeletedFilesPage from "../pages/admin/deleted-files-page";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +60,10 @@ const router = createBrowserRouter([
     element: <FoldersPage />
   },
   {
+    path: "/deleted-files",
+    element: <DeletedFilesPage />
+  },
+  {
     path: "/files/:id",
     element: <FilePage />
   },
@@ -84,7 +90,11 @@ const router = createBrowserRouter([
   {
     path: "/admin/applications",
     element: <AdminApplicationsPage />
-  }
+  },
+  {
+    path: "/admin/deleted-files",
+    element: <AdminDeletedFilesPage />
+  },
 ]);
 
 export default function RootRouter() {

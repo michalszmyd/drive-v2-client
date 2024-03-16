@@ -7,6 +7,17 @@ export const colors = {
   gray: '#eee',
   redDelete: '#EB234B',
   textBlack: '#0c0c0c',
+  warning: '#EB9B13',
+}
+
+export const fileExtensionsColors: {[key: string]: string} = {
+  png: '#F5D795',
+  jpg: '#F5DAA7',
+  jpeg: '#F5DAA7',
+  webm: '#9BEB4B',
+  jfif: '#F5A67B',
+  mp4: '#76AFF5',
+  m4a: '#67F580'
 }
 
 export const light = {

@@ -12,6 +12,42 @@ export default class DriveFilesService {
     return new DriveFileModel(data);
   }
 
+  static async deleted(
+    {
+      page,
+      per,
+    }: {
+      page: number;
+      per: number;
+    }
+  ): Promise<{
+    pages: ResponsePages,
+    records: DriveFileModel[],
+  }> {
+    const instance = await AuthenticatedApiService.default();
+    const params = new URLSearchParams({page: page.toString(), per: per.toString()});
+
+    const {
+      data: {
+        records,
+        pages,
+      }
+    } = await instance.get(`files/deleted?${params.toString()}`);
+
+    return {
+      pages: mapPagesToResponsePages(pages),
+      records: records.map((record: any) => new DriveFileModel(record)),
+    }
+  }
+
+  static async restore(id : number) {
+    const instance = await AuthenticatedApiService.default();
+
+    const {data} = await instance.put(`files/deleted/${id}/restore`);
+
+    return new DriveFileModel(data);
+  }
+
   static async create(form: FormData): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
