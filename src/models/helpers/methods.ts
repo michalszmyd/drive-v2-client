@@ -19,5 +19,5 @@ export function getFileExt(filename: string | null | undefined) : string | null 
   const regex = /(?:\.([^.]+))?$/;
   const result = regex.exec(source);
 
-  return result && result[1].toLowerCase();
+  return result && result[1]?.toLowerCase();
 }
