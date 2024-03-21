@@ -18,11 +18,13 @@ import ArrayHelper from "../helpers/array-helper";
 import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
 
+const PER_PAGE = 16;
+
 export default function FolderPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [folder, setFolder] = useState<FolderModel>(new FolderModel());
   const [files, setFiles] = useState<DriveFileModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 9, total: 1});
+  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: PER_PAGE, total: 1});
   const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
 
   const {id} = useParams();
@@ -46,7 +48,7 @@ export default function FolderPage() {
     }
   }, [id]);
 
-  const fetchDriveFiles = ({page = 1, per = 9}: {page: number; per: number;} = {page: 1, per: 9}) => {
+  const fetchDriveFiles = ({page = 1, per = PER_PAGE}: {page: number; per: number;} = {page: 1, per: PER_PAGE}) => {
     if (id) {
       return DriveFilesService.folderFiles(id, {page, per}).then(({records, pages}) => {
         return {records, pages}
@@ -146,7 +148,6 @@ export default function FolderPage() {
   }
 
   const onFolderDownload = () => {
-    window.open(`http://localhost:3000/api/v1/folders/${folder.id}/download`, "_blank")
   }
 
   if (!folder.id && !isLoading) {
@@ -197,32 +198,21 @@ export default function FolderPage() {
             <FileForm onSave={onFileFormSave} />
           </Col>
         </Row>
-        <Image.PreviewGroup>
-          <List
-            style={{marginTop: 15}}
-            grid={{
-              // gutter: 16,
-              xs: 1,
-              sm: 1,
-              md: 2,
-              lg: 2,
-              xl: 2,
-              xxl: 3,
-            }}
-            dataSource={files}
-            rowKey='id'
-            renderItem={(item) => (
-              <ListItem
-                onClick={onFilesClick}
-                onDelete={() => onFileDelete(item)}
-                item={item}
-              />
-            )}
-            loadMore={
-              <Button onClick={onLoadMore}>Load more</Button>
-            }
-          />
-        </Image.PreviewGroup>
+        <Row wrap align="middle" style={{marginTop: 24}} gutter={[12, 12]}>
+          <Image.PreviewGroup>
+            {files.map((item) => (
+              <Col flex={1} span={6} style={{height: '100%'}}>
+                <ListItem
+                  onClick={onFilesClick}
+                  onDelete={() => onFileDelete(item)}
+                  item={item}
+                />
+              </Col>
+            ))}
+
+          </Image.PreviewGroup>
+        </Row>
+        <Button onClick={onLoadMore}>Load more</Button>
       </MainAppWrapper>
     </AuthenticatedRoute>
   )

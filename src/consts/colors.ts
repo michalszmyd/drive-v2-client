@@ -1,6 +1,6 @@
 export const colors = {
-  main: '#6D50F2',
-  secondary: '#C550F2',
+  main: '#6973d0',
+  secondary: '#b0b6e7',
   white: '#fff',
   darkWhite: '#fafafa',
   green: '#57EB68',
@@ -20,15 +20,23 @@ export const fileExtensionsColors: {[key: string]: string} = {
   m4a: '#67F580'
 }
 
-export const light = {
+export type AppTheme = {
+  href: string;
+  background: string;
+  backgroundSecondary: string;
+  textColor: string;
+  linkColor: string;
+}
+
+export const light: AppTheme = {
   href: '#0c0c0c',
-  background: '#eaeaea',
-  backgroundSecondary: '#ddd',
+  background: '#eef2f9',
+  backgroundSecondary: '#F2F6FF',
   textColor: '#0c0c0c',
   linkColor: colors.main,
 }
 
-export const dark = {
+export const dark: AppTheme = {
   background: '#181818',
   href: '#fff',
   backgroundSecondary: '#121212',

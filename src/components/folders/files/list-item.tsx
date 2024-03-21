@@ -1,4 +1,4 @@
-import { Button, Card, List, Tag } from "antd";
+import { Button, Card, Tag } from "antd";
 import DriveFileModel from "../../../models/drive-file-model";
 import { ResolvePreview } from "../../files/resolve-preview";
 import CardExtraActions from "../card-extra-actions";
@@ -42,52 +42,43 @@ export function ListItem({
   const title = <b>{item.pinned && <Tag color="yellow">Pinned</Tag>}{item.name}</b>
 
   return (
-    <List.Item className={styles.listItem} ref={cardItemRef}>
-      <Card
-        className={styles.card}
-        ref={cardItemRef}
-        onClick={onCardClick}
-        cover={
-          <ResolvePreview item={item} />
-        }
-        title={title}
-        hoverable
-        extra={
-          <CardExtraActions
-            sourceUrl={item.sourceUrl}
-            editLinkTo={`/files/${item.id}/edit`}
-            manageActionsEnabled={item.userId === currentUser?.id}
-            deleteOnClick={onDelete}
-          />
-        }
-      >
-        <span
-          dangerouslySetInnerHTML={{__html: item.body || ''}}
+    <Card
+      className={styles.card}
+      ref={cardItemRef}
+      onClick={onCardClick}
+      cover={
+        <ResolvePreview item={item} />
+      }
+      title={title}
+      hoverable
+      extra={
+        <CardExtraActions
+          sourceUrl={item.sourceUrl}
+          editLinkTo={`/files/${item.id}/edit`}
+          manageActionsEnabled={item.userId === currentUser?.id}
+          deleteOnClick={onDelete}
         />
-        {
-          loadMore && (
-            <div className={styles.loadMore}>
-              <Button type="link" className={styles.loadMoreButton}>
-                Load more
-              </Button>
-            </div>
-          )
-        }
-      </Card>
-    </List.Item>
+      }
+    >
+      <span
+        dangerouslySetInnerHTML={{__html: item.body || ''}}
+      />
+      {
+        loadMore && (
+          <div className={styles.loadMore}>
+            <Button type="link" className={styles.loadMoreButton}>
+              Load more
+            </Button>
+          </div>
+        )
+      }
+    </Card>
   );
 }
 
 const styles = {
-  listItem: css(
-    `
-      padding 0 !important;
-      @media (max-width:801px) {
-        padding 0 !important;
-      }
-    `
-  ),
   card: css({
+    minHeight: 300,
     maxHeight: `${MAX_HEIGHT_CARD}px`,
     overflow: 'hidden',
   }),

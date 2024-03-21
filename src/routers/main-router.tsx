@@ -2,7 +2,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import DashboardPage from "../pages/dashboard-page";
+import DashboardPage from "../pages/activities-page";
 
 
 const router = createBrowserRouter([

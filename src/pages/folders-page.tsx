@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
-import FoldersList from "../components/folders/folders-list";
 import MainAppWrapper from "../components/main-app-wrapper";
-import FolderModel from "../models/folder-model";
 import { ResponsePages } from "../services/api-service";
 import FoldersService from "../services/folders-service";
+import useFolders from "../hooks/folders";
+import { Folders } from "../components/folders/folders";
 
 export default function FoldersPage() {
-  const [folders, setFolders] = useState<FolderModel[]>([]);
+  const [folders, setFolders, toggleFavorites] = useFolders();
   const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 40, total: 1});
   const navigate = useNavigate();
 
@@ -28,14 +28,10 @@ export default function FoldersPage() {
     });
   }
 
-  const onItemClick = (item: FolderModel) => {
-    navigate(`/folders/${item.id}`);
-  }
-
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={['Folders']}>
-        <FoldersList folders={folders} onItemClick={onItemClick} />
+      <MainAppWrapper breadcrumbs={['Folders']} title="Folders">
+        <Folders folders={folders} onFavoriteClick={toggleFavorites} />
       </MainAppWrapper>
     </AuthenticatedRoute>
   )

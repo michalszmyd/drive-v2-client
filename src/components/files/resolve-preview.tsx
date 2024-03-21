@@ -27,7 +27,7 @@ export function ResolvePreview({item}: {item: DriveFileModel}) {
 
 const styles = {
   videoPreview: css({
-    height: '100%',
+    maxHeight: '300px',
     width: 'auto',
     maxWidth: '100%',
   }),

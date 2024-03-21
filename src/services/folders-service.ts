@@ -30,6 +30,40 @@ export default class FoldersService {
     }
   }
 
+  static async favorites({
+    page,
+    per,
+  }: {
+    page: number;
+    per: number;
+  }): Promise<{
+    pages: ResponsePages,
+    records: FolderModel[],
+  }> {
+    const instance = await AuthenticatedApiService.default();
+    const params = new URLSearchParams({page: page.toString(), per: per.toString()});
+
+    const {
+      data: {
+        records,
+        pages,
+      }
+    } = await instance.get(`folders/favorites?${params.toString()}`);
+
+    return {
+      pages: mapPagesToResponsePages(pages),
+      records: records.map((record: any) => new FolderModel(record)),
+    }
+  }
+
+  static async toggleFavorites(folderId: string | number): Promise<boolean> {
+    const instance = await AuthenticatedApiService.default();
+
+    await instance.put(`folders/${folderId}/favorites`);
+
+    return true;
+  }
+
   static async me({
     page,
     per,

@@ -1,235 +1,71 @@
-import { FileOutlined, FolderOpenOutlined } from "@ant-design/icons";
-import { Col, Divider, Image, Row, TablePaginationConfig, Tag } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import AuthenticatedRoute from "../components/authenticated/authenticated-route"
+import { StarFilled, StarOutlined } from "@ant-design/icons";
+import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
-import ItemModel from "../models/item-model";
-import ItemsService from "../services/items-service";
-import Search from "antd/es/input/Search";
+import { Badge, Button, Col, Divider, Image, Row } from "antd";
+import {  useContext, useEffect, useState } from "react";
+import FoldersService from "../services/folders-service";
+import FolderModel from "../models/folder-model";
+import { Link } from "react-router-dom";
 import { css } from "@emotion/css";
-import CardExtraActions from "../components/folders/card-extra-actions";
+import ItemsService from "../services/items-service";
+import ItemModel from "../models/item-model";
+import TableItemsList from "../components/files/table-list";
+import { ItemRow, tableHeader } from "../components/activities/item-row";
 import CurrentUserContext from "../contexts/current-user-context";
-import UserModel from "../models/user-model";
-import { colors, fileExtensionsColors } from "../consts/colors";
-import { ItemPreview } from "../components/files/item-preview";
-import TableItemsList, { TableParams } from "../components/files/table-list";
+import { Folders } from "../components/folders/folders";
+import useFolders from "../hooks/folders";
 
 export default function DashboardPage() {
+  const [favoriteFolders, setFavoriteFolders, toggleFavorites] = useFolders([]);
   const [items, setItems] = useState<ItemModel[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [itemsLoading, setItemsLoading] = useState<boolean>(true);
 
   const {currentUser} = useContext(CurrentUserContext);
 
-  const fetchData = ({page, per}: {page: number; per: number}) => {
-    ItemsService
-      .all({page, per})
-      .then(({records, pages}) => {
-        setItems(records);
-        setTableParams({
-          pagination: {
-            current: pages.currentPage,
-            pageSize: pages.per,
-            total: pages.total,
-          }
-        })
-      }).finally(() => {
-        setIsLoading(false);
-      });
-  }
-
-  const fetchSearchData = ({page, per, query}: {page: number, per: number, query: string}) => {
-    setIsLoading(true);
-
-    ItemsService
-      .search({page, per, query})
-      .then(({records, pages}) => {
-        setItems(records);
-        setTableParams({
-          pagination: {
-            current: pages.currentPage,
-            pageSize: pages.per,
-            total: pages.total,
-          }
-        })
-      }).finally(() => {
-        setIsLoading(false);
-      });
-  }
-
-  const onTableChange = ({current, pageSize}: TablePaginationConfig) => {
-    const defaultParams = {
-      page: current || 1,
-      per: pageSize || 10
-    }
-
-    if (isSearching) {
-      return fetchSearchData({...defaultParams, query: searchQuery});
-    }
-
-    return fetchData(defaultParams);
-  }
-
-  const onSearch = () => {
-    setIsSearching(true);
-
-    fetchSearchData(
-      {page: 1, per: 10, query: searchQuery}
-    )
-  }
-
   useEffect(() => {
-    fetchData({page: 1, per: 10});
+    FoldersService
+      .favorites({page: 1, per: 30})
+      .then(({records}: {records: FolderModel[]}) => {
+        setFavoriteFolders(records)
+      });
+
+    ItemsService
+      .all({page: 1, per: 10})
+      .then(({records}) => {
+        setItems(records);
+      }).finally(() => {
+        setItemsLoading(false);
+      });
   }, []);
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title="Recent Files" breadcrumbs={['Dashboard']}>
-        <Divider orientation="left">Search Files</Divider>
-        <Row gutter={[16, 16]}>
-          <Col span={24}>
-            <Search
-              placeholder="input search text"
-              onSearch={onSearch}
-              enterButton
-              onChange={({target: {value}}) => setSearchQuery(value)}
-            />
-          </Col>
+      <MainAppWrapper title="Drive" breadcrumbs={['Dashboard']}>
+        <Divider orientation="left">Your favorite folders</Divider>
+        <Folders folders={favoriteFolders} onFavoriteClick={toggleFavorites} />
+        <Divider orientation="left">Recent files</Divider>
+        <Row justify="end">
+          <Link to="/activities">
+            <Button shape="round" className={styles.viewAllButton}>View all</Button>
+          </Link>
         </Row>
-        <Divider orientation="left">Files list</Divider>
-        <Row gutter={16}>
-          <Col span={24}>
-            <Image.PreviewGroup>
-              <TableItemsList
-                columns={tableHeader}
-                isLoading={isLoading}
-                onChange={onTableChange}
-                pagination={tableParams.pagination}
-                dataSource={items.map((item) => (
-                  ItemRow({item, currentUser})
-                ))}
-              />
-            </Image.PreviewGroup>
-          </Col>
-        </Row>
+        <Image.PreviewGroup>
+          <TableItemsList
+            columns={tableHeader}
+            isLoading={false}
+            dataSource={items.map((item) => (
+              ItemRow({item, currentUser})
+            ))}
+          />
+        </Image.PreviewGroup>
       </MainAppWrapper>
     </AuthenticatedRoute>
   );
 }
 
-function ItemRow({item, currentUser}: {item: ItemModel, currentUser: UserModel | null}) {
-  if (item.recordType === 'folder') {
-    return              {
-      key: item.id,
-      type: <ItemLabel item={item} />,
-      preview: <ItemPreview item={item} />,
-      userName: item.userName,
-      name: <Link className={styles.folderLink} to={`/folders/${item.id}`}>{item.name}</Link>,
-      folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
-      folder: <b>{item.folderId}</b>,
-      pinned: <></>,
-    };
-  }
-
-  return {
-    key: item.id,
-    type: <ItemLabel item={item} />,
-    preview: <ItemPreview item={item} />,
-    name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
-    userName: item.userName,
-    folderName:
-        item.folderId && (
-          <Tag color={colors.secondary}>
-            <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>
-              {item.folderName}
-            </Link>
-          </Tag>
-        )
-    ,
-    pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
-    actions: <CardExtraActions
-      manageActionsEnabled={currentUser?.id === item.userId}
-      sourceUrl={item.sourceUrl}
-      editLinkTo={`/files/${item.id}/edit`}
-    />
-  }
-}
-
 const styles = {
-  table: css(`
-    img, .ant-image-mask, video {
-      max-height: 100px;
-      max-width: 100px;
-      border-radius: 10px;
-      .ant-image-mask {
-        border-radius: 10px;
-      }
-    }
-  `),
-  folderLink: css({
-    fontWeight: 600,
+  viewAllButton: css({
+    backgroundColor: 'transparent',
+    marginBottom: 14,
   }),
 }
-
-function ItemLabel({item}: {item: ItemModel}) {
-  if (item.recordType === 'folder') {
-    return (
-      <Tag>folder</Tag>
-    )
-  }
-
-  if (item.fileType) {
-    return (
-      <Tag color={fileExtensionsColors[item.fileType] || '#A4F5C5'}>{item.fileType}</Tag>
-    )
-  }
-
-  return <Tag color="#88878A">file</Tag>
-}
-
-const tableHeader = [
-  {
-    title: 'Preview',
-    dataIndex: 'preview',
-    key: 'preview',
-    align: 'center'
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Created by',
-    dataIndex: 'userName',
-    key: 'userName',
-  },
-  {
-    title: 'Folder',
-    dataIndex: 'folderName',
-    key: 'folderName',
-  },
-  {
-    title: 'Pinned',
-    dataIndex: 'pinned',
-    key: 'pinned',
-  },
-  {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
-  },
-  {
-    title: 'Actions',
-    dataIndex: 'actions',
-    key: 'actions'
-  }
-]

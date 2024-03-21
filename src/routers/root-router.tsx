@@ -6,6 +6,7 @@ import {
 import WelcomePage from '../pages/welcome-page';
 import SignInPage from '../pages/sign-in-page';
 import ResetPasswordPage from '../pages/reset-password-page';
+import ActivitiesPage from '../pages/activities-page';
 import DashboardPage from '../pages/dashboard-page';
 import MyFolders from '../pages/my-folders';
 import FolderPage from '../pages/folder-page';
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardPage />
+  },
+  {
+    path: "/activities",
+    element: <ActivitiesPage />
   },
   {
     path: "/profile",

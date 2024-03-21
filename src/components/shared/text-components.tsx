@@ -21,8 +21,12 @@ export function H2({children}: {children: string | React.ReactElement}) {
 const styles = {
   h1: css({
     fontSize: '24px',
+    fontWeight: 200,
+    marginTop: 0,
   }),
   h2: css({
     fontSize: '16px',
+    fontWeight: 200,
+    marginTop: 0,
   }),
 }

@@ -1,11 +1,43 @@
 import { Table} from "antd"
 import {TablePaginationConfig } from "antd/es/table"
-import { colors } from "../../consts/colors";
+import { colors, resolveThemeColor } from "../../consts/colors";
 import { css } from "@emotion/css";
 import tableStyles from "../../styles/table";
+import { useContext } from "react";
+import ThemeContext from "../../contexts/theme-context";
 
 export interface TableParams {
   pagination?: TablePaginationConfig;
+}
+
+export default function TableItemsList({
+  columns,
+  isLoading,
+  onChange = () => {},
+  pagination = false,
+  dataSource,
+}: {
+  columns: any;
+  isLoading: boolean;
+  onChange?: ({ current, pageSize }: TablePaginationConfig) => void;
+  pagination?: TableParams["pagination"] | false;
+  dataSource: any;
+
+}) {
+  const {theme} = useContext(ThemeContext);
+  const themeColors = resolveThemeColor(theme);
+
+  return <Table
+    size="middle"
+    scroll={{ x: '100%' }}
+    columns={columns}
+    loading={isLoading}
+    rowClassName={styles.row(themeColors.backgroundSecondary)}
+    onChange={onChange}
+    pagination={pagination}
+    className={`${tableStyles.table} ${styles.table}`}
+    dataSource={dataSource}
+  />
 }
 
 const styles = {
@@ -26,30 +58,7 @@ const styles = {
     fontWeight: 700,
     color: colors.main,
   }),
-}
-
-export default function TableItemsList({
-  columns,
-  isLoading,
-  onChange,
-  pagination,
-  dataSource,
-}: {
-  columns: any;
-  isLoading: boolean;
-  onChange: ({ current, pageSize }: TablePaginationConfig) => void;
-  pagination: TableParams["pagination"];
-  dataSource: any;
-
-}) {
-  return <Table
-    size="middle"
-    scroll={{ x: '100%' }}
-    columns={columns}
-    loading={isLoading}
-    onChange={onChange}
-    pagination={pagination}
-    className={`${tableStyles.table} ${styles.table}`}
-    dataSource={dataSource}
-  />
+  row: (color: string) => css({
+    backgroundColor: color,
+  }),
 }

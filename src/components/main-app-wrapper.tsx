@@ -1,11 +1,11 @@
-import { ApiOutlined, BankOutlined, CompassOutlined, ControlOutlined, DeleteOutlined, FolderAddOutlined, FolderOpenOutlined, MenuUnfoldOutlined, ProfileOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { ApiOutlined, BankOutlined, CompassOutlined, ControlOutlined, DeleteOutlined, FolderAddOutlined, FolderOpenOutlined, LeftOutlined, MenuUnfoldOutlined, ProfileOutlined, RightOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { Breadcrumb, Button, Col, Drawer, Dropdown, Layout, Menu, MenuProps, Row, Space, Tag } from "antd";
+import { Breadcrumb, Button, Col, Drawer, Dropdown, Input, Layout, Menu, MenuProps, Row, Space, Switch, Tag } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { colors, resolveThemeColor, Theme } from "../consts/colors";
+import { AppTheme, colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
 import FolderModel from "../models/folder-model";
@@ -66,7 +66,7 @@ export default function MainAppWrapper({
       children: [
         {
           key: '2.1',
-          label: <Link to="/folders">All folders</Link>
+          label: <Link to="/folders">Folders</Link>
         },
         {
           key: '2.2',
@@ -144,58 +144,76 @@ export default function MainAppWrapper({
     <ThemeContext.Provider value={{theme, setTheme: toggleTheme}}>
       <CreateFolderModalForm onCreate={onCreateFolder} opened={isCreateFolderModalOpened} onCloseModal={closeModal} />
       <Layout style={{display: 'flex', flex: 1, minHeight: '100vh'}}>
-        <Header className="header light">
-          <Row justify="center" align="middle">
-            <Col span={12} className={styles.menuLeft}>
-              <img className={styles.logoImage} src="/favicon.ico" alt="image" />
-            </Col>
-            <Col span={12} className={styles.menuRight}>
-              <Dropdown menu={{ items: [
-                {
-                  key: 'menu-right-profile-1',
-                  label: <Link to="/profile">My profile</Link>
-                },
-                {
-                  key: 'menu-right-logout-2',
-                  label: <Link to="/settings">Settings</Link>
-                },
-                {
-                  key: 'menu-right-logout-3',
-                  label: <Link to="/profile">Log out</Link>
-                }
-              ] }} placement="bottom" arrow>
-                <Button type="primary" shape="circle" className={styles.avatar} size="large" icon={<UserOutlined />} />
-              </Dropdown>
-              <div style={{justifyContent: 'right', alignItems: 'right'}}>
-              </div>
-            </Col>
-          </Row>
-        </Header>
-        <Layout>
-          <Leftbar
-            theme={theme}
-            leftBarMenuCollapsed={leftBarMenuCollapsed}
-            setLeftBarMenuCollapsed={setLeftBarMenuCollapsed}
-            lowerMenuItems={lowerMenuItems}
-          />
-          <Layout style={{ background: themeColors.backgroundSecondary, padding: '0 14px 14px', flex: 1, display: 'flex' }}>
+        <Leftbar
+          theme={theme}
+          leftBarMenuCollapsed={leftBarMenuCollapsed}
+          setLeftBarMenuCollapsed={setLeftBarMenuCollapsed}
+          lowerMenuItems={lowerMenuItems}
+        />
+        <Layout style={{ background: themeColors.background, padding: '0 14px 0', flex: 1, display: 'flex', }}>
+          <AppHeader
+            theme={themeColors}
+            // rightMenuChildren={<Switch onChange={toggleTheme} checkedChildren="Light" unCheckedChildren="Dark" />}
+          >
             <Breadcrumb style={{ margin: '16px 0' }}>
               {breadcrumbs.map((breadcrumb) => (
                 <BreadcrumbItem breadcrumbItem={breadcrumb} />
               ))}
             </Breadcrumb>
-            <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
-              {title && <H1>{title}</H1>}
-              {isLoading ? <Loading color={colors.textBlack} /> : children}
-            </Content>
-            <MobileOnlyView>
-              <OverflowButton onClick={() => setLeftBarMenuCollapsed(true)} icon={<MenuUnfoldOutlined />} />
-            </MobileOnlyView>
-          </Layout>
+          </AppHeader>
+          <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
+            {title && <H1>{title}</H1>}
+            {isLoading ? <Loading color={colors.textBlack} /> : children}
+          </Content>
+          <MobileOnlyView>
+            <OverflowButton onClick={() => setLeftBarMenuCollapsed(true)} icon={<MenuUnfoldOutlined />} />
+          </MobileOnlyView>
         </Layout>
       </Layout>
     </ThemeContext.Provider>
   );
+}
+
+function AppHeader({theme, children, rightMenuChildren}: {theme: AppTheme, children?: React.ReactNode, rightMenuChildren?: React.ReactNode}) {
+  return (
+    <Header style={{ padding: '0 24px 0 0', backgroundColor: theme.background}}>
+      <Row justify="start" align="middle">
+        <Col span={8} className={styles.menuLeft}>
+          {children ? children : (
+            <Space>
+              <Button shape="circle" type="link">
+                <LeftOutlined />
+              </Button>
+              <Button type="link">
+                <RightOutlined />
+              </Button>
+            </Space>
+          )}
+        </Col>
+        <Col span={24} className={styles.menuRight}>
+          <Space>
+            {rightMenuChildren}
+            <Dropdown menu={{ items: [
+              {
+                key: 'menu-right-profile-1',
+                label: <Link to="/profile">My profile</Link>
+              },
+              {
+                key: 'menu-right-logout-2',
+                label: <Link to="/settings">Settings</Link>
+              },
+              {
+                key: 'menu-right-logout-3',
+                label: <Link to="/profile">Log out</Link>
+              }
+            ] }} placement="bottom" arrow>
+              <Button type="primary" shape="circle" className={styles.avatar} size="large" icon={<UserOutlined />} />
+            </Dropdown>
+          </Space>
+        </Col>
+      </Row>
+    </Header>
+  )
 }
 
 function BreadcrumbItem({
@@ -214,7 +232,6 @@ function BreadcrumbItem({
       {
         breadcrumbItem.href ? <Link to={breadcrumbItem.href}>{breadcrumbItem.title}</Link> : breadcrumbItem.title
       }
-
     </Breadcrumb.Item>
   )
 }
@@ -233,12 +250,21 @@ function Leftbar({
   if (!isMobile) {
     return (
       <Sider theme={theme} width={200} collapsible collapsed={leftBarMenuCollapsed} onCollapse={setLeftBarMenuCollapsed}>
+        <Row justify="center" align="middle">
+          <Col>
+            <ul style={{border: 0}} className="ant-menu ant-menu-root ant-menu-inline ant-menu-light css-dev-only-do-not-override-acm2ia">
+              <li>
+                <img className={styles.logoImage} src="/favicon.ico" alt="image" />
+              </li>
+            </ul>
+          </Col>
+        </Row>
         <Menu
           theme={theme}
           mode="inline"
           defaultSelectedKeys={['1']}
           defaultOpenKeys={['sub1']}
-          style={{ height: '100%', borderRight: 0 }}
+          style={{ borderRight: 0 }}
           items={lowerMenuItems}
         />
       </Sider>
@@ -267,13 +293,8 @@ function Leftbar({
 
 const styles = {
   content: css(`
-    padding: 24px;
-    margin: 0;
+    padding: 0 12px;
     min-height: 280px;
-    background: ${colors.white};
-    -webkit-box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
-    -moz-box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
-    box-shadow: 0px 0px 26px -16px rgba(66, 68, 90, 1);
   `),
   menuRight: css({
     justifyContent: 'right',
@@ -285,7 +306,7 @@ const styles = {
     width: '64px',
     height: '64px',
     justifyContent: 'center',
-    padding: '10px',
+    padding: '12px',
   }),
   menuLeft: css({
     justifyContent: 'left',

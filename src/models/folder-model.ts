@@ -16,6 +16,7 @@ const DEFAULT_ATTRIBUTES = {
   drive_files_count: 0,
   user_name: null,
   user: {id: null, name: ""},
+  favorite: false,
 }
 
 export default class FolderModel extends Model {
@@ -29,6 +30,7 @@ export default class FolderModel extends Model {
   driveFilesCount: number | null;
   userName: string | null;
   user: UserModel;
+  favorite: boolean;
 
   constructor({
     id,
@@ -41,6 +43,7 @@ export default class FolderModel extends Model {
     drive_files_count,
     user_name,
     user = {id: null, name: ""},
+    favorite = false,
   }: {
     id: number | null;
     name: string;
@@ -52,6 +55,7 @@ export default class FolderModel extends Model {
     drive_files_count: number | null;
     user_name: string | null;
     user?: {id: number | null; name: string};
+    favorite: boolean;
   } = DEFAULT_ATTRIBUTES) {
     super();
 
@@ -62,6 +66,7 @@ export default class FolderModel extends Model {
     this.parentFolderId = parent_folder_id;
     this.updatedAt = updated_at;
     this.createdAt = created_at;
+    this.favorite = favorite;
     this.userName = user_name;
     this.driveFilesCount = drive_files_count || 0;
     this.user = new UserModel(user);
