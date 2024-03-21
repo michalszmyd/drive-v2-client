@@ -8,6 +8,8 @@ import Search from "antd/es/input/Search";
 import CurrentUserContext from "../contexts/current-user-context";
 import TableItemsList, { TableParams } from "../components/files/table-list";
 import { ItemRow, tableHeader } from "../components/activities/item-row";
+import { useSearchParams } from "react-router-dom";
+import StringHelper from "../helpers/string-helper";
 
 export default function ActivitiesPage() {
   const [items, setItems] = useState<ItemModel[]>([]);
@@ -20,6 +22,8 @@ export default function ActivitiesPage() {
   });
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  const [params] = useSearchParams();
 
   const {currentUser} = useContext(CurrentUserContext);
 
@@ -81,8 +85,14 @@ export default function ActivitiesPage() {
   }
 
   useEffect(() => {
-    fetchData({page: 1, per: 10});
-  }, []);
+    const querySearch = params.get("q");
+
+    if (querySearch && StringHelper.isPresent(querySearch)) {
+      fetchSearchData({page: 1, per: 10, query: querySearch})
+    } else {
+      fetchData({page: 1, per: 10});
+    }
+  }, [params]);
 
   return (
     <AuthenticatedRoute>

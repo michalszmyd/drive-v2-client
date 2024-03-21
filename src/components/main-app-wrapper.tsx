@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Col, Drawer, Dropdown, Input, Layout, Menu, MenuPro
 import { Content, Header } from "antd/es/layout/layout";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AppTheme, colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
@@ -138,7 +138,7 @@ export default function MainAppWrapper({
     ]
   }
 
-  currentUser?.admin && lowerMenuItems.push(adminPanelMenuItems)
+  currentUser?.admin && lowerMenuItems.push(adminPanelMenuItems);
 
   return (
     <ThemeContext.Provider value={{theme, setTheme: toggleTheme}}>
@@ -153,13 +153,16 @@ export default function MainAppWrapper({
         <Layout style={{ background: themeColors.background, padding: '0 14px 0', flex: 1, display: 'flex', }}>
           <AppHeader
             theme={themeColors}
-            // rightMenuChildren={<Switch onChange={toggleTheme} checkedChildren="Light" unCheckedChildren="Dark" />}
+            // rightMenuChildren={
+            // }
           >
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              {breadcrumbs.map((breadcrumb) => (
-                <BreadcrumbItem breadcrumbItem={breadcrumb} />
-              ))}
-            </Breadcrumb>
+            <Space>
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                {breadcrumbs.map((breadcrumb) => (
+                  <BreadcrumbItem breadcrumbItem={breadcrumb} />
+                ))}
+              </Breadcrumb>
+            </Space>
           </AppHeader>
           <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
             {title && <H1>{title}</H1>}
@@ -174,11 +177,30 @@ export default function MainAppWrapper({
   );
 }
 
+function Search() {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const [q, setQ] = useState<string>(params.get("q") || "");
+
+  const onSubmit = () => {
+    navigate(`/activities?q=${q}`);
+  }
+
+  return (
+    <Input.Search
+      value={q}
+      placeholder="Type to search"
+      onChange={({target: {value}}) => setQ(value)}
+      onSearch={onSubmit}
+    />
+  )
+}
+
 function AppHeader({theme, children, rightMenuChildren}: {theme: AppTheme, children?: React.ReactNode, rightMenuChildren?: React.ReactNode}) {
   return (
     <Header style={{ padding: '0 24px 0 0', backgroundColor: theme.background}}>
       <Row justify="start" align="middle">
-        <Col span={8} className={styles.menuLeft}>
+        <Col span={6} className={styles.menuLeft}>
           {children ? children : (
             <Space>
               <Button shape="circle" type="link">
@@ -190,7 +212,10 @@ function AppHeader({theme, children, rightMenuChildren}: {theme: AppTheme, child
             </Space>
           )}
         </Col>
-        <Col span={24} className={styles.menuRight}>
+        <Col style={{display: 'flex'}} span={14}>
+          <Search />
+        </Col>
+        <Col span={4} className={styles.menuRight}>
           <Space>
             {rightMenuChildren}
             <Dropdown menu={{ items: [

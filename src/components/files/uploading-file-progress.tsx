@@ -25,8 +25,6 @@ export default function UploadingFileProgress({driveFileForm}: {driveFileForm: D
   useEffect(() => {
     updateProgressPercentage(progressPerecentage);
 
-    console.log({driveFileForm});
-
     switch(driveFileForm.uploadingStatus) {
       case UploadingStatus.SUCCESS:
         setProgressPercentage(100);
