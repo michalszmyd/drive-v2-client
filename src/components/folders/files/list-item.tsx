@@ -15,7 +15,7 @@ export function ListItem({
   onDelete,
 }: {
   item: DriveFileModel;
-  onClick: (item: DriveFileModel, event: any) => void;
+  onClick: (item: DriveFileModel, event: React.SyntheticEvent) => void;
   onDelete: () => void;
 }) {
   const cardItemRef = useRef<HTMLDivElement>(null);

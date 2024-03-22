@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import {
-  Badge,
   Button,
   Checkbox,
   Col,
-  Descriptions,
   Input,
   Popover,
   Row,
@@ -26,7 +24,6 @@ import FolderModel from "../models/folder-model";
 import ArrayHelper from "../helpers/array-helper";
 import RichTextEditor from "../components/shared/rich-text-editor";
 import NotFound from "../components/shared/not-found";
-import StringHelper from "../helpers/string-helper";
 import FileDescriptions from "../components/files/file-descriptions";
 
 export default function EditFilePage() {

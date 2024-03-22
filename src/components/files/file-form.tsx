@@ -27,26 +27,28 @@ export default function FileForm({
   ]);
   const [showPreview, setShowPreview] = useState<boolean>(true);
 
-  const onPaste = (event: any) => {
-    const items = event.clipboardData?.items;
-
-    if (!items) return;
-
-    for (const index in items) {
-      const item = items[index];
-
-      if (item.kind === "file") {
-        const blob = item.getAsFile();
-        const up = new UploadFile({
-          file: blob,
-        });
-
-        onPushFile([up]);
-      }
-    }
-  };
-
   useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items;
+
+      if (!items) return;
+
+      for (const index in items) {
+        const item = items[index];
+
+        if (item.kind === "file") {
+          const blob = item.getAsFile();
+          if (blob) {
+            const up = new UploadFile({
+              file: blob,
+            });
+
+            onPushFile([up]);
+          }
+        }
+      }
+    };
+
     window.addEventListener("paste", onPaste);
 
     return () => {

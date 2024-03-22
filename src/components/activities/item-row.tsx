@@ -7,45 +7,6 @@ import { ItemPreview } from "../files/item-preview";
 import { colors, fileExtensionsColors } from "../../consts/colors";
 import { css } from "@emotion/css";
 
-export const tableHeader = [
-  {
-    title: "Preview",
-    dataIndex: "preview",
-    key: "preview",
-    align: "center",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Created by",
-    dataIndex: "userName",
-    key: "userName",
-  },
-  {
-    title: "Folder",
-    dataIndex: "folderName",
-    key: "folderName",
-  },
-  {
-    title: "Pinned",
-    dataIndex: "pinned",
-    key: "pinned",
-  },
-  {
-    title: "Type",
-    dataIndex: "type",
-    key: "type",
-  },
-  {
-    title: "Actions",
-    dataIndex: "actions",
-    key: "actions",
-  },
-];
-
 export function ItemRow({
   item,
   currentUser,

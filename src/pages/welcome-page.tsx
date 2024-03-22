@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { css } from "@emotion/css";
 import { colors } from "../consts/colors";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,10 +11,10 @@ export default function WelcomePage() {
   const { currentUser } = useContext(CurrentUserContext);
 
   useEffect(() => {
-    if (CurrentUserContext) {
+    if (currentUser) {
       navigate("/dashboard");
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   return (
     <PageWrapper className={styles.container}>

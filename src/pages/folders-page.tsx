@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
 import { ResponsePages } from "../services/api-service";
@@ -15,10 +14,10 @@ export default function FoldersPage() {
     per: 40,
     total: 1,
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchFolders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchFolders = () => {

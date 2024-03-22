@@ -247,7 +247,7 @@ export default function ApplicationsPage() {
             key="application-status"
             title="Status"
             dataIndex="status"
-            render={(_: any, record: ApplicationModel) => (
+            render={(_: string, record: ApplicationModel) => (
               <StatusTag status={record.status} />
             )}
           />
@@ -285,7 +285,7 @@ export default function ApplicationsPage() {
           <Column
             title="Action"
             key="action"
-            render={(_: any, record: ApplicationModel) => (
+            render={(_: string, record: ApplicationModel) => (
               <Space size="middle">
                 <Popover title="Recreate private key">
                   <Button

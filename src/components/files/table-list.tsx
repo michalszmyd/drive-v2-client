@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import { TablePaginationConfig } from "antd/es/table";
+import { TablePaginationConfig, TableProps } from "antd/es/table";
 import { colors, resolveThemeColor } from "../../consts/colors";
 import { css } from "@emotion/css";
 import tableStyles from "../../styles/table";
@@ -17,11 +17,12 @@ export default function TableItemsList({
   pagination = false,
   dataSource,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: any;
   isLoading: boolean;
   onChange?: ({ current, pageSize }: TablePaginationConfig) => void;
   pagination?: TableParams["pagination"] | false;
-  dataSource: any;
+  dataSource: TableProps["dataSource"];
 }) {
   const { theme } = useContext(ThemeContext);
   const themeColors = resolveThemeColor(theme);

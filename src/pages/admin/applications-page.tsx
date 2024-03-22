@@ -11,7 +11,6 @@ import {
 } from "antd";
 import Column from "antd/es/table/Column";
 import {
-  ApiOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
   DeleteOutlined,
@@ -26,7 +25,6 @@ import ApplicationModel, {
 import AdminApplicationsService from "../../services/admin-applications-service";
 import AuthenticatedAdminRoute from "../../components/authenticated/authenticated-admin-route";
 import MainAppWrapper from "../../components/main-app-wrapper";
-import CreateApplicationModal from "../../components/applications/create-application-modal";
 import { H1 } from "../../components/shared/text-components";
 import tableStyles from "../../styles/table";
 
@@ -195,7 +193,7 @@ export default function AdminApplicationsPage() {
             key="application-status"
             title="Status"
             dataIndex="status"
-            render={(_: any, record: ApplicationModel) => (
+            render={(_: string, record: ApplicationModel) => (
               <StatusTag status={record.status} />
             )}
           />
@@ -234,7 +232,7 @@ export default function AdminApplicationsPage() {
           <Column
             title="Action"
             key="action"
-            render={(_: any, record: ApplicationModel) => (
+            render={(_: string, record: ApplicationModel) => (
               <Space size="middle">
                 <Popover title="Toggle app status">
                   <Button

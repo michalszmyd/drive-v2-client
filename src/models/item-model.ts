@@ -1,4 +1,4 @@
-import { getFileExt, resolveBaseURL } from "./helpers/methods";
+import { getFileExt } from "./helpers/methods";
 
 export enum ItemModelRecordType {
   Folder = "folder",
@@ -7,6 +7,20 @@ export enum ItemModelRecordType {
 
 const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
 const VideoExtensions = ["mp4"];
+
+export type ItemModelInit = {
+  id: number;
+  name: string;
+  source_url: string;
+  folder_id?: number | null;
+  pinned: boolean;
+  folder_name: string | null;
+  user_name: string;
+  user_id: number;
+  record_type: ItemModelRecordType;
+  updated_at: string;
+  created_at: string;
+};
 
 export default class ItemModel {
   id: number;
@@ -33,19 +47,7 @@ export default class ItemModel {
     record_type,
     updated_at,
     created_at,
-  }: {
-    id: number;
-    name: string;
-    source_url: string;
-    folder_id?: number | null;
-    pinned: boolean;
-    folder_name: string | null;
-    user_name: string;
-    user_id: number;
-    record_type: ItemModelRecordType;
-    updated_at: string;
-    created_at: string;
-  }) {
+  }: ItemModelInit) {
     this.id = id;
     this.name = name;
     this.sourceUrl = source_url || "";

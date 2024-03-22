@@ -1,5 +1,5 @@
-import { Button, Col, Collapse, Descriptions, Image, List, Row } from "antd";
-import { useContext, useEffect, useState } from "react";
+import { Button, Col, Collapse, Descriptions, Image, Row } from "antd";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
@@ -55,6 +55,7 @@ export default function FolderPage() {
     } else {
       setIsLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchDriveFiles = (
@@ -74,10 +75,14 @@ export default function FolderPage() {
 
   const onFilesClick = (
     item: DriveFileModel,
-    { target: { className } }: { target: { className: string } },
+    { target }: React.SyntheticEvent,
   ) => {
-    if (!className.includes("image")) {
-      navigate(`/files/${item.id}`);
+    if (target instanceof HTMLElement) {
+      const className = target.className;
+
+      if (!className.includes("image")) {
+        navigate(`/files/${item.id}`);
+      }
     }
   };
 
@@ -236,7 +241,12 @@ export default function FolderPage() {
         <Row wrap align="middle" style={{ marginTop: 24 }} gutter={[12, 12]}>
           <Image.PreviewGroup>
             {files.map((item) => (
-              <Col flex={1} span={6} style={{ height: "100%" }}>
+              <Col
+                key={`file-col-${item.id}`}
+                flex={1}
+                span={6}
+                style={{ height: "100%" }}
+              >
                 <ListItem
                   onClick={onFilesClick}
                   onDelete={() => onFileDelete(item)}

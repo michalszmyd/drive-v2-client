@@ -1,7 +1,6 @@
-import { css } from "@emotion/css";
 import React, { useContext } from "react";
-import { dark, light } from "../../consts/colors";
 import ThemeContext from "../../contexts/theme-context";
+import { darkStyles, lightStyles } from "./text-colors-styles";
 
 export default function Text({
   children,
@@ -18,25 +17,3 @@ export default function Text({
     <span className={`${resolveTheme.text} ${className}`}>{children}</span>
   );
 }
-
-export { lightStyles, darkStyles };
-
-const lightStyles = {
-  text: css(`
-    color: ${light.textColor};
-
-    href {
-      color: ${light.linkColor};
-    }
-  `),
-};
-
-const darkStyles = {
-  text: css(`
-    color: ${dark.textColor};
-
-    href {
-      color: ${dark.linkColor};
-    }
-  `),
-};

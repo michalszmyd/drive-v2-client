@@ -4,7 +4,7 @@ import FolderModel from "../models/folder-model";
 import { toast } from "react-toastify";
 
 export default function useFolders(
-  props?: any,
+  props?: FolderModel[],
 ): [
   FolderModel[],
   Dispatch<SetStateAction<FolderModel[]>>,

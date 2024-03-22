@@ -1,5 +1,5 @@
 import DriveFileModel from "../models/drive-file-model";
-import FolderModel from "../models/folder-model";
+import FolderModel, { FolderModelInit } from "../models/folder-model";
 import { mapPagesToResponsePages, ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
@@ -20,7 +20,9 @@ export default class FoldersService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new FolderModel(record)),
+      records: records.map(
+        (record: FolderModelInit) => new FolderModel(record),
+      ),
     };
   }
 
@@ -46,7 +48,9 @@ export default class FoldersService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new FolderModel(record)),
+      records: records.map(
+        (record: FolderModelInit) => new FolderModel(record),
+      ),
     };
   }
 
@@ -74,7 +78,9 @@ export default class FoldersService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new FolderModel(record)),
+      records: records.map(
+        (record: FolderModelInit) => new FolderModel(record),
+      ),
     };
   }
 

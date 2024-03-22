@@ -1,5 +1,5 @@
 import Model from "./model";
-import UserModel from "./user-model";
+import UserModel, { UserModelInit } from "./user-model";
 
 const DEFAULT_PARAMS = {
   name: "",
@@ -10,6 +10,19 @@ export enum ApplicationStatus {
   Waiting = "waiting",
   Disabled = "disabled",
 }
+
+export type ApplicationModelInit = {
+  id?: number;
+  name: string;
+  description?: string;
+  public_key?: string;
+  private_key?: string;
+  created_at?: string;
+  updated_at?: string;
+  last_used_at?: string;
+  status?: ApplicationStatus;
+  user?: UserModelInit;
+};
 
 export default class ApplicationModel extends Model {
   id?: number;
@@ -34,18 +47,7 @@ export default class ApplicationModel extends Model {
     last_used_at,
     status,
     user,
-  }: {
-    id?: number;
-    name: string;
-    description?: string;
-    public_key?: string;
-    private_key?: string;
-    created_at?: string;
-    updated_at?: string;
-    last_used_at?: string;
-    status?: ApplicationStatus;
-    user?: any;
-  } = DEFAULT_PARAMS) {
+  }: ApplicationModelInit = DEFAULT_PARAMS) {
     super();
     this.id = id;
     this.name = name;

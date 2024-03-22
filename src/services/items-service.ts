@@ -1,4 +1,4 @@
-import ItemModel from "../models/item-model";
+import ItemModel, { ItemModelInit } from "../models/item-model";
 import { ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
@@ -29,7 +29,7 @@ export default class ItemsService {
 
     return {
       pages: responsePages,
-      records: records.map((record: any) => new ItemModel(record)),
+      records: records.map((record: ItemModelInit) => new ItemModel(record)),
     };
   }
 
@@ -61,7 +61,7 @@ export default class ItemsService {
 
     return {
       pages: responsePages,
-      records: records.map((record: any) => new ItemModel(record)),
+      records: records.map((record: ItemModelInit) => new ItemModel(record)),
     };
   }
 }

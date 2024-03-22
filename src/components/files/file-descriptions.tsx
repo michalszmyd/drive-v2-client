@@ -1,4 +1,4 @@
-import { Badge, Descriptions } from "antd";
+import { Badge, Descriptions, DescriptionsProps } from "antd";
 import DriveFileModel from "../../models/drive-file-model";
 import StringHelper from "../../helpers/string-helper";
 
@@ -20,7 +20,7 @@ export default function FileDescriptions({
   file,
   descriptionsParams,
 }: {
-  descriptionsParams: any;
+  descriptionsParams: DescriptionsProps;
   file: DriveFileModel;
 }) {
   return (

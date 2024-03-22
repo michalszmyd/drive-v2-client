@@ -1,7 +1,7 @@
-import FolderModel from "./folder-model";
+import FolderModel, { FolderModelInit } from "./folder-model";
 import { getFileExt, resolveBaseURL } from "./helpers/methods";
 import Model from "./model";
-import UserModel from "./user-model";
+import UserModel, { UserModelInit } from "./user-model";
 
 const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
 const VideoExtensions = ["mp4", "mp3", "mpeg", "m4a"];
@@ -22,6 +22,24 @@ const DEFAULT_PARAMS = {
   created_at: "",
   updated_at: "",
   hosting_source: null,
+};
+
+export type DriveFileModelInit = {
+  id: number | null;
+  deleted_at: string | null;
+  body: string | null;
+  file_name: string | null;
+  folder_id: number | null;
+  name: string;
+  pinned: boolean;
+  source_url: string | null;
+  user_id: number | null;
+  vibrant_color: string | null;
+  folder: null | FolderModelInit;
+  user: null | UserModelInit;
+  created_at: string;
+  updated_at: string;
+  hosting_source: string | null;
 };
 
 export default class DriveFileModel extends Model {
@@ -58,23 +76,7 @@ export default class DriveFileModel extends Model {
     created_at,
     updated_at,
     hosting_source,
-  }: {
-    id: number | null;
-    deleted_at: string | null;
-    body: string | null;
-    file_name: string | null;
-    folder_id: number | null;
-    name: string;
-    pinned: boolean;
-    source_url: string | null;
-    user_id: number | null;
-    vibrant_color: string | null;
-    folder: null | any;
-    user: null | any;
-    created_at: string;
-    updated_at: string;
-    hosting_source: string | null;
-  } = DEFAULT_PARAMS) {
+  }: DriveFileModelInit = DEFAULT_PARAMS) {
     super();
 
     this.deletedAt = deleted_at;

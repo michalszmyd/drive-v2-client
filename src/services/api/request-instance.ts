@@ -7,6 +7,7 @@ interface RequestInstanceParams {
 }
 
 interface RequestResponse {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   status: number;
   instance: RequestInstance;
@@ -33,7 +34,7 @@ class RequestsQueue {
     this.queue = queue;
   }
 
-  updateQueueHeaders(headers: any) {
+  updateQueueHeaders(headers: { [key: string]: string }) {
     this.queue.forEach((request) => {
       request.headers = { ...request.headers, ...headers };
     });
@@ -65,7 +66,7 @@ export default class RequestInstance {
   url: string | null;
   data: RequestDataPaylaod;
   headers: { [key: string]: string };
-  refreshTokenAction?: () => any;
+  refreshTokenAction?: () => Promise<unknown>;
   uniqueRequestId: string;
   isRefreshToken: boolean;
   _retry: boolean;

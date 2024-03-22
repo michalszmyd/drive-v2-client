@@ -1,4 +1,4 @@
-import UserModel from "../models/user-model";
+import UserModel, { UserModelInit } from "../models/user-model";
 import UserResetPasswordModel from "../models/user-reset-password-model";
 import { ResponsePages, mapPagesToResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
@@ -13,7 +13,7 @@ export default class AdminUsersService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new UserModel(record)),
+      records: records.map((record: UserModelInit) => new UserModel(record)),
     } as {
       pages: ResponsePages;
       records: UserModel[];

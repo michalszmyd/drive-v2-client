@@ -10,6 +10,15 @@ const DEFAULT_PARAMS = {
   updated_at: "",
 };
 
+export type UserModelInit = {
+  id: number | null;
+  name?: string;
+  admin?: boolean | null;
+  email?: string;
+  updated_at?: string;
+  created_at?: string;
+};
+
 export default class UserModel extends Model {
   id: number | null;
   name: string;
@@ -25,14 +34,7 @@ export default class UserModel extends Model {
     admin = null,
     updated_at = "",
     created_at = "",
-  }: {
-    id: number | null;
-    name?: string;
-    admin?: boolean | null;
-    email?: string;
-    updated_at?: string;
-    created_at?: string;
-  } = DEFAULT_PARAMS) {
+  }: UserModelInit = DEFAULT_PARAMS) {
     super();
 
     this.id = id;

@@ -1,3 +1,15 @@
+export type UserSessionModelInit = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  last_used_at: string;
+  request_info: object;
+  client_ip: string;
+  operating_system: string;
+  user_agent: string;
+  device_type: string;
+};
+
 export default class UserSessionModel {
   id: number;
   createdAt: string;
@@ -19,17 +31,7 @@ export default class UserSessionModel {
     operating_system,
     user_agent,
     device_type,
-  }: {
-    id: number;
-    created_at: string;
-    updated_at: string;
-    last_used_at: string;
-    request_info: object;
-    client_ip: string;
-    operating_system: string;
-    user_agent: string;
-    device_type: string;
-  }) {
+  }: UserSessionModelInit) {
     this.id = id;
     this.createdAt = created_at;
     this.updatedAt = updated_at;

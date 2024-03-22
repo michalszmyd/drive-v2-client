@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Badge, Descriptions } from "antd";
+import { Descriptions } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -12,7 +12,6 @@ import CardExtraActions from "../components/folders/card-extra-actions";
 import { toast } from "react-toastify";
 import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
-import StringHelper from "../helpers/string-helper";
 import FileDescriptions from "../components/files/file-descriptions";
 
 export default function FilePage() {

@@ -1,4 +1,4 @@
-import { Divider, Progress, ProgressProps } from "antd";
+import { Progress, ProgressProps } from "antd";
 import DriveFileModelForm, {
   UploadingStatus,
 } from "../../models/forms/drive-file-model-form";
@@ -45,6 +45,7 @@ export default function UploadingFileProgress({
       case UploadingStatus.ERROR:
         return setStatus("exception");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [driveFileForm.uploadingStatus]);
 
   return (

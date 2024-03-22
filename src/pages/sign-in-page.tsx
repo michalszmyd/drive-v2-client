@@ -40,7 +40,7 @@ export default function SignInPage() {
     if (currentUser) {
       navigate("/dashboard");
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   const onSubmit = () => {
     setIsLoading(true);

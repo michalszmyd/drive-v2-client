@@ -16,17 +16,14 @@ export default function MyFolders() {
   });
 
   useEffect(() => {
-    fetchFolders();
-  }, []);
-
-  const fetchFolders = () => {
     const { currentPage, per } = pages;
 
     FoldersService.me({ page: currentPage, per }).then(({ pages, records }) => {
       setPages(pages);
       setFolders(records);
     });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AuthenticatedRoute>

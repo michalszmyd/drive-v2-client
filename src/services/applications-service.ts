@@ -1,5 +1,7 @@
 import SETTINGS from "../consts/settings";
-import ApplicationModel from "../models/application-model";
+import ApplicationModel, {
+  ApplicationModelInit,
+} from "../models/application-model";
 import { ResponsePages, mapPagesToResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
@@ -25,7 +27,9 @@ export default class ApplicationsService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new ApplicationModel(record)),
+      records: records.map(
+        (record: ApplicationModelInit) => new ApplicationModel(record),
+      ),
     };
   }
 

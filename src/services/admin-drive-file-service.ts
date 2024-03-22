@@ -1,5 +1,4 @@
-import ObjectHelper from "../helpers/object-helper";
-import DriveFileModel from "../models/drive-file-model";
+import DriveFileModel, { DriveFileModelInit } from "../models/drive-file-model";
 import { mapPagesToResponsePages, ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
@@ -20,7 +19,9 @@ export default class AdminDriveFilesService {
 
     return {
       pages: mapPagesToResponsePages(pages),
-      records: records.map((record: any) => new DriveFileModel(record)),
+      records: records.map(
+        (record: DriveFileModelInit) => new DriveFileModel(record),
+      ),
     };
   }
 

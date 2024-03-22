@@ -1,9 +1,6 @@
-import StringValidator from "../validators/string-validator";
 import Validator from "./forms/validator";
 import Model from "./model";
 import UserModel from "./user-model";
-
-type UserParams = { id: number | null; name: string };
 
 const DEFAULT_ATTRIBUTES = {
   id: null,
@@ -17,6 +14,20 @@ const DEFAULT_ATTRIBUTES = {
   user_name: null,
   user: { id: null, name: "" },
   favorite: false,
+};
+
+export type FolderModelInit = {
+  id: number | null;
+  name: string;
+  user_id: number | null;
+  folder_private: boolean;
+  parent_folder_id: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+  drive_files_count: number | null;
+  user_name: string | null;
+  user?: { id: number | null; name: string };
+  favorite: boolean;
 };
 
 export default class FolderModel extends Model {
@@ -44,19 +55,7 @@ export default class FolderModel extends Model {
     user_name,
     user = { id: null, name: "" },
     favorite = false,
-  }: {
-    id: number | null;
-    name: string;
-    user_id: number | null;
-    folder_private: boolean;
-    parent_folder_id: number | null;
-    created_at: string | null;
-    updated_at: string | null;
-    drive_files_count: number | null;
-    user_name: string | null;
-    user?: { id: number | null; name: string };
-    favorite: boolean;
-  } = DEFAULT_ATTRIBUTES) {
+  }: FolderModelInit = DEFAULT_ATTRIBUTES) {
     super();
 
     this.id = id;

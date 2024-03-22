@@ -1,7 +1,6 @@
-import { StarFilled, StarOutlined } from "@ant-design/icons";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
-import { Badge, Button, Col, Divider, Image, Row } from "antd";
+import { Button, Divider, Image, Row } from "antd";
 import { useContext, useEffect, useState } from "react";
 import FoldersService from "../services/folders-service";
 import FolderModel from "../models/folder-model";
@@ -36,11 +35,16 @@ export default function DashboardPage() {
       .finally(() => {
         setItemsLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title="Drive" breadcrumbs={["Dashboard"]}>
+      <MainAppWrapper
+        isLoading={itemsLoading}
+        title="Drive"
+        breadcrumbs={["Dashboard"]}
+      >
         <Divider orientation="left">Your favorite folders</Divider>
         <Folders folders={favoriteFolders} onFavoriteClick={toggleFavorites} />
         <Divider orientation="left">Recent files</Divider>

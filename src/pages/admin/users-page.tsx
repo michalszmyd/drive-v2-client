@@ -24,7 +24,7 @@ export default function UsersPage() {
   );
 
   useEffect(() => {
-    AdminUsersService.all().then(({ records, pages }) => {
+    AdminUsersService.all().then(({ records }) => {
       setUsers(records);
     });
   }, []);
@@ -90,7 +90,7 @@ export default function UsersPage() {
           <Column
             title="Action"
             key="action"
-            render={(_: any, record: UserModel) => (
+            render={(_: string, record: UserModel) => (
               <Space size="middle">
                 <Popover title="Reset password">
                   <Button
