@@ -11,13 +11,15 @@ import errorsParseHelper from "../helpers/errors-parse-helper";
 import { WarningOutlined } from "@ant-design/icons";
 
 export default function ResetPasswordPage(): React.ReactElement {
-  const [password, setPassword] = useState<string>('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+  const [password, setPassword] = useState<string>("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{[key: string | number | symbol]: string[]}>({});
+  const [errors, setErrors] = useState<{
+    [key: string | number | symbol]: string[];
+  }>({});
   const navigate = useNavigate();
 
-  const {token} = useParams<string>();
+  const { token } = useParams<string>();
 
   const onSubmit = () => {
     setIsLoading(true);
@@ -26,22 +28,31 @@ export default function ResetPasswordPage(): React.ReactElement {
       return;
     }
 
-    UsersService
-      .resetPassword({token, password, passwordConfirmation})
+    UsersService.resetPassword({ token, password, passwordConfirmation })
       .then(() => {
-        navigate('/sign-in');
+        navigate("/sign-in");
       })
-      .catch(({message}) => {
+      .catch(({ message }) => {
         setErrors(JSON.parse(message).data);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
-  const onChangePassword = ({target: {value}}: {target: {value: string}}) => setPassword(value);
-  const onChangePasswordConfirmation = ({target: {value}}: {target: {value: string}}) => setPasswordConfirmation(value);
-  const isButtonActive = StringHelper.isPresent(password) && StringHelper.isPresent(passwordConfirmation);
+  const onChangePassword = ({
+    target: { value },
+  }: {
+    target: { value: string };
+  }) => setPassword(value);
+  const onChangePasswordConfirmation = ({
+    target: { value },
+  }: {
+    target: { value: string };
+  }) => setPasswordConfirmation(value);
+  const isButtonActive =
+    StringHelper.isPresent(password) &&
+    StringHelper.isPresent(passwordConfirmation);
   const errorsMessages = errorsParseHelper(errors);
 
   return (
@@ -58,12 +69,32 @@ export default function ResetPasswordPage(): React.ReactElement {
             </div>
           ))}
         </div>
-        <Input value={password} name="password" type="password" onChange={onChangePassword} placeholder="New password" />
-        <Input value={passwordConfirmation} name="password" type="password" onChange={onChangePasswordConfirmation} placeholder="New password confirmation" />
-        <Button disabled={!isButtonActive} loading={isLoading} onClick={onSubmit} className={styles.submitButton} type="primary">Reset password</Button>
+        <Input
+          value={password}
+          name="password"
+          type="password"
+          onChange={onChangePassword}
+          placeholder="New password"
+        />
+        <Input
+          value={passwordConfirmation}
+          name="password"
+          type="password"
+          onChange={onChangePasswordConfirmation}
+          placeholder="New password confirmation"
+        />
+        <Button
+          disabled={!isButtonActive}
+          loading={isLoading}
+          onClick={onSubmit}
+          className={styles.submitButton}
+          type="primary"
+        >
+          Reset password
+        </Button>
       </FormContainer>
     </PageWrapper>
-  )
+  );
 }
 
 const styles = {
@@ -78,10 +109,8 @@ const styles = {
       background-color: ${colors.secondary} !important;
     }
   `),
-  errorsContainer: css({
-
-  }),
+  errorsContainer: css({}),
   error: css({
     color: colors.redDelete,
   }),
-}
+};

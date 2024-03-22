@@ -1,21 +1,25 @@
 import { css } from "@emotion/css";
-import React, { useContext } from "react"
+import React, { useContext } from "react";
 import { dark, light } from "../../consts/colors";
-import ThemeContext from "../../contexts/theme-context"
+import ThemeContext from "../../contexts/theme-context";
 
-export default function Text({children, className}: {children: string | React.ReactElement, className?: string}) {
-  const {theme} = useContext(ThemeContext);
+export default function Text({
+  children,
+  className,
+}: {
+  children: string | React.ReactElement;
+  className?: string;
+}) {
+  const { theme } = useContext(ThemeContext);
 
-  const resolveTheme = theme === 'light' ? lightStyles : darkStyles;
+  const resolveTheme = theme === "light" ? lightStyles : darkStyles;
 
   return (
-    <span className={`${resolveTheme.text} ${className}`}>
-      {children}
-    </span>
-  )
+    <span className={`${resolveTheme.text} ${className}`}>{children}</span>
+  );
 }
 
-export {lightStyles, darkStyles};
+export { lightStyles, darkStyles };
 
 const lightStyles = {
   text: css(`
@@ -25,7 +29,7 @@ const lightStyles = {
       color: ${light.linkColor};
     }
   `),
-}
+};
 
 const darkStyles = {
   text: css(`
@@ -35,4 +39,4 @@ const darkStyles = {
       color: ${dark.linkColor};
     }
   `),
-}
+};

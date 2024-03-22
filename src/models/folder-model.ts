@@ -3,7 +3,7 @@ import Validator from "./forms/validator";
 import Model from "./model";
 import UserModel from "./user-model";
 
-type UserParams = {id: number | null; name: string};
+type UserParams = { id: number | null; name: string };
 
 const DEFAULT_ATTRIBUTES = {
   id: null,
@@ -15,9 +15,9 @@ const DEFAULT_ATTRIBUTES = {
   updated_at: null,
   drive_files_count: 0,
   user_name: null,
-  user: {id: null, name: ""},
+  user: { id: null, name: "" },
   favorite: false,
-}
+};
 
 export default class FolderModel extends Model {
   id: number | null;
@@ -42,7 +42,7 @@ export default class FolderModel extends Model {
     updated_at,
     drive_files_count,
     user_name,
-    user = {id: null, name: ""},
+    user = { id: null, name: "" },
     favorite = false,
   }: {
     id: number | null;
@@ -54,7 +54,7 @@ export default class FolderModel extends Model {
     updated_at: string | null;
     drive_files_count: number | null;
     user_name: string | null;
-    user?: {id: number | null; name: string};
+    user?: { id: number | null; name: string };
     favorite: boolean;
   } = DEFAULT_ATTRIBUTES) {
     super();

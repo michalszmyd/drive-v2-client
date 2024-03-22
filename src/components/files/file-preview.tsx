@@ -1,4 +1,8 @@
-import { CloseOutlined, CodepenOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  CodepenOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import DriveFileModelForm from "../../models/forms/drive-file-model-form";
 import { Button, Image } from "antd";
 import { css } from "@emotion/css";
@@ -28,38 +32,44 @@ export default function FilePreview({
       />
       <LoadPreview previewSource={previewSource} fileType={fileType} />
     </div>
-  )
+  );
 }
 
-function LoadPreview({previewSource, fileType}: {previewSource: string, fileType: string}) {
-  switch(fileType) {
-    case 'video/mp4':
+function LoadPreview({
+  previewSource,
+  fileType,
+}: {
+  previewSource: string;
+  fileType: string;
+}) {
+  switch (fileType) {
+    case "video/mp4":
+      return <VideoCameraOutlined className={styles.previewIcon} />;
+    case "image/png":
+    case "image/jpeg":
       return (
-        <VideoCameraOutlined className={styles.previewIcon} />
+        <Image style={{ maxHeight: 140, maxWidth: 140 }} src={previewSource} />
       );
-    case 'image/png':
-    case 'image/jpeg':
-      return <Image style={{maxHeight: 140, maxWidth: 140}} src={previewSource} />
     default:
-      return <CodepenOutlined className={styles.previewIcon} />
+      return <CodepenOutlined className={styles.previewIcon} />;
   }
 }
 
 const styles = {
   previewIcon: css({
-    fontSize: '128px',
+    fontSize: "128px",
   }),
   closeIcon: css({
-    fontSize: '10px',
+    fontSize: "10px",
   }),
   removeButton: css({
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-    left: '5px',
-    top: '5px',
-    position: 'absolute',
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    left: "5px",
+    top: "5px",
+    position: "absolute",
     zIndex: 1,
     color: colors.redDelete,
-  })
-}
+  }),
+};

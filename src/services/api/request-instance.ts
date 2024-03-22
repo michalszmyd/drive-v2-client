@@ -9,22 +9,22 @@ interface RequestInstanceParams {
 interface RequestResponse {
   data: any;
   status: number;
-  instance: RequestInstance,
+  instance: RequestInstance;
 }
 
 enum RequestAction {
-  Get = 'GET',
-  Post = 'POST',
-  Put = 'PUT',
-  Delete = 'DELETE',
+  Get = "GET",
+  Post = "POST",
+  Put = "PUT",
+  Delete = "DELETE",
 }
 
 type RequestDataPaylaod = null | object | FormData;
 
 const DEFAULT_HEADERS = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-}
+  "Content-Type": "application/json",
+  Accept: "application/json",
+};
 
 class RequestsQueue {
   queue: RequestInstance[];
@@ -35,7 +35,7 @@ class RequestsQueue {
 
   updateQueueHeaders(headers: any) {
     this.queue.forEach((request) => {
-      request.headers = {...request.headers, ...headers};
+      request.headers = { ...request.headers, ...headers };
     });
   }
 
@@ -49,7 +49,7 @@ class RequestsQueue {
 
   remove(id: string) {
     this.queue = this.queue.filter((element) => element.uniqueRequestId !== id);
-    return this.queue
+    return this.queue;
   }
 
   push(request: RequestInstance) {
@@ -64,19 +64,16 @@ export default class RequestInstance {
   method: RequestAction;
   url: string | null;
   data: RequestDataPaylaod;
-  headers: {[key: string]: string;};
+  headers: { [key: string]: string };
   refreshTokenAction?: () => any;
   uniqueRequestId: string;
   isRefreshToken: boolean;
   _retry: boolean;
 
-  constructor({
-    baseUrl,
-    headers = {},
-  }: RequestInstanceParams) {
+  constructor({ baseUrl, headers = {} }: RequestInstanceParams) {
     this.baseUrl = baseUrl;
 
-    this.headers = ({...DEFAULT_HEADERS, ...headers});
+    this.headers = { ...DEFAULT_HEADERS, ...headers };
     this.url = null;
     this.method = RequestAction.Get;
     this.data = null;
@@ -93,7 +90,7 @@ export default class RequestInstance {
 
     if (this.data instanceof FormData) {
       payloadParams = this.data;
-      deleteHeaders = ['Content-Type'];
+      deleteHeaders = ["Content-Type"];
     } else if (this.data) {
       payloadParams = JSON.stringify(this.data);
     }
@@ -101,19 +98,19 @@ export default class RequestInstance {
     return {
       payloadParams,
       deleteHeaders,
-    }
-  }
+    };
+  };
 
-  retryRequest = async(): Promise<RequestResponse> => {
-    return new Promise(resolve => setTimeout(resolve, 500)).then(() => {
+  retryRequest = async (): Promise<RequestResponse> => {
+    return new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
       this._retry = true;
       return this.request();
-    })
+    });
   };
 
   request = async (): Promise<RequestResponse> => {
     if (!this.url) {
-      throw new Error('Url must be specified.');
+      throw new Error("Url must be specified.");
     }
 
     const { payloadParams, deleteHeaders } = this.prepareRequestData();
@@ -124,16 +121,20 @@ export default class RequestInstance {
 
     deleteHeaders.forEach((element) => {
       delete requestHeaders[element];
-    })
+    });
 
     this.headers = requestHeaders;
 
     if (SETTINGS.DEVELOPMENT) {
       console.log(`Starting request ${this.url}: `);
-      console.log({instance: this, payloadParams});
+      console.log({ instance: this, payloadParams });
     }
 
-    if (this.refreshTokenAction && RequestInstance._queue.findRefreshTokenRequest() && !this._retry) {
+    if (
+      this.refreshTokenAction &&
+      RequestInstance._queue.findRefreshTokenRequest() &&
+      !this._retry
+    ) {
       if (SETTINGS.DEVELOPMENT) {
         console.log(`delaying request ${this.url}, retry? ${this._retry}`);
       }
@@ -144,7 +145,7 @@ export default class RequestInstance {
     const response = await fetch(`${this.baseUrl}${this.url}`, {
       headers: requestHeaders,
       method: this.method,
-      ...(payloadParams ? {body: payloadParams as BodyInit} : {}),
+      ...(payloadParams ? { body: payloadParams as BodyInit } : {}),
     });
 
     if (response.status >= 200 && response.status < 400) {
@@ -155,7 +156,7 @@ export default class RequestInstance {
           instance: this,
           data: {},
           status: response.status,
-        }
+        };
       }
 
       const json = await response.json();
@@ -164,7 +165,7 @@ export default class RequestInstance {
         data: json,
         status: response.status,
         instance: this,
-      }
+      };
     } else if (response.status < 500) {
       if (response.status === 401 && this.refreshTokenAction) {
         if (!RequestInstance._queue.findRefreshTokenRequest()) {
@@ -192,8 +193,8 @@ export default class RequestInstance {
 
     RequestInstance._queue.remove(this.uniqueRequestId);
 
-    throw new Error('Server error');
-  }
+    throw new Error("Server error");
+  };
 
   get = async (url: string, data: RequestDataPaylaod = null) => {
     this.method = RequestAction.Get;
@@ -201,7 +202,7 @@ export default class RequestInstance {
     this.url = url;
 
     return await this.request();
-  }
+  };
 
   post = async (url: string, data: RequestDataPaylaod = null) => {
     this.method = RequestAction.Post;
@@ -209,7 +210,7 @@ export default class RequestInstance {
     this.url = url;
 
     return await this.request();
-  }
+  };
 
   put = async (url: string, data: RequestDataPaylaod = null) => {
     this.method = RequestAction.Put;
@@ -217,7 +218,7 @@ export default class RequestInstance {
     this.url = url;
 
     return await this.request();
-  }
+  };
 
   delete = async (url: string, data: RequestDataPaylaod = null) => {
     this.method = RequestAction.Delete;
@@ -225,5 +226,5 @@ export default class RequestInstance {
     this.url = url;
 
     return await this.request();
-  }
+  };
 }

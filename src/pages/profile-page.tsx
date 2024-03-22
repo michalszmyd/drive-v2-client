@@ -8,11 +8,15 @@ import UsersService from "../services/users-service";
 import { toast } from "react-toastify";
 
 export default function ProfilePage() {
-  const {currentUser, setCurrentUser} = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   const [user, setUser] = useState<UserModel>(currentUser || new UserModel());
 
-  const onChange = ({ target: { name, value } }: { target: { name: string, value: string } }) => {
+  const onChange = ({
+    target: { name, value },
+  }: {
+    target: { name: string; value: string };
+  }) => {
     const updatedUser = new UserModel();
     updatedUser.assignAttributes(user);
     updatedUser[name] = value;
@@ -21,17 +25,19 @@ export default function ProfilePage() {
   };
 
   const onSave = async () => {
-    UsersService.updateCurrentUser(user).then((updatedUser) => {
-      toast.success('User updated.');
+    UsersService.updateCurrentUser(user)
+      .then((updatedUser) => {
+        toast.success("User updated.");
 
-      setUser(updatedUser);
-      setCurrentUser(updatedUser);
-    }).catch((e) => {
-      const {data} = JSON.parse(e.message);
+        setUser(updatedUser);
+        setCurrentUser(updatedUser);
+      })
+      .catch((e) => {
+        const { data } = JSON.parse(e.message);
 
-      toast.error(`Error: ${JSON.stringify(data)}`);
-    });
-  }
+        toast.error(`Error: ${JSON.stringify(data)}`);
+      });
+  };
 
   if (!currentUser) {
     return null;
@@ -39,7 +45,10 @@ export default function ProfilePage() {
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title={`My Profile ${currentUser.displayName}`} breadcrumbs={['My Profile']}>
+      <MainAppWrapper
+        title={`My Profile ${currentUser.displayName}`}
+        breadcrumbs={["My Profile"]}
+      >
         <form>
           <Row gutter={[16, 16]}>
             <Col span={24}>
@@ -59,11 +68,13 @@ export default function ProfilePage() {
               />
             </Col>
             <Col span={24}>
-              <Button type="primary" onClick={onSave}>Save</Button>
+              <Button type="primary" onClick={onSave}>
+                Save
+              </Button>
             </Col>
           </Row>
         </form>
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }

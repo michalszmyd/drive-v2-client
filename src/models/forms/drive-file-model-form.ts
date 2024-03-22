@@ -2,17 +2,17 @@ import { uuid } from "../../helpers/uuid-helper";
 import Validator from "./validator";
 
 export enum UploadingStatus {
-  WAITING = 'waiting',
-  UPLOADING = 'uploading',
-  SUCCESS = 'success',
-  ERROR = 'error',
+  WAITING = "waiting",
+  UPLOADING = "uploading",
+  SUCCESS = "success",
+  ERROR = "error",
 }
 
 export class UploadFile {
   id: string;
   file: File;
 
-  constructor({id, file}: {id?: string; file: File}) {
+  constructor({ id, file }: { id?: string; file: File }) {
     this.id = id || uuid();
     this.file = file;
   }
@@ -31,9 +31,9 @@ export default class DriveFileModelForm {
 
   constructor({
     id = null,
-    body = '',
+    body = "",
     folderId = null,
-    name = '',
+    name = "",
     pinned = false,
     attachment = null,
     uniqueId = null,
@@ -62,21 +62,21 @@ export default class DriveFileModelForm {
     this.validator.validatePresenceOf("name", this.name);
 
     return this.validator.isValid();
-  }
+  };
 
   toFormData = () => {
     const form = new FormData();
 
-    form.append('drive_file:name', this.name);
-    form.append('drive_file:body', this.body);
-    form.append('drive_file:pinned', this.pinned ? '1' : '0');
+    form.append("drive_file:name", this.name);
+    form.append("drive_file:body", this.body);
+    form.append("drive_file:pinned", this.pinned ? "1" : "0");
 
     if (this.attachment) {
-      form.append('drive_file:attachment', this.attachment.file);
+      form.append("drive_file:attachment", this.attachment.file);
     }
 
     return form;
-  }
+  };
 
   toParams = () => {
     return {
@@ -84,6 +84,6 @@ export default class DriveFileModelForm {
       folderId: this.folderId,
       name: this.name,
       pinned: this.pinned,
-    }
-  }
+    };
+  };
 }

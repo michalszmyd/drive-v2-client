@@ -1,24 +1,24 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CurrentUserContext from "../../contexts/current-user-context"
+import CurrentUserContext from "../../contexts/current-user-context";
 
 export default function AuthenticatedRoute({
-  children
-}: {children: React.ReactElement | React.ReactElement[]}) {
+  children,
+}: {
+  children: React.ReactElement | React.ReactElement[];
+}) {
   const { currentUser } = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentUser) {
-      navigate('/sign-in');
+      navigate("/sign-in");
     }
-  })
+  });
 
   if (!currentUser) {
-    return (
-      <div>Unauthenticated</div>
-    )
+    return <div>Unauthenticated</div>;
   }
 
-  return (<>{children}</>);
+  return <>{children}</>;
 }

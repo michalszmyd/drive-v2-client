@@ -3,8 +3,8 @@ import { getFileExt, resolveBaseURL } from "./helpers/methods";
 import Model from "./model";
 import UserModel from "./user-model";
 
-const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-const VideoExtensions = ['mp4', 'mp3', 'mpeg', 'm4a'];
+const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
+const VideoExtensions = ["mp4", "mp3", "mpeg", "m4a"];
 
 const DEFAULT_PARAMS = {
   id: null,
@@ -12,17 +12,17 @@ const DEFAULT_PARAMS = {
   body: null,
   file_name: null,
   folder_id: null,
-  name: '',
+  name: "",
   pinned: false,
   source_url: null,
   user_id: null,
   vibrant_color: null,
   folder: null,
   user: null,
-  created_at: '',
-  updated_at: '',
+  created_at: "",
+  updated_at: "",
   hosting_source: null,
-}
+};
 
 export default class DriveFileModel extends Model {
   id: number | null;
@@ -67,7 +67,7 @@ export default class DriveFileModel extends Model {
     name: string;
     pinned: boolean;
     source_url: string | null;
-    user_id: number| null;
+    user_id: number | null;
     vibrant_color: string | null;
     folder: null | any;
     user: null | any;
@@ -84,8 +84,8 @@ export default class DriveFileModel extends Model {
     this.id = id;
     this.name = name;
     this.pinned = pinned;
-    this.sourceUrl = source_url || '';
-    this.fileSourceName = resolveBaseURL(source_url) || '';
+    this.sourceUrl = source_url || "";
+    this.fileSourceName = resolveBaseURL(source_url) || "";
     this.userId = user_id;
     this.createdAt = created_at;
     this.updatedAt = updated_at;
@@ -95,21 +95,21 @@ export default class DriveFileModel extends Model {
     this.hostingSource = hosting_source;
   }
 
-  get isImage() : boolean {
+  get isImage(): boolean {
     if (!this.fileType) {
-      return false
+      return false;
     }
 
     return ImageExtensions.includes(this.fileType);
   }
 
-  isOwner(userId : number) : boolean {
+  isOwner(userId: number): boolean {
     return this.userId === userId;
   }
 
-  get isVideo() : boolean {
+  get isVideo(): boolean {
     if (!this.fileType) {
-      return false
+      return false;
     }
 
     return VideoExtensions.includes(this.fileType);

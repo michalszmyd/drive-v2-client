@@ -9,52 +9,64 @@ import { css } from "@emotion/css";
 
 export const tableHeader = [
   {
-    title: 'Preview',
-    dataIndex: 'preview',
-    key: 'preview',
-    align: 'center'
+    title: "Preview",
+    dataIndex: "preview",
+    key: "preview",
+    align: "center",
   },
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: 'Created by',
-    dataIndex: 'userName',
-    key: 'userName',
+    title: "Created by",
+    dataIndex: "userName",
+    key: "userName",
   },
   {
-    title: 'Folder',
-    dataIndex: 'folderName',
-    key: 'folderName',
+    title: "Folder",
+    dataIndex: "folderName",
+    key: "folderName",
   },
   {
-    title: 'Pinned',
-    dataIndex: 'pinned',
-    key: 'pinned',
+    title: "Pinned",
+    dataIndex: "pinned",
+    key: "pinned",
   },
   {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
+    title: "Type",
+    dataIndex: "type",
+    key: "type",
   },
   {
-    title: 'Actions',
-    dataIndex: 'actions',
-    key: 'actions'
-  }
-]
+    title: "Actions",
+    dataIndex: "actions",
+    key: "actions",
+  },
+];
 
-export function ItemRow({item, currentUser}: {item: ItemModel, currentUser: UserModel | null}) {
-  if (item.recordType === 'folder') {
-    return              {
+export function ItemRow({
+  item,
+  currentUser,
+}: {
+  item: ItemModel;
+  currentUser: UserModel | null;
+}) {
+  if (item.recordType === "folder") {
+    return {
       key: item.id,
       type: <ItemLabel item={item} />,
       preview: <ItemPreview item={item} />,
       userName: item.userName,
-      name: <Link className={styles.folderLink} to={`/folders/${item.id}`}>{item.name}</Link>,
-      folderName: <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>,
+      name: (
+        <Link className={styles.folderLink} to={`/folders/${item.id}`}>
+          {item.name}
+        </Link>
+      ),
+      folderName: (
+        <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>
+      ),
       folder: <b>{item.folderId}</b>,
       pinned: <></>,
     };
@@ -66,38 +78,38 @@ export function ItemRow({item, currentUser}: {item: ItemModel, currentUser: User
     preview: <ItemPreview item={item} />,
     name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
     userName: item.userName,
-    folderName:
-        item.folderId && (
-          <Tag color={colors.secondary}>
-            <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>
-              {item.folderName}
-            </Link>
-          </Tag>
-        )
-    ,
+    folderName: item.folderId && (
+      <Tag color={colors.secondary}>
+        <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>
+          {item.folderName}
+        </Link>
+      </Tag>
+    ),
     pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
-    actions: <CardExtraActions
-      manageActionsEnabled={currentUser?.id === item.userId}
-      sourceUrl={item.sourceUrl}
-      editLinkTo={`/files/${item.id}/edit`}
-    />
-  }
+    actions: (
+      <CardExtraActions
+        manageActionsEnabled={currentUser?.id === item.userId}
+        sourceUrl={item.sourceUrl}
+        editLinkTo={`/files/${item.id}/edit`}
+      />
+    ),
+  };
 }
 
-function ItemLabel({item}: {item: ItemModel}) {
-  if (item.recordType === 'folder') {
-    return (
-      <Tag>folder</Tag>
-    )
+function ItemLabel({ item }: { item: ItemModel }) {
+  if (item.recordType === "folder") {
+    return <Tag>folder</Tag>;
   }
 
   if (item.fileType) {
     return (
-      <Tag color={fileExtensionsColors[item.fileType] || '#A4F5C5'}>{item.fileType}</Tag>
-    )
+      <Tag color={fileExtensionsColors[item.fileType] || "#A4F5C5"}>
+        {item.fileType}
+      </Tag>
+    );
   }
 
-  return <Tag color="#88878A">file</Tag>
+  return <Tag color="#88878A">file</Tag>;
 }
 
 const styles = {
@@ -114,4 +126,4 @@ const styles = {
   folderLink: css({
     fontWeight: 600,
   }),
-}
+};

@@ -8,7 +8,9 @@ import { ListItem } from "../components/folders/files/list-item";
 import MainAppWrapper from "../components/main-app-wrapper";
 import DriveFileModel from "../models/drive-file-model";
 import FolderModel from "../models/folder-model";
-import DriveFileModelForm, { UploadingStatus } from "../models/forms/drive-file-model-form";
+import DriveFileModelForm, {
+  UploadingStatus,
+} from "../models/forms/drive-file-model-form";
 import { ResponsePages } from "../services/api-service";
 import DriveFilesService from "../services/drive-files-service";
 import FoldersService from "../services/folders-service";
@@ -24,11 +26,18 @@ export default function FolderPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [folder, setFolder] = useState<FolderModel>(new FolderModel());
   const [files, setFiles] = useState<DriveFileModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: PER_PAGE, total: 1});
-  const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>([]);
+  const [pages, setPages] = useState<ResponsePages>({
+    currentPage: 1,
+    totalPages: 1,
+    per: PER_PAGE,
+    total: 1,
+  });
+  const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>(
+    [],
+  );
 
-  const {id} = useParams();
-  const {currentUser} = useContext(CurrentUserContext);
+  const { id } = useParams();
+  const { currentUser } = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +46,7 @@ export default function FolderPage() {
         .then((folder) => {
           setFolder(folder);
 
-          fetchDriveFiles()?.then(({records, pages}) => {
+          fetchDriveFiles()?.then(({ records, pages }) => {
             setFiles(records);
             setPages(pages);
           });
@@ -48,19 +57,29 @@ export default function FolderPage() {
     }
   }, [id]);
 
-  const fetchDriveFiles = ({page = 1, per = PER_PAGE}: {page: number; per: number;} = {page: 1, per: PER_PAGE}) => {
+  const fetchDriveFiles = (
+    { page = 1, per = PER_PAGE }: { page: number; per: number } = {
+      page: 1,
+      per: PER_PAGE,
+    },
+  ) => {
     if (id) {
-      return DriveFilesService.folderFiles(id, {page, per}).then(({records, pages}) => {
-        return {records, pages}
-      });
+      return DriveFilesService.folderFiles(id, { page, per }).then(
+        ({ records, pages }) => {
+          return { records, pages };
+        },
+      );
     }
-  }
+  };
 
-  const onFilesClick = (item : DriveFileModel, {target: {className}}: {target: {className: string}}) => {
-    if (!className.includes('image')) {
+  const onFilesClick = (
+    item: DriveFileModel,
+    { target: { className } }: { target: { className: string } },
+  ) => {
+    if (!className.includes("image")) {
       navigate(`/files/${item.id}`);
     }
-  }
+  };
 
   const onFileFormSave = async (files: DriveFileModelForm[]) => {
     if (!id) {
@@ -70,95 +89,97 @@ export default function FolderPage() {
     for (const file of files) {
       setUploadingFiles((state) => state.concat([file]));
 
-      await FoldersService.createDriveFile(id, file.toFormData()).then((driveFile) => {
-        toast.success('File uploded.');
+      await FoldersService.createDriveFile(id, file.toFormData())
+        .then((driveFile) => {
+          toast.success("File uploded.");
 
-        setUploadingFiles((state) => {
-          return state.map((element) => {
-            if (element.uniqueId === file.uniqueId) {
-              element.uploadingStatus = UploadingStatus.SUCCESS;
+          setUploadingFiles((state) => {
+            return state.map((element) => {
+              if (element.uniqueId === file.uniqueId) {
+                element.uploadingStatus = UploadingStatus.SUCCESS;
 
-              return element
-            }
+                return element;
+              }
 
-            return element;
+              return element;
+            });
           });
-        });
 
-        setFiles((state) => [driveFile].concat(state));
-      }).catch((e) => {
-        const {data} = JSON.parse(e.message);
+          setFiles((state) => [driveFile].concat(state));
+        })
+        .catch((e) => {
+          const { data } = JSON.parse(e.message);
 
-        setUploadingFiles((state) => {
-          return state.map((element) => {
-            if (element.uniqueId === file.uniqueId) {
-              element.uploadingStatus = UploadingStatus.ERROR;
+          setUploadingFiles((state) => {
+            return state.map((element) => {
+              if (element.uniqueId === file.uniqueId) {
+                element.uploadingStatus = UploadingStatus.ERROR;
 
-              return element
-            }
+                return element;
+              }
 
-            return element;
+              return element;
+            });
           });
-        });
 
-        toast.error(`Error: ${JSON.stringify(data)}`);
-      });
+          toast.error(`Error: ${JSON.stringify(data)}`);
+        });
     }
-  }
+  };
 
   const onLoadMore = () => {
-    const {currentPage, per} = pages;
+    const { currentPage, per } = pages;
 
-    return fetchDriveFiles({page: currentPage + 1, per})?.then(({records, pages}) => {
-      setFiles((state) => state.concat(records));
-      setPages(pages);
-    });
-  }
+    return fetchDriveFiles({ page: currentPage + 1, per })?.then(
+      ({ records, pages }) => {
+        setFiles((state) => state.concat(records));
+        setPages(pages);
+      },
+    );
+  };
 
   const onFileDelete = (item: DriveFileModel) => {
-    DriveFilesService
-      .destroy(item)
+    DriveFilesService.destroy(item)
       .then(() => {
         toast.success(`File '${item.name}' removed.`);
 
-        setFiles((state) => (
-          state.filter((folderItem) => (folderItem.id !== item.id))
-        ));
+        setFiles((state) =>
+          state.filter((folderItem) => folderItem.id !== item.id),
+        );
       })
       .catch((e) => {
-        const {data} = JSON.parse(e.message);
+        const { data } = JSON.parse(e.message);
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-  }
+  };
 
   const onFolderDelete = () => {
-    FoldersService
-      .delete(folder)
+    FoldersService.delete(folder)
       .then(() => {
         toast.success(`File '${folder.name}' removed.`);
 
         navigate(-1);
       })
       .catch((e) => {
-        const {data} = JSON.parse(e.message);
+        const { data } = JSON.parse(e.message);
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-  }
+  };
 
-  const onFolderDownload = () => {
-  }
+  const onFolderDownload = () => {};
 
   if (!folder.id && !isLoading) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />;
   }
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper isLoading={isLoading} breadcrumbs={['Folder', folder.name]}>
+      <MainAppWrapper
+        isLoading={isLoading}
+        breadcrumbs={["Folder", folder.name]}
+      >
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Descriptions
@@ -174,20 +195,34 @@ export default function FolderPage() {
                 />
               }
             >
-              <Descriptions.Item label="User">{folder.user.name}</Descriptions.Item>
+              <Descriptions.Item label="User">
+                {folder.user.name}
+              </Descriptions.Item>
               <Descriptions.Item label="Files">{pages.total}</Descriptions.Item>
-              <Descriptions.Item label="Private">{folder.folderPrivate}</Descriptions.Item>
-              <Descriptions.Item label="Created at">{folder.createdAt}</Descriptions.Item>
-              <Descriptions.Item label="Updated at">{folder.updatedAt}</Descriptions.Item>
+              <Descriptions.Item label="Private">
+                {folder.folderPrivate}
+              </Descriptions.Item>
+              <Descriptions.Item label="Created at">
+                {folder.createdAt}
+              </Descriptions.Item>
+              <Descriptions.Item label="Updated at">
+                {folder.updatedAt}
+              </Descriptions.Item>
             </Descriptions>
           </Col>
           {ArrayHelper.isAny(uploadingFiles) && (
             <Col span={24}>
-              <Collapse defaultActiveKey={['uploading-1']}>
-                <Collapse.Panel header="Uploading files progress" key="uploading-1">
+              <Collapse defaultActiveKey={["uploading-1"]}>
+                <Collapse.Panel
+                  header="Uploading files progress"
+                  key="uploading-1"
+                >
                   {uploadingFiles.map((uploadingFile) => (
                     <Col span={24}>
-                      <UploadingFileProgress driveFileForm={uploadingFile} key={uploadingFile.uniqueId} />
+                      <UploadingFileProgress
+                        driveFileForm={uploadingFile}
+                        key={uploadingFile.uniqueId}
+                      />
                     </Col>
                   ))}
                 </Collapse.Panel>
@@ -198,10 +233,10 @@ export default function FolderPage() {
             <FileForm onSave={onFileFormSave} />
           </Col>
         </Row>
-        <Row wrap align="middle" style={{marginTop: 24}} gutter={[12, 12]}>
+        <Row wrap align="middle" style={{ marginTop: 24 }} gutter={[12, 12]}>
           <Image.PreviewGroup>
             {files.map((item) => (
-              <Col flex={1} span={6} style={{height: '100%'}}>
+              <Col flex={1} span={6} style={{ height: "100%" }}>
                 <ListItem
                   onClick={onFilesClick}
                   onDelete={() => onFileDelete(item)}
@@ -209,11 +244,10 @@ export default function FolderPage() {
                 />
               </Col>
             ))}
-
           </Image.PreviewGroup>
         </Row>
         <Button onClick={onLoadMore}>Load more</Button>
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }

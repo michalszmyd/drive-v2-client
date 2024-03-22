@@ -11,25 +11,36 @@ export default function CreateApplicationModal({
   onCancel: () => void;
   onSubmit: (application: ApplicationModel) => void;
 }) {
-  const [application, setApplication] = useState<ApplicationModel>(new ApplicationModel());
+  const [application, setApplication] = useState<ApplicationModel>(
+    new ApplicationModel(),
+  );
 
-  const onChange = ({target: {name, value}}: {target: {name: string; value: string}}) => {
+  const onChange = ({
+    target: { name, value },
+  }: {
+    target: { name: string; value: string };
+  }) => {
     setApplication((state) => {
-      const updatedModel = new ApplicationModel()
-      updatedModel.assignAttributes({...state});
+      const updatedModel = new ApplicationModel();
+      updatedModel.assignAttributes({ ...state });
       updatedModel[name] = value;
 
       return updatedModel;
-    })
+    });
   };
 
   const onConfirm = () => {
     onSubmit(application);
     setApplication(new ApplicationModel());
-  }
+  };
 
   return (
-    <Modal onOk={onConfirm} title="Create Application API" open={open} onCancel={onCancel}>
+    <Modal
+      onOk={onConfirm}
+      title="Create Application API"
+      open={open}
+      onCancel={onCancel}
+    >
       <form>
         <Row gutter={[8, 8]}>
           <Input
@@ -47,5 +58,5 @@ export default function CreateApplicationModal({
         </Row>
       </form>
     </Modal>
-  )
+  );
 }

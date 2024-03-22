@@ -4,30 +4,24 @@ import { mapPagesToResponsePages, ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
 export default class FoldersService {
-  static async all({
-    page,
-    per,
-  }: {
-    page: number;
-    per: number;
-  }): Promise<{
-    pages: ResponsePages,
-    records: FolderModel[],
+  static async all({ page, per }: { page: number; per: number }): Promise<{
+    pages: ResponsePages;
+    records: FolderModel[];
   }> {
     const instance = await AuthenticatedApiService.default();
-    const params = new URLSearchParams({page: page.toString(), per: per.toString()});
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per: per.toString(),
+    });
 
     const {
-      data: {
-        records,
-        pages,
-      }
+      data: { records, pages },
     } = await instance.get(`folders?${params.toString()}`);
 
     return {
       pages: mapPagesToResponsePages(pages),
       records: records.map((record: any) => new FolderModel(record)),
-    }
+    };
   }
 
   static async favorites({
@@ -37,23 +31,23 @@ export default class FoldersService {
     page: number;
     per: number;
   }): Promise<{
-    pages: ResponsePages,
-    records: FolderModel[],
+    pages: ResponsePages;
+    records: FolderModel[];
   }> {
     const instance = await AuthenticatedApiService.default();
-    const params = new URLSearchParams({page: page.toString(), per: per.toString()});
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per: per.toString(),
+    });
 
     const {
-      data: {
-        records,
-        pages,
-      }
+      data: { records, pages },
     } = await instance.get(`folders/favorites?${params.toString()}`);
 
     return {
       pages: mapPagesToResponsePages(pages),
       records: records.map((record: any) => new FolderModel(record)),
-    }
+    };
   }
 
   static async toggleFavorites(folderId: string | number): Promise<boolean> {
@@ -64,36 +58,33 @@ export default class FoldersService {
     return true;
   }
 
-  static async me({
-    page,
-    per,
-  }: {
-    page: number;
-    per: number;
-  }): Promise<{
-    pages: ResponsePages,
-    records: FolderModel[],
+  static async me({ page, per }: { page: number; per: number }): Promise<{
+    pages: ResponsePages;
+    records: FolderModel[];
   }> {
     const instance = await AuthenticatedApiService.default();
-    const params = new URLSearchParams({page: page.toString(), per: per.toString()});
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per: per.toString(),
+    });
 
     const {
-      data: {
-        records,
-        pages,
-      }
+      data: { records, pages },
     } = await instance.get(`me/folders?${params.toString()}`);
 
     return {
       pages: mapPagesToResponsePages(pages),
       records: records.map((record: any) => new FolderModel(record)),
-    }
+    };
   }
 
-  static async createDriveFile(folderId: string | number, form: FormData): Promise<DriveFileModel> {
+  static async createDriveFile(
+    folderId: string | number,
+    form: FormData,
+  ): Promise<DriveFileModel> {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.post(`folders/${folderId}/files`, form);
+    const { data } = await instance.post(`folders/${folderId}/files`, form);
 
     return new DriveFileModel(data);
   }
@@ -101,7 +92,7 @@ export default class FoldersService {
   static async find(id: number | string) {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.get(`folders/${id}`);
+    const { data } = await instance.get(`folders/${id}`);
 
     return new FolderModel(data);
   }
@@ -115,30 +106,33 @@ export default class FoldersService {
   }): Promise<FolderModel> {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.post('folders', {
+    const { data } = await instance.post("folders", {
       folder: {
         folder_private: folderPrivate,
-        name
-      }
+        name,
+      },
     });
 
     return new FolderModel(data);
   }
 
-  static async update(folder: FolderModel, {
-    folderPrivate,
-    name,
-  }: {
-    folderPrivate: boolean;
-    name: string;
-  }): Promise<FolderModel> {
+  static async update(
+    folder: FolderModel,
+    {
+      folderPrivate,
+      name,
+    }: {
+      folderPrivate: boolean;
+      name: string;
+    },
+  ): Promise<FolderModel> {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.put(`folders/${folder.id}`, {
+    const { data } = await instance.put(`folders/${folder.id}`, {
       folder: {
         folder_private: folderPrivate,
-        name
-      }
+        name,
+      },
     });
 
     return new FolderModel(data);

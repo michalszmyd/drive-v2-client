@@ -1,9 +1,5 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DashboardPage from "../pages/activities-page";
-
 
 const router = createBrowserRouter([
   {
@@ -13,7 +9,5 @@ const router = createBrowserRouter([
 ]);
 
 export default function MainRouter() {
-  return (
-    <RouterProvider router={router} />
-  )
+  return <RouterProvider router={router} />;
 }

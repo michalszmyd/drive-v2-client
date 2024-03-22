@@ -1,9 +1,11 @@
 import { css } from "@emotion/css";
-import {Checkbox, Col, Input} from "antd";
-import {ChangeEvent} from "react";
+import { Checkbox, Col, Input } from "antd";
+import { ChangeEvent } from "react";
 import DriveFileModelForm from "../../models/forms/drive-file-model-form";
 import FilePreview from "./file-preview";
-import RichTextEditor, { RichEditorChangeEvent } from "../shared/rich-text-editor";
+import RichTextEditor, {
+  RichEditorChangeEvent,
+} from "../shared/rich-text-editor";
 
 export default function FileUploadInputs({
   fileForm,
@@ -14,21 +16,32 @@ export default function FileUploadInputs({
 }: {
   fileForm: DriveFileModelForm;
   fieldsShown?: boolean;
-  onTogglePinned: ({fileForm}: {fileForm: DriveFileModelForm, to: boolean}) => void;
+  onTogglePinned: ({
+    fileForm,
+  }: {
+    fileForm: DriveFileModelForm;
+    to: boolean;
+  }) => void;
   onRemoveFile: (fileForm: DriveFileModelForm) => void;
   onFileChange: ({
     fileForm,
-    event
+    event,
   }: {
     fileForm: DriveFileModelForm;
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | RichEditorChangeEvent;
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | RichEditorChangeEvent;
   }) => void;
 }) {
-  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | RichEditorChangeEvent) => {
-    onFileChange({fileForm, event});
-  }
+  const onChange = (
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | RichEditorChangeEvent,
+  ) => {
+    onFileChange({ fileForm, event });
+  };
 
-  const {pinned, name, body, attachment} = fileForm;
+  const { pinned, name, body, attachment } = fileForm;
 
   const attachmentFile = attachment?.file;
   const previewSource = attachmentFile && URL.createObjectURL(attachmentFile);
@@ -49,7 +62,7 @@ export default function FileUploadInputs({
             className={styles.inputField}
             checked={pinned}
             name="pinned"
-            onChange={() => onTogglePinned({fileForm, to: !pinned})}
+            onChange={() => onTogglePinned({ fileForm, to: !pinned })}
           >
             Pinned
           </Checkbox>
@@ -60,29 +73,25 @@ export default function FileUploadInputs({
             value={name}
             onChange={onChange}
           />
-          <RichTextEditor
-            value={body}
-            name="body"
-            onChange={onChange}
-          />
+          <RichTextEditor value={body} name="body" onChange={onChange} />
         </>
       )}
     </Col>
-  )
+  );
 }
 
 const styles = {
   inputField: css({
-    margin: '6px 0',
+    margin: "6px 0",
   }),
   previewContainer: css({
-    position: 'relative',
-    display: 'flex',
+    position: "relative",
+    display: "flex",
     flex: 1,
   }),
   removeButton: css({
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1,
-    color: 'red',
-  })
-}
+    color: "red",
+  }),
+};

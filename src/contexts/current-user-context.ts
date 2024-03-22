@@ -6,7 +6,7 @@ const CurrentUserContext = React.createContext<{
   setCurrentUser: (state: UserModel) => void;
 }>({
   currentUser: null,
-  setCurrentUser: (_state: UserModel) => {}
+  setCurrentUser: (_state: UserModel) => {},
 });
 
 export default CurrentUserContext;

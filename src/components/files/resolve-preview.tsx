@@ -3,17 +3,24 @@ import { css } from "@emotion/css";
 import { Image, Popover } from "antd";
 import DriveFileModel from "../../models/drive-file-model";
 
-export function ResolvePreview({item}: {item: DriveFileModel}) {
+export function ResolvePreview({ item }: { item: DriveFileModel }) {
   if (!item.sourceUrl) {
     return null;
   }
 
   if (item.isVideo) {
-    return <video onClick={() => {}} controls className={`item-video ${styles.videoPreview}`} src={item.sourceUrl} />
+    return (
+      <video
+        onClick={() => {}}
+        controls
+        className={`item-video ${styles.videoPreview}`}
+        src={item.sourceUrl}
+      />
+    );
   }
 
   if (item.isImage) {
-    return <Image src={item.sourceUrl} />
+    return <Image src={item.sourceUrl} />;
   }
 
   return (
@@ -22,25 +29,25 @@ export function ResolvePreview({item}: {item: DriveFileModel}) {
         <CodepenOutlined className={styles.icon} />
       </Popover>
     </div>
-  )
+  );
 }
 
 const styles = {
   videoPreview: css({
-    maxHeight: '300px',
-    width: 'auto',
-    maxWidth: '100%',
+    maxHeight: "300px",
+    width: "auto",
+    maxWidth: "100%",
   }),
   noPreview: css({
     padding: 12,
-    display: 'flex !important',
+    display: "flex !important",
     flex: 1,
-    alignSelf: 'center',
-    justifySelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignSelf: "center",
+    justifySelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
   }),
   icon: css({
     fontSize: 48,
-  })
-}
+  }),
+};

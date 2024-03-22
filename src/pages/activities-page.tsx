@@ -1,6 +1,6 @@
 import { Col, Divider, Image, Row, TablePaginationConfig } from "antd";
 import { useContext, useEffect, useState } from "react";
-import AuthenticatedRoute from "../components/authenticated/authenticated-route"
+import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
 import ItemModel from "../models/item-model";
 import ItemsService from "../services/items-service";
@@ -25,78 +25,84 @@ export default function ActivitiesPage() {
 
   const [params] = useSearchParams();
 
-  const {currentUser} = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
-  const fetchData = ({page, per}: {page: number; per: number}) => {
-    ItemsService
-      .all({page, per})
-      .then(({records, pages}) => {
+  const fetchData = ({ page, per }: { page: number; per: number }) => {
+    ItemsService.all({ page, per })
+      .then(({ records, pages }) => {
         setItems(records);
         setTableParams({
           pagination: {
             current: pages.currentPage,
             pageSize: pages.per,
             total: pages.total,
-          }
-        })
-      }).finally(() => {
+          },
+        });
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
-  const fetchSearchData = ({page, per, query}: {page: number, per: number, query: string}) => {
+  const fetchSearchData = ({
+    page,
+    per,
+    query,
+  }: {
+    page: number;
+    per: number;
+    query: string;
+  }) => {
     setIsLoading(true);
 
-    ItemsService
-      .search({page, per, query})
-      .then(({records, pages}) => {
+    ItemsService.search({ page, per, query })
+      .then(({ records, pages }) => {
         setItems(records);
         setTableParams({
           pagination: {
             current: pages.currentPage,
             pageSize: pages.per,
             total: pages.total,
-          }
-        })
-      }).finally(() => {
+          },
+        });
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
-  const onTableChange = ({current, pageSize}: TablePaginationConfig) => {
+  const onTableChange = ({ current, pageSize }: TablePaginationConfig) => {
     const defaultParams = {
       page: current || 1,
-      per: pageSize || 10
-    }
+      per: pageSize || 10,
+    };
 
     if (isSearching) {
-      return fetchSearchData({...defaultParams, query: searchQuery});
+      return fetchSearchData({ ...defaultParams, query: searchQuery });
     }
 
     return fetchData(defaultParams);
-  }
+  };
 
   const onSearch = () => {
     setIsSearching(true);
 
-    fetchSearchData(
-      {page: 1, per: 10, query: searchQuery}
-    )
-  }
+    fetchSearchData({ page: 1, per: 10, query: searchQuery });
+  };
 
   useEffect(() => {
     const querySearch = params.get("q");
 
     if (querySearch && StringHelper.isPresent(querySearch)) {
-      fetchSearchData({page: 1, per: 10, query: querySearch})
+      fetchSearchData({ page: 1, per: 10, query: querySearch });
     } else {
-      fetchData({page: 1, per: 10});
+      fetchData({ page: 1, per: 10 });
     }
   }, [params]);
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title="Recent Files" breadcrumbs={['Dashboard']}>
+      <MainAppWrapper title="Recent Files" breadcrumbs={["Dashboard"]}>
         <Divider orientation="left">Search Files</Divider>
         <Row gutter={[16, 16]}>
           <Col span={24}>
@@ -104,7 +110,7 @@ export default function ActivitiesPage() {
               placeholder="input search text"
               onSearch={onSearch}
               enterButton
-              onChange={({target: {value}}) => setSearchQuery(value)}
+              onChange={({ target: { value } }) => setSearchQuery(value)}
             />
           </Col>
         </Row>
@@ -117,9 +123,7 @@ export default function ActivitiesPage() {
                 isLoading={isLoading}
                 onChange={onTableChange}
                 pagination={tableParams.pagination}
-                dataSource={items.map((item) => (
-                  ItemRow({item, currentUser})
-                ))}
+                dataSource={items.map((item) => ItemRow({ item, currentUser }))}
               />
             </Image.PreviewGroup>
           </Col>

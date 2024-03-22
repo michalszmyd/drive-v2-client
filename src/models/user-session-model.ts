@@ -20,7 +20,7 @@ export default class UserSessionModel {
     user_agent,
     device_type,
   }: {
-    id: number,
+    id: number;
     created_at: string;
     updated_at: string;
     last_used_at: string;

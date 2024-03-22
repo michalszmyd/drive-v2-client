@@ -2,7 +2,7 @@ import StringHelper from "../../helpers/string-helper";
 
 export class ValidationError {
   field: string;
-  message: string
+  message: string;
 
   constructor(field: string, message: string) {
     this.field = field;
@@ -19,7 +19,7 @@ export default class Validator {
 
   isValid = () => {
     return this.errors.length === 0;
-  }
+  };
 
   validatePresenceOf(column: string, value: string) {
     if (StringHelper.isPresent(value)) {

@@ -2,7 +2,7 @@ import { StarFilled, StarOutlined } from "@ant-design/icons";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
 import { Badge, Button, Col, Divider, Image, Row } from "antd";
-import {  useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FoldersService from "../services/folders-service";
 import FolderModel from "../models/folder-model";
 import { Link } from "react-router-dom";
@@ -20,42 +20,42 @@ export default function DashboardPage() {
   const [items, setItems] = useState<ItemModel[]>([]);
   const [itemsLoading, setItemsLoading] = useState<boolean>(true);
 
-  const {currentUser} = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
 
   useEffect(() => {
-    FoldersService
-      .favorites({page: 1, per: 30})
-      .then(({records}: {records: FolderModel[]}) => {
-        setFavoriteFolders(records)
-      });
+    FoldersService.favorites({ page: 1, per: 30 }).then(
+      ({ records }: { records: FolderModel[] }) => {
+        setFavoriteFolders(records);
+      },
+    );
 
-    ItemsService
-      .all({page: 1, per: 10})
-      .then(({records}) => {
+    ItemsService.all({ page: 1, per: 10 })
+      .then(({ records }) => {
         setItems(records);
-      }).finally(() => {
+      })
+      .finally(() => {
         setItemsLoading(false);
       });
   }, []);
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title="Drive" breadcrumbs={['Dashboard']}>
+      <MainAppWrapper title="Drive" breadcrumbs={["Dashboard"]}>
         <Divider orientation="left">Your favorite folders</Divider>
         <Folders folders={favoriteFolders} onFavoriteClick={toggleFavorites} />
         <Divider orientation="left">Recent files</Divider>
         <Row justify="end">
           <Link to="/activities">
-            <Button shape="round" className={styles.viewAllButton}>View all</Button>
+            <Button shape="round" className={styles.viewAllButton}>
+              View all
+            </Button>
           </Link>
         </Row>
         <Image.PreviewGroup>
           <TableItemsList
             columns={tableHeader}
             isLoading={false}
-            dataSource={items.map((item) => (
-              ItemRow({item, currentUser})
-            ))}
+            dataSource={items.map((item) => ItemRow({ item, currentUser }))}
           />
         </Image.PreviewGroup>
       </MainAppWrapper>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
 const styles = {
   viewAllButton: css({
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     marginBottom: 14,
   }),
-}
+};

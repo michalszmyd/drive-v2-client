@@ -1,4 +1,9 @@
-import { CopyOutlined, DeleteOutlined, DownloadOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { Button, Space, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import { colors } from "../../consts/colors";
@@ -27,9 +32,9 @@ export default function CardExtraActions({
     if (sourceUrl && StringHelper.isPresent(sourceUrl)) {
       navigator.clipboard.writeText(sourceUrl);
 
-      toast.success("Copied to clipboard!")
+      toast.success("Copied to clipboard!");
     }
-  }
+  };
 
   return (
     <Space>
@@ -47,28 +52,32 @@ export default function CardExtraActions({
           </Button>
         </Tooltip>
       )}
-      {manageActionsEnabled && <Link to={editLinkTo}>
-        <Tooltip title={editTitle}>
-          <Button shape="circle" type="link">
-            <EditOutlined />
-          </Button>
+      {manageActionsEnabled && (
+        <Link to={editLinkTo}>
+          <Tooltip title={editTitle}>
+            <Button shape="circle" type="link">
+              <EditOutlined />
+            </Button>
+          </Tooltip>
+        </Link>
+      )}
+      {deleteOnClick && manageActionsEnabled && (
+        <Tooltip title={deleteTitle}>
+          <Button
+            disabled={!manageActionsEnabled}
+            onClick={deleteOnClick}
+            shape="circle"
+            type="link"
+            icon={<DeleteOutlined className={styles.deleteIcon} />}
+          />
         </Tooltip>
-      </Link>}
-      {deleteOnClick && manageActionsEnabled && <Tooltip title={deleteTitle}>
-        <Button
-          disabled={!manageActionsEnabled}
-          onClick={deleteOnClick}
-          shape="circle"
-          type="link"
-          icon={<DeleteOutlined className={styles.deleteIcon} />}
-        />
-      </Tooltip>}
+      )}
     </Space>
-  )
+  );
 }
 
 const styles = {
   deleteIcon: css({
     color: colors.redDelete,
-  })
-}
+  }),
+};

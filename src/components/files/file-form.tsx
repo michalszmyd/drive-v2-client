@@ -4,7 +4,9 @@ import { Button, Col, Row, Switch } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
 import { colors } from "../../consts/colors";
 import StringHelper from "../../helpers/string-helper";
-import DriveFileModelForm, { UploadFile } from "../../models/forms/drive-file-model-form";
+import DriveFileModelForm, {
+  UploadFile,
+} from "../../models/forms/drive-file-model-form";
 import FileUploadInputs from "./file-upload-inputs";
 import StringValidator from "../../validators/string-validator";
 
@@ -21,36 +23,36 @@ export default function FileForm({
     new DriveFileModelForm({
       id: fileId,
       folderId: fileFolderId,
-    })
+    }),
   ]);
   const [showPreview, setShowPreview] = useState<boolean>(true);
 
-  const onPaste = (event : any) => {
+  const onPaste = (event: any) => {
     const items = event.clipboardData?.items;
 
     if (!items) return;
 
-    for (let index in items) {
+    for (const index in items) {
       const item = items[index];
 
-      if (item.kind === 'file') {
+      if (item.kind === "file") {
         const blob = item.getAsFile();
-        const up = new UploadFile(({
-          file: blob
-        }))
+        const up = new UploadFile({
+          file: blob,
+        });
 
         onPushFile([up]);
       }
     }
-  }
+  };
 
   useEffect(() => {
-    window.addEventListener('paste', onPaste);
+    window.addEventListener("paste", onPaste);
 
     return () => {
-      window.removeEventListener('paste', onPaste)
-    }
-  }, [])
+      window.removeEventListener("paste", onPaste);
+    };
+  }, []);
 
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -63,18 +65,17 @@ export default function FileForm({
             folderId: fileFolderId,
           }),
         ]);
-      }).then(() => {
-        setFiles(
-          [
-            new DriveFileModelForm({
-              id: fileId,
-              folderId: fileFolderId,
-            })
-          ]
-        );
+      })
+      .then(() => {
+        setFiles([
+          new DriveFileModelForm({
+            id: fileId,
+            folderId: fileFolderId,
+          }),
+        ]);
         setShowPreview(true);
       });
-  }
+  };
 
   const onRemoveFile = (fileForm: DriveFileModelForm) => {
     setFiles((state) => {
@@ -98,62 +99,68 @@ export default function FileForm({
 
       return list;
     });
-  }
+  };
 
   const onUploadFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const {target: {files: uploadedFiles}} = event;
+    const {
+      target: { files: uploadedFiles },
+    } = event;
 
     if (!uploadedFiles) {
       return;
     }
 
-    const filesArray = Array
-      .from(uploadedFiles)
-      .map((uploadedFile: File) => new UploadFile(({
-        file: uploadedFile
-      })));
+    const filesArray = Array.from(uploadedFiles).map(
+      (uploadedFile: File) =>
+        new UploadFile({
+          file: uploadedFile,
+        }),
+    );
 
     onPushFile(filesArray);
-  }
+  };
 
   const onPushFile = (filesArray: UploadFile[]) => {
     setFiles((state) => {
-      let firstStateElement = state[0];
+      const firstStateElement = state[0];
 
       if (!firstStateElement.attachment) {
         const firstFile = filesArray[0];
 
         firstStateElement.attachment = firstFile;
-        firstStateElement.name = StringHelper.isBlank(firstStateElement.name) ? firstFile.file.name : firstStateElement.name;
+        firstStateElement.name = StringHelper.isBlank(firstStateElement.name)
+          ? firstFile.file.name
+          : firstStateElement.name;
         filesArray.shift();
       }
 
-      const newElements = filesArray.map((uploadedFile: UploadFile) => (
-        new DriveFileModelForm({
-          name: uploadedFile.file.name,
-          attachment: uploadedFile,
+      const newElements = filesArray.map(
+        (uploadedFile: UploadFile) =>
+          new DriveFileModelForm({
+            name: uploadedFile.file.name,
+            attachment: uploadedFile,
+          }),
+      );
+
+      return state
+        .map((element) => {
+          if (element.uniqueId === firstStateElement.uniqueId) {
+            return { ...firstStateElement };
+          }
+
+          return element;
         })
-      ));
+        .concat(newElements);
+    });
+  };
 
-      return state.map((element) => {
-        if (element.uniqueId === firstStateElement.uniqueId) {
-          return {...firstStateElement}
-        }
-
-        return element
-      }).concat(newElements)
-    })
-  }
-
-  const onTogglePinned = (
-    {
-      fileForm,
-      to,
-    }: {
-      fileForm: DriveFileModelForm;
-      to: boolean;
-    }
-  ) => {
+  const onTogglePinned = ({
+    fileForm,
+    to,
+  }: {
+    fileForm: DriveFileModelForm;
+    to: boolean;
+  }) => {
     setFiles((state) => {
       return state.map((stateFile) => {
         if (stateFile.uniqueId === fileForm.uniqueId) {
@@ -163,29 +170,26 @@ export default function FileForm({
         } else {
           return stateFile;
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
-  const onChange = (
-    {
-      event,
-      fileForm,
-    }: {
-      fileForm: DriveFileModelForm;
-      event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | {target: {value: string; name: string}};
-    }
-  ) => {
+  const onChange = ({
+    event,
+    fileForm,
+  }: {
+    fileForm: DriveFileModelForm;
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | { target: { value: string; name: string } };
+  }) => {
     const {
-      target: {
-        value,
-        name,
-      },
+      target: { value, name },
     }: {
       target: {
         value: string;
         name: string;
-      }
+      };
     } = event;
 
     setFiles((state) => {
@@ -197,29 +201,36 @@ export default function FileForm({
         } else {
           return stateFile;
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   const onToggleShowPreview = () => {
-    setShowPreview((state) => !state)
-  }
+    setShowPreview((state) => !state);
+  };
 
   const listFiles = files.length > 1;
   const primaryFile = files[0];
-  const isUploadValid = new StringValidator(primaryFile.name).isPresent().isValid;
+  const isUploadValid = new StringValidator(primaryFile.name).isPresent()
+    .isValid;
 
   return (
-    <form className={styles.uploadForm} encType='multipart/form-data' onSubmit={onSubmit}>
+    <form
+      className={styles.uploadForm}
+      encType="multipart/form-data"
+      onSubmit={onSubmit}
+    >
       <h1>Upload your files</h1>
       <Row gutter={[0, 12]} justify="start">
         <Col span={24}>
-          {listFiles && <Switch
-            checked={showPreview}
-            onChange={onToggleShowPreview}
-            checkedChildren="Fields"
-            unCheckedChildren="Hidden"
-          />}
+          {listFiles && (
+            <Switch
+              checked={showPreview}
+              onChange={onToggleShowPreview}
+              checkedChildren="Fields"
+              unCheckedChildren="Hidden"
+            />
+          )}
         </Col>
         {files.map((file) => (
           <FileUploadInputs
@@ -247,7 +258,9 @@ export default function FileForm({
           </div>
         </Col>
         <Col span={24}>
-          <Button disabled={!isUploadValid} type="primary" onClick={onSubmit}>Create</Button>
+          <Button disabled={!isUploadValid} type="primary" onClick={onSubmit}>
+            Create
+          </Button>
         </Col>
       </Row>
     </form>
@@ -260,12 +273,12 @@ function UploadButton() {
       <UploadOutlined />
       Upload files
     </div>
-  )
+  );
 }
 
 enum NameType {
-  Name = 'name',
-  Body = 'body',
+  Name = "name",
+  Body = "body",
 }
 
 const styles = {
@@ -279,7 +292,7 @@ const styles = {
     box-shadow: 0px 0px 24px -10px rgba(66, 68, 90, 1);
   `),
   uploader: css({
-    display: 'inline-block',
+    display: "inline-block",
   }),
   uploadButton: css(`
     background-color: ${colors.secondary};
@@ -305,4 +318,4 @@ const styles = {
     height: 64,
     width: 64,
   },
-}
+};

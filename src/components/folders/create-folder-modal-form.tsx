@@ -3,7 +3,7 @@ import { useState } from "react";
 import FolderModel from "../../models/folder-model";
 import FolderModelForm from "../../models/forms/folder-model-form";
 import FoldersService from "../../services/folders-service";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export default function CreateFolderModalForm({
   onCreate,
@@ -21,41 +21,45 @@ export default function CreateFolderModalForm({
     if (folder.isValid()) {
       setIsLoading(true);
 
-      FoldersService
-        .create(folder.toParams())
+      FoldersService.create(folder.toParams())
         .then((folder) => {
-          toast.success('Folder created');
+          toast.success("Folder created");
           setFolder(new FolderModelForm());
           onCreate(folder);
         })
-        .catch(({message}) => {
+        .catch(({ message }) => {
           toast.error(`There was an error while trying to create, ${message}`);
         })
         .finally(() => {
           setIsLoading(false);
-        })
+        });
     }
-  }
+  };
 
   const onToggleFolderPrivate = () => {
-    setFolder((state) => (
-      new FolderModelForm({
-        ...state,
-        folderPrivate: !state.folderPrivate,
-      })
-    ))
-  }
+    setFolder(
+      (state) =>
+        new FolderModelForm({
+          ...state,
+          folderPrivate: !state.folderPrivate,
+        }),
+    );
+  };
 
-  const onChange = ({target: {name, value}}: {target: {name: string; value: string}}) => {
+  const onChange = ({
+    target: { name, value },
+  }: {
+    target: { name: string; value: string };
+  }) => {
     setFolder(
       new FolderModelForm({
         ...folder,
         [name]: value,
-      })
-    )
-  }
+      }),
+    );
+  };
 
-  const {folderPrivate, name} = folder;
+  const { folderPrivate, name } = folder;
 
   return (
     <Modal
@@ -66,24 +70,38 @@ export default function CreateFolderModalForm({
         <Button key="back" onClick={onCloseModal}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" loading={isLoading} onClick={onSubmitForm}>
+        <Button
+          key="submit"
+          type="primary"
+          loading={isLoading}
+          onClick={onSubmitForm}
+        >
           Create
-        </Button>
+        </Button>,
       ]}
     >
       <form onSubmit={onSubmitForm}>
         <Row>
           <Space>
             <Col>
-              <Input placeholder="Folder name" name="name" value={name} onChange={onChange} />
+              <Input
+                placeholder="Folder name"
+                name="name"
+                value={name}
+                onChange={onChange}
+              />
             </Col>
             <Col>
-              <Checkbox checked={folderPrivate} onChange={onToggleFolderPrivate}>Folder private</Checkbox>
+              <Checkbox
+                checked={folderPrivate}
+                onChange={onToggleFolderPrivate}
+              >
+                Folder private
+              </Checkbox>
             </Col>
           </Space>
         </Row>
       </form>
     </Modal>
-  )
-
+  );
 }

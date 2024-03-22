@@ -9,8 +9,8 @@ export default class Model {
   }
 
   assignAttributes(attributes: { [key: string | number | symbol]: unknown }) {
-    Object.keys(attributes).forEach((key : string) => {
+    Object.keys(attributes).forEach((key: string) => {
       this[key] = attributes[key];
-    })
+    });
   }
 }

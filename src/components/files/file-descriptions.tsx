@@ -8,26 +8,45 @@ function resolveHostingBadgeColor(hosting: string | null): string {
   }
 
   const hash = {
-    "amazon_s3": "cyan",
-    "discord": "purple",
-    "local": "lime",
-  }
+    amazon_s3: "cyan",
+    discord: "purple",
+    local: "lime",
+  };
 
-  return hash[hosting as keyof typeof hash] || "yellow"
+  return hash[hosting as keyof typeof hash] || "yellow";
 }
 
-export default function FileDescriptions({file, descriptionsParams}: {descriptionsParams: any, file: DriveFileModel}) {
+export default function FileDescriptions({
+  file,
+  descriptionsParams,
+}: {
+  descriptionsParams: any;
+  file: DriveFileModel;
+}) {
   return (
     <Descriptions {...descriptionsParams}>
-      <Descriptions.Item key={file.folderId || 'file-folder'} label="Folder" span={3}>{file.folder?.name}</Descriptions.Item>
+      <Descriptions.Item
+        key={file.folderId || "file-folder"}
+        label="Folder"
+        span={3}
+      >
+        {file.folder?.name}
+      </Descriptions.Item>
       <Descriptions.Item label="Hosting">
-        <Badge color={resolveHostingBadgeColor(file.hostingSource)} text={file.hostingSource && StringHelper.humanize(file.hostingSource)} />
+        <Badge
+          color={resolveHostingBadgeColor(file.hostingSource)}
+          text={file.hostingSource && StringHelper.humanize(file.hostingSource)}
+        />
       </Descriptions.Item>
       <Descriptions.Item label="User">{file.user?.name}</Descriptions.Item>
-      <Descriptions.Item label="Vibrant color">{file.vibrantColor}</Descriptions.Item>
-      <Descriptions.Item label="Private">{file.folder?.folderPrivate ? 'Yes' : 'No'}</Descriptions.Item>
+      <Descriptions.Item label="Vibrant color">
+        {file.vibrantColor}
+      </Descriptions.Item>
+      <Descriptions.Item label="Private">
+        {file.folder?.folderPrivate ? "Yes" : "No"}
+      </Descriptions.Item>
       <Descriptions.Item label="Created at">{file.createdAt}</Descriptions.Item>
       <Descriptions.Item label="Updated at">{file.updatedAt}</Descriptions.Item>
     </Descriptions>
-  )
+  );
 }

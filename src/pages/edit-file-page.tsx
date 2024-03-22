@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Badge, Button, Checkbox, Col, Descriptions, Input, Popover, Row, Space, Tooltip } from "antd";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Col,
+  Descriptions,
+  Input,
+  Popover,
+  Row,
+  Space,
+  Tooltip,
+} from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -23,14 +34,13 @@ export default function EditFilePage() {
   const [file, setFile] = useState<DriveFileModel>(new DriveFileModel());
   const [moveToFolders, setMoveToFolders] = useState<FolderModel[]>([]);
 
-  const {id} = useParams();
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
-      DriveFilesService
-        .find(id)
+      DriveFilesService.find(id)
         .then((file) => {
           setFile(file);
         })
@@ -46,82 +56,88 @@ export default function EditFilePage() {
           href: `/folders/${file.folder.id}`,
         },
         {
-          title: file.name
-        }
-      ]
+          title: file.name,
+        },
+      ];
     }
 
     return [file.name];
-  }
+  };
 
   const onSave = () => {
-    const {body, name, pinned} = file;
+    const { body, name, pinned } = file;
 
     DriveFilesService.update(file, {
-      body, name, pinned,
-    }).then(() => {
-      toast.success('File saved.');
-
-      navigate(`/files/${file.id}`);
+      body,
+      name,
+      pinned,
     })
-    .catch((e) => {
-      const {data} = JSON.parse(e.message);
+      .then(() => {
+        toast.success("File saved.");
 
-      toast.error(`Error: ${JSON.stringify(data)}`);
-    });
-  }
+        navigate(`/files/${file.id}`);
+      })
+      .catch((e) => {
+        const { data } = JSON.parse(e.message);
+
+        toast.error(`Error: ${JSON.stringify(data)}`);
+      });
+  };
 
   const moveToFolder = async (folderId: number | null) => {
     if (folderId === null) {
       return;
     }
 
-    await DriveFilesService.update(file, {folderId}).then((updatedFile) => {
-      toast.success('File moved');
+    await DriveFilesService.update(file, { folderId })
+      .then((updatedFile) => {
+        toast.success("File moved");
 
-      setFile(updatedFile);
-    })
-    .catch(({message}) => {
-      toast.error(`There was an error while trying to move, ${message}`);
+        setFile(updatedFile);
+      })
+      .catch(({ message }) => {
+        toast.error(`There was an error while trying to move, ${message}`);
 
-      return null;
-    });
-  }
+        return null;
+      });
+  };
 
   const onFoldersLoad = () => {
     if (ArrayHelper.isAny(moveToFolders)) {
       return;
     }
 
-    FoldersService.me({page: 1, per: 100}).then(({records}) => {
+    FoldersService.me({ page: 1, per: 100 }).then(({ records }) => {
       setMoveToFolders(records);
-    })
-  }
+    });
+  };
 
-  const onChange = ({target: {value, name}}: {target: {value: string; name: string;}}) => {
+  const onChange = ({
+    target: { value, name },
+  }: {
+    target: { value: string; name: string };
+  }) => {
     setFile((state) => {
-      const driveFile = new DriveFileModel()
+      const driveFile = new DriveFileModel();
       driveFile.assignAttributes(state);
       driveFile[name] = value;
 
       return driveFile;
-    })
+    });
   };
 
   const onTogglePinned = () => {
     setFile((state) => {
-      const driveFile = new DriveFileModel()
+      const driveFile = new DriveFileModel();
       driveFile.assignAttributes(state);
       driveFile.pinned = !state.pinned;
 
       return driveFile;
-    })
-  }
+    });
+  };
 
   if (!file.id && !isLoading) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />;
   }
 
   return (
@@ -131,24 +147,43 @@ export default function EditFilePage() {
           descriptionsParams={{
             bordered: true,
             title: <Input name="name" value={file.name} onChange={onChange} />,
-            extra: <div className={styles.descriptionExtra}>
-              <Space>
-                <Popover content={
-                  <div className={styles.popoverContent}>
-                    {moveToFolders.map((folder: FolderModel) => (
-                      <p>
-                        <Button onClick={() => moveToFolder(folder.id)} type="link">{folder.name}</Button>
-                      </p>
-                    ))}
-                  </div>
-                } title="Move to folder" trigger="click">
-                  <Button onClick={onFoldersLoad} shape="circle" icon={<FolderOutlined />} />
-                </Popover>
-                <Tooltip title="Save">
-                  <Button icon={<CheckOutlined color={colors.green} />} shape="circle" onClick={onSave} />
-                </Tooltip>
-              </Space>
-            </div>
+            extra: (
+              <div className={styles.descriptionExtra}>
+                <Space>
+                  <Popover
+                    content={
+                      <div className={styles.popoverContent}>
+                        {moveToFolders.map((folder: FolderModel) => (
+                          <p>
+                            <Button
+                              onClick={() => moveToFolder(folder.id)}
+                              type="link"
+                            >
+                              {folder.name}
+                            </Button>
+                          </p>
+                        ))}
+                      </div>
+                    }
+                    title="Move to folder"
+                    trigger="click"
+                  >
+                    <Button
+                      onClick={onFoldersLoad}
+                      shape="circle"
+                      icon={<FolderOutlined />}
+                    />
+                  </Popover>
+                  <Tooltip title="Save">
+                    <Button
+                      icon={<CheckOutlined color={colors.green} />}
+                      shape="circle"
+                      onClick={onSave}
+                    />
+                  </Tooltip>
+                </Space>
+              </div>
+            ),
           }}
           file={file}
         />
@@ -167,7 +202,7 @@ export default function EditFilePage() {
             <Col span={24}>
               <RichTextEditor
                 name="body"
-                value={file.body || ''}
+                value={file.body || ""}
                 onChange={onChange}
               />
             </Col>
@@ -181,7 +216,7 @@ export default function EditFilePage() {
         </div>
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }
 
 const styles = {
@@ -189,17 +224,17 @@ const styles = {
     backgroundColor: colors.gray,
     padding: 24,
     marginTop: 16,
-    textAlign: 'justify',
-    textJustify: 'inter-word',
+    textAlign: "justify",
+    textJustify: "inter-word",
   }),
   popoverContent: css({
-    maxHeight: '400px',
-    overflow: 'auto',
+    maxHeight: "400px",
+    overflow: "auto",
   }),
   inputField: css({
-    margin: '6px 0',
+    margin: "6px 0",
   }),
   descriptionExtra: css({
-    margin: '0 5px',
+    margin: "0 5px",
   }),
-}
+};

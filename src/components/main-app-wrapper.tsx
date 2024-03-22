@@ -1,6 +1,34 @@
-import { ApiOutlined, BankOutlined, CompassOutlined, ControlOutlined, DeleteOutlined, FolderAddOutlined, FolderOpenOutlined, LeftOutlined, MenuUnfoldOutlined, ProfileOutlined, RightOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import {
+  ApiOutlined,
+  BankOutlined,
+  CompassOutlined,
+  ControlOutlined,
+  DeleteOutlined,
+  FolderAddOutlined,
+  FolderOpenOutlined,
+  LeftOutlined,
+  MenuUnfoldOutlined,
+  ProfileOutlined,
+  RightOutlined,
+  UserOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 import { css } from "@emotion/css";
-import { Breadcrumb, Button, Col, Drawer, Dropdown, Input, Layout, Menu, MenuProps, Row, Space, Switch, Tag } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Col,
+  Drawer,
+  Dropdown,
+  Input,
+  Layout,
+  Menu,
+  MenuProps,
+  Row,
+  Space,
+  Switch,
+  Tag,
+} from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import Sider, { SiderTheme } from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
@@ -14,7 +42,7 @@ import { H1 } from "./shared/text-components";
 import CurrentUserContext from "../contexts/current-user-context";
 import Loading from "./shared/loading";
 import { MobileOnlyView } from "react-device-detect";
-import {isMobile} from 'react-device-detect';
+import { isMobile } from "react-device-detect";
 import OverflowButton from "./shared/overflow-button";
 
 interface MainAppWrapperParams {
@@ -27,7 +55,7 @@ interface MainAppWrapperParams {
 type BreadcrumbElement = {
   href?: string;
   title: string;
-}
+};
 
 export default function MainAppWrapper({
   children,
@@ -37,139 +65,161 @@ export default function MainAppWrapper({
 }: MainAppWrapperParams) {
   const [leftBarMenuCollapsed, setLeftBarMenuCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(Theme.Light);
-  const [isCreateFolderModalOpened, setIsCreateFolderModalOpened] = useState(false);
-  const {currentUser} = useContext(CurrentUserContext);
+  const [isCreateFolderModalOpened, setIsCreateFolderModalOpened] =
+    useState(false);
+  const { currentUser } = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
-  const toggleTheme = () => setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
+  const toggleTheme = () =>
+    setTheme(theme === Theme.Light ? Theme.Dark : Theme.Light);
 
   const themeColors = resolveThemeColor(theme);
 
-  const closeModal = () => { setIsCreateFolderModalOpened(false) };
+  const closeModal = () => {
+    setIsCreateFolderModalOpened(false);
+  };
   const openModal = () => {
     setIsCreateFolderModalOpened(true);
-  }
+  };
   const onCreateFolder = (folder: FolderModel) => {
     navigate(`/folders/${folder.id}`);
     closeModal();
-  }
+  };
 
-  const lowerMenuItems: MenuProps['items'] = [
+  const lowerMenuItems: MenuProps["items"] = [
     {
-      key: '1',
-      label:  <Link to="/dashboard">My drive</Link>,
-      icon: <CompassOutlined />
+      key: "1",
+      label: <Link to="/dashboard">My drive</Link>,
+      icon: <CompassOutlined />,
     },
     {
-      key: '2',
-      label: 'Folders',
+      key: "2",
+      label: "Folders",
       children: [
         {
-          key: '2.1',
-          label: <Link to="/folders">Folders</Link>
+          key: "2.1",
+          label: <Link to="/folders">Folders</Link>,
         },
         {
-          key: '2.2',
+          key: "2.2",
           label: <Link to="/my-folders">My Folders</Link>,
         },
         {
-          key: '2.3',
+          key: "2.3",
           label: <a onClick={openModal}>Create folder</a>,
-          icon: <FolderAddOutlined />
+          icon: <FolderAddOutlined />,
         },
       ],
-      icon: <FolderOpenOutlined />
+      icon: <FolderOpenOutlined />,
     },
     {
-      key: '3',
-      label: 'Applications',
+      key: "3",
+      label: "Applications",
       icon: <ApiOutlined />,
       children: [
         {
-
-          key: '3.1',
-          label: <Link to="/applications">
-            <Space>
-              Applications
-              <Tag color="cyan">API</Tag>
-            </Space>
-          </Link>,
+          key: "3.1",
+          label: (
+            <Link to="/applications">
+              <Space>
+                Applications
+                <Tag color="cyan">API</Tag>
+              </Space>
+            </Link>
+          ),
         },
         {
-          key: '3.2',
-          label: <Link to="/applications/api-docs">API Docs</Link>
-        }
-      ]
+          key: "3.2",
+          label: <Link to="/applications/api-docs">API Docs</Link>,
+        },
+      ],
     },
     {
-      key: '4',
+      key: "4",
       label: <Link to="/deleted-files">Deleted Files</Link>,
       icon: <DeleteOutlined />,
-    }
-  ]
+    },
+  ];
 
   const adminPanelMenuItems = {
-    key: '5',
-    label: 'Admin',
+    key: "5",
+    label: "Admin",
     icon: <BankOutlined />,
     children: [
       {
-        key: '5.1',
+        key: "5.1",
         label: <Link to="/admin/users">Users</Link>,
         icon: <UserSwitchOutlined />,
       },
       {
-        key: '5.2',
+        key: "5.2",
         label: <Link to="/admin/applications">Applications</Link>,
         icon: <ControlOutlined />,
       },
       {
-        key: '5.3',
-        label: 'Files',
+        key: "5.3",
+        label: "Files",
         icon: <ProfileOutlined />,
         children: [
           {
-            key: '5.3.1',
-            label:  <Link to="/admin/deleted-files">Deleted files</Link>,
+            key: "5.3.1",
+            label: <Link to="/admin/deleted-files">Deleted files</Link>,
             icon: <DeleteOutlined />,
-          }
-        ]
-      }
-    ]
-  }
+          },
+        ],
+      },
+    ],
+  };
 
   currentUser?.admin && lowerMenuItems.push(adminPanelMenuItems);
 
   return (
-    <ThemeContext.Provider value={{theme, setTheme: toggleTheme}}>
-      <CreateFolderModalForm onCreate={onCreateFolder} opened={isCreateFolderModalOpened} onCloseModal={closeModal} />
-      <Layout style={{display: 'flex', flex: 1, minHeight: '100vh'}}>
+    <ThemeContext.Provider value={{ theme, setTheme: toggleTheme }}>
+      <CreateFolderModalForm
+        onCreate={onCreateFolder}
+        opened={isCreateFolderModalOpened}
+        onCloseModal={closeModal}
+      />
+      <Layout style={{ display: "flex", flex: 1, minHeight: "100vh" }}>
         <Leftbar
           theme={theme}
           leftBarMenuCollapsed={leftBarMenuCollapsed}
           setLeftBarMenuCollapsed={setLeftBarMenuCollapsed}
           lowerMenuItems={lowerMenuItems}
         />
-        <Layout style={{ background: themeColors.background, padding: '0 14px 0', flex: 1, display: 'flex', }}>
+        <Layout
+          style={{
+            background: themeColors.background,
+            padding: "0 14px 0",
+            flex: 1,
+            display: "flex",
+          }}
+        >
           <AppHeader
             theme={themeColors}
             // rightMenuChildren={
             // }
           >
             <Space>
-              <Breadcrumb style={{ margin: '16px 0' }}>
+              <Breadcrumb style={{ margin: "16px 0" }}>
                 {breadcrumbs.map((breadcrumb) => (
                   <BreadcrumbItem breadcrumbItem={breadcrumb} />
                 ))}
               </Breadcrumb>
             </Space>
           </AppHeader>
-          <Content className={ReactHelper.arrayToClassName(styles.content)} style={{background: themeColors.background}}>
+          <Content
+            className={ReactHelper.arrayToClassName(styles.content)}
+            style={{ background: themeColors.background }}
+          >
             {title && <H1>{title}</H1>}
             {isLoading ? <Loading color={colors.textBlack} /> : children}
           </Content>
           <MobileOnlyView>
-            <OverflowButton onClick={() => setLeftBarMenuCollapsed(true)} icon={<MenuUnfoldOutlined />} />
+            <OverflowButton
+              onClick={() => setLeftBarMenuCollapsed(true)}
+              icon={<MenuUnfoldOutlined />}
+            />
           </MobileOnlyView>
         </Layout>
       </Layout>
@@ -184,24 +234,36 @@ function Search() {
 
   const onSubmit = () => {
     navigate(`/activities?q=${q}`);
-  }
+  };
 
   return (
     <Input.Search
       value={q}
       placeholder="Type to search"
-      onChange={({target: {value}}) => setQ(value)}
+      onChange={({ target: { value } }) => setQ(value)}
       onSearch={onSubmit}
     />
-  )
+  );
 }
 
-function AppHeader({theme, children, rightMenuChildren}: {theme: AppTheme, children?: React.ReactNode, rightMenuChildren?: React.ReactNode}) {
+function AppHeader({
+  theme,
+  children,
+  rightMenuChildren,
+}: {
+  theme: AppTheme;
+  children?: React.ReactNode;
+  rightMenuChildren?: React.ReactNode;
+}) {
   return (
-    <Header style={{ padding: '0 24px 0 0', backgroundColor: theme.background}}>
+    <Header
+      style={{ padding: "0 24px 0 0", backgroundColor: theme.background }}
+    >
       <Row justify="start" align="middle">
         <Col span={6} className={styles.menuLeft}>
-          {children ? children : (
+          {children ? (
+            children
+          ) : (
             <Space>
               <Button shape="circle" type="link">
                 <LeftOutlined />
@@ -212,33 +274,45 @@ function AppHeader({theme, children, rightMenuChildren}: {theme: AppTheme, child
             </Space>
           )}
         </Col>
-        <Col style={{display: 'flex'}} span={14}>
+        <Col style={{ display: "flex" }} span={14}>
           <Search />
         </Col>
         <Col span={4} className={styles.menuRight}>
           <Space>
             {rightMenuChildren}
-            <Dropdown menu={{ items: [
-              {
-                key: 'menu-right-profile-1',
-                label: <Link to="/profile">My profile</Link>
-              },
-              {
-                key: 'menu-right-logout-2',
-                label: <Link to="/settings">Settings</Link>
-              },
-              {
-                key: 'menu-right-logout-3',
-                label: <Link to="/profile">Log out</Link>
-              }
-            ] }} placement="bottom" arrow>
-              <Button type="primary" shape="circle" className={styles.avatar} size="large" icon={<UserOutlined />} />
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "menu-right-profile-1",
+                    label: <Link to="/profile">My profile</Link>,
+                  },
+                  {
+                    key: "menu-right-logout-2",
+                    label: <Link to="/settings">Settings</Link>,
+                  },
+                  {
+                    key: "menu-right-logout-3",
+                    label: <Link to="/profile">Log out</Link>,
+                  },
+                ],
+              }}
+              placement="bottom"
+              arrow
+            >
+              <Button
+                type="primary"
+                shape="circle"
+                className={styles.avatar}
+                size="large"
+                icon={<UserOutlined />}
+              />
             </Dropdown>
           </Space>
         </Col>
       </Row>
     </Header>
-  )
+  );
 }
 
 function BreadcrumbItem({
@@ -246,19 +320,21 @@ function BreadcrumbItem({
 }: {
   breadcrumbItem: string | BreadcrumbElement;
 }) {
-  if (typeof breadcrumbItem === 'string') {
+  if (typeof breadcrumbItem === "string") {
     return (
       <Breadcrumb.Item key={breadcrumbItem}>{breadcrumbItem}</Breadcrumb.Item>
-    )
+    );
   }
 
   return (
     <Breadcrumb.Item key={breadcrumbItem.title}>
-      {
-        breadcrumbItem.href ? <Link to={breadcrumbItem.href}>{breadcrumbItem.title}</Link> : breadcrumbItem.title
-      }
+      {breadcrumbItem.href ? (
+        <Link to={breadcrumbItem.href}>{breadcrumbItem.title}</Link>
+      ) : (
+        breadcrumbItem.title
+      )}
     </Breadcrumb.Item>
-  )
+  );
 }
 
 function Leftbar({
@@ -270,16 +346,29 @@ function Leftbar({
   theme: SiderTheme | undefined;
   leftBarMenuCollapsed: boolean;
   setLeftBarMenuCollapsed: (value: boolean) => void;
-  lowerMenuItems: MenuProps['items'];
+  lowerMenuItems: MenuProps["items"];
 }) {
   if (!isMobile) {
     return (
-      <Sider theme={theme} width={200} collapsible collapsed={leftBarMenuCollapsed} onCollapse={setLeftBarMenuCollapsed}>
+      <Sider
+        theme={theme}
+        width={200}
+        collapsible
+        collapsed={leftBarMenuCollapsed}
+        onCollapse={setLeftBarMenuCollapsed}
+      >
         <Row justify="center" align="middle">
           <Col>
-            <ul style={{border: 0}} className="ant-menu ant-menu-root ant-menu-inline ant-menu-light css-dev-only-do-not-override-acm2ia">
+            <ul
+              style={{ border: 0 }}
+              className="ant-menu ant-menu-root ant-menu-inline ant-menu-light css-dev-only-do-not-override-acm2ia"
+            >
               <li>
-                <img className={styles.logoImage} src="/favicon.ico" alt="image" />
+                <img
+                  className={styles.logoImage}
+                  src="/favicon.ico"
+                  alt="image"
+                />
               </li>
             </ul>
           </Col>
@@ -287,13 +376,13 @@ function Leftbar({
         <Menu
           theme={theme}
           mode="inline"
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['sub1']}
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
           style={{ borderRight: 0 }}
           items={lowerMenuItems}
         />
       </Sider>
-    )
+    );
   }
 
   return (
@@ -307,9 +396,9 @@ function Leftbar({
       <Menu
         theme={theme}
         mode="inline"
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
-        style={{ height: '100%', borderRight: 0 }}
+        defaultSelectedKeys={["1"]}
+        defaultOpenKeys={["sub1"]}
+        style={{ height: "100%", borderRight: 0 }}
         items={lowerMenuItems}
       />
     </Drawer>
@@ -322,24 +411,24 @@ const styles = {
     min-height: 280px;
   `),
   menuRight: css({
-    justifyContent: 'right',
+    justifyContent: "right",
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   }),
   logoImage: css({
-    width: '64px',
-    height: '64px',
-    justifyContent: 'center',
-    padding: '12px',
+    width: "64px",
+    height: "64px",
+    justifyContent: "center",
+    padding: "12px",
   }),
   menuLeft: css({
-    justifyContent: 'left',
+    justifyContent: "left",
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   }),
   avatar: css({
-    backgroundColor: colors.main
-  })
-}
+    backgroundColor: colors.main,
+  }),
+};

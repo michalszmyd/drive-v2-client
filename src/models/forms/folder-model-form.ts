@@ -8,7 +8,7 @@ export default class FolderModelForm {
 
   constructor({
     id = null,
-    name = '',
+    name = "",
     folderPrivate = false,
   }: {
     id?: number | null;
@@ -16,7 +16,7 @@ export default class FolderModelForm {
     folderPrivate?: boolean;
   } = {}) {
     this.id = id || null;
-    this.name = name || '';
+    this.name = name || "";
     this.folderPrivate = folderPrivate || false;
 
     this.validator = new Validator();
@@ -26,12 +26,12 @@ export default class FolderModelForm {
     this.validator.validatePresenceOf("name", this.name);
 
     return this.validator.isValid();
-  }
+  };
 
   toParams = () => {
     return {
       folderPrivate: this.folderPrivate,
       name: this.name,
-    }
-  }
+    };
+  };
 }

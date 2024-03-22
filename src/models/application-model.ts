@@ -2,13 +2,13 @@ import Model from "./model";
 import UserModel from "./user-model";
 
 const DEFAULT_PARAMS = {
-  name: '',
-}
+  name: "",
+};
 
 export enum ApplicationStatus {
-  Enabled = 'enabled',
-  Waiting = 'waiting',
-  Disabled = 'disabled',
+  Enabled = "enabled",
+  Waiting = "waiting",
+  Disabled = "disabled",
 }
 
 export default class ApplicationModel extends Model {
@@ -35,7 +35,7 @@ export default class ApplicationModel extends Model {
     status,
     user,
   }: {
-    id?: number,
+    id?: number;
     name: string;
     description?: string;
     public_key?: string;

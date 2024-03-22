@@ -19,14 +19,13 @@ export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [file, setFile] = useState<DriveFileModel>(new DriveFileModel());
 
-  const {id} = useParams();
-  const {currentUser} = useContext(CurrentUserContext);
+  const { id } = useParams();
+  const { currentUser } = useContext(CurrentUserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
-      DriveFilesService
-        .find(id)
+      DriveFilesService.find(id)
         .then(setFile)
         .finally(() => setIsLoading(false));
     }
@@ -40,65 +39,62 @@ export default function FilePage() {
           href: `/folders/${file.folder.id}`,
         },
         {
-          title: file.name
-        }
-      ]
+          title: file.name,
+        },
+      ];
     }
 
     return [file.name];
-  }
+  };
 
   const onFileDelete = () => {
-    DriveFilesService
-      .destroy(file)
+    DriveFilesService.destroy(file)
       .then(() => {
         toast.success(`File '${file.name}' removed.`);
 
         if (file.folderId) {
           navigate(`/folders/${file.folderId}`);
         } else {
-          navigate('/dashboard');
+          navigate("/dashboard");
         }
       })
       .catch((e) => {
-        const {data} = JSON.parse(e.message);
+        const { data } = JSON.parse(e.message);
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-  }
+  };
 
   if (!file.id && !isLoading) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />;
   }
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()} >
+      <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()}>
         <FileDescriptions
           file={file}
           descriptionsParams={{
             title: file.name,
             bordered: true,
-            extra:
+            extra: (
               <CardExtraActions
                 sourceUrl={file.sourceUrl}
                 editLinkTo={`/files/${file.id}/edit`}
                 manageActionsEnabled={file.userId === currentUser?.id}
                 deleteOnClick={onFileDelete}
               />
+            ),
           }}
         />
-        <Descriptions>
-        </Descriptions>
+        <Descriptions></Descriptions>
         <div className={styles.container}>
-          <p dangerouslySetInnerHTML={{__html: file.body || ''}} />
+          <p dangerouslySetInnerHTML={{ __html: file.body || "" }} />
           <ResolvePreview item={file} />
         </div>
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }
 
 const styles = {
@@ -106,7 +102,7 @@ const styles = {
     backgroundColor: colors.gray,
     padding: 24,
     marginTop: 16,
-    textAlign: 'justify',
-    textJustify: 'inter-word',
-  })
-}
+    textAlign: "justify",
+    textJustify: "inter-word",
+  }),
+};

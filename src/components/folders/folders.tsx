@@ -15,19 +15,12 @@ export function Folders({
   return (
     <Row gutter={[24, 24]} align="middle" justify="start">
       {folders.map((folder) => (
-        <Col
-          className={styles.col}
-          xxl={4}
-          xl={6}
-          md={8}
-          sm={12}
-          xs={24}
-        >
+        <Col className={styles.col} xxl={4} xl={6} md={8} sm={12} xs={24}>
           <Folder onFavoriteClick={onFavoriteClick} folder={folder} />
         </Col>
       ))}
     </Row>
-  )
+  );
 }
 
 export function Folder({
@@ -41,17 +34,24 @@ export function Folder({
     e.preventDefault();
 
     if (onFavoriteClick) onFavoriteClick(folder);
-  }
+  };
 
   const content = (
     <Link to={`/folders/${folder.id}`}>
       <div className={styles.favoriteFolder}>
-        <Button shape="circle" type="link" onClick={onFavClick} className={styles.favoriteStar}>
+        <Button
+          shape="circle"
+          type="link"
+          onClick={onFavClick}
+          className={styles.favoriteStar}
+        >
           {folder.favorite ? <StarFilled /> : <StarOutlined />}
         </Button>
         <div className={styles.folderRow}>
           <div className={styles.folderLabel}>Items count</div>
-          <div className={styles.folderRowDescription}>{folder.driveFilesCount}</div>
+          <div className={styles.folderRowDescription}>
+            {folder.driveFilesCount}
+          </div>
           <div className={styles.folderLabel}>Created at</div>
           <div className={styles.folderRowDescription}>{folder.createdAt}</div>
         </div>
@@ -63,13 +63,17 @@ export function Folder({
     </Link>
   );
 
-  return (
-    folder.folderPrivate ? (
-      <Badge.Ribbon  className={styles.ribbon} color={colors.warning} text="Private">
-        {content}
-      </Badge.Ribbon>
-    ) : content
-  )
+  return folder.folderPrivate ? (
+    <Badge.Ribbon
+      className={styles.ribbon}
+      color={colors.warning}
+      text="Private"
+    >
+      {content}
+    </Badge.Ribbon>
+  ) : (
+    content
+  );
 }
 
 const styles = {
@@ -78,10 +82,10 @@ const styles = {
     top: auto;
   `),
   folderText: css({
-    textAlign: 'center',
+    textAlign: "center",
   }),
   col: css({
-    textAlign: 'center',
+    textAlign: "center",
   }),
   folderIcon: css({
     fontSize: 64,
@@ -93,7 +97,7 @@ const styles = {
     fontSize: 16,
   }),
   starButton: css({
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1,
     top: 0,
     right: 0,
@@ -154,17 +158,17 @@ const styles = {
       top: -12px;
       left: 0px;
     }
-` ),
+`),
   folderLabel: css({
-    color: '#a6abe3',
-    textTransform: 'uppercase',
+    color: "#a6abe3",
+    textTransform: "uppercase",
     fontSize: 11,
   }),
   folderRow: css({
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   }),
   folderRowDescription: css(`
     font-weight: 600;
@@ -178,5 +182,5 @@ const styles = {
     right: 5%;
     top: 5%;
     color: ${colors.secondary};
-  `)
-}
+  `),
+};

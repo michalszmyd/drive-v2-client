@@ -26,11 +26,13 @@ export function mapPagesToResponsePages({
     per: per,
     totalPages: total_pages,
     total: total,
-  }
+  };
 }
 
 export default class ApiService {
-  static async default({headers = {}}: {headers?: object} = {}): Promise<RequestInstance> {
+  static async default({
+    headers = {},
+  }: { headers?: object } = {}): Promise<RequestInstance> {
     const baseUrl = `${SETTINGS.API_URL}/${API_PREFIX}`;
 
     const requestInstance = new RequestInstance({

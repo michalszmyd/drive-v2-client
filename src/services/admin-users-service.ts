@@ -8,25 +8,24 @@ export default class AdminUsersService {
     const instance = await AuthenticatedApiService.default();
 
     const {
-      data: {
-        records,
-        pages,
-      }
+      data: { records, pages },
     } = await instance.get(`admin/users`);
 
     return {
       pages: mapPagesToResponsePages(pages),
       records: records.map((record: any) => new UserModel(record)),
     } as {
-      pages: ResponsePages,
-      records: UserModel[],
-    }
+      pages: ResponsePages;
+      records: UserModel[];
+    };
   }
 
   static async resetPassword(id: number) {
     const instance = await AuthenticatedApiService.default();
 
-    const {data} = await instance.post(`admin/users/${id}/generate_reset_password_token`)
+    const { data } = await instance.post(
+      `admin/users/${id}/generate_reset_password_token`,
+    );
 
     return new UserResetPasswordModel(data);
   }

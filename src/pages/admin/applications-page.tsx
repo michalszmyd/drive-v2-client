@@ -1,10 +1,28 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Popover, Row, Space, Table, TablePaginationConfig, Tag } from "antd";
+import {
+  Button,
+  Col,
+  Popover,
+  Row,
+  Space,
+  Table,
+  TablePaginationConfig,
+  Tag,
+} from "antd";
 import Column from "antd/es/table/Column";
-import { ApiOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, SlidersOutlined, SyncOutlined } from "@ant-design/icons";
+import {
+  ApiOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DeleteOutlined,
+  SlidersOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { css } from "@emotion/css";
-import ApplicationModel, { ApplicationStatus } from "../../models/application-model";
+import ApplicationModel, {
+  ApplicationStatus,
+} from "../../models/application-model";
 import AdminApplicationsService from "../../services/admin-applications-service";
 import AuthenticatedAdminRoute from "../../components/authenticated/authenticated-admin-route";
 import MainAppWrapper from "../../components/main-app-wrapper";
@@ -26,34 +44,34 @@ export default function AdminApplicationsPage() {
     },
   });
 
-  const fetchData = ({page, per}: {page: number; per: number}) => {
-    AdminApplicationsService
-      .all({page, per})
-      .then(({records, pages}) => {
+  const fetchData = ({ page, per }: { page: number; per: number }) => {
+    AdminApplicationsService.all({ page, per })
+      .then(({ records, pages }) => {
         setApplications(records);
         setTableParams({
           pagination: {
             current: pages.currentPage,
             pageSize: pages.per,
             total: pages.total,
-          }
-        })
-      }).finally(() => {
+          },
+        });
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
-  const onTableChange = ({current, pageSize}: TablePaginationConfig) => {
+  const onTableChange = ({ current, pageSize }: TablePaginationConfig) => {
     const defaultParams = {
       page: current || 1,
-      per: pageSize || 10
-    }
+      per: pageSize || 10,
+    };
 
     return fetchData(defaultParams);
-  }
+  };
 
   useEffect(() => {
-    fetchData({page: 1, per: 10});
+    fetchData({ page: 1, per: 10 });
   }, []);
 
   const userToTableItem = (application: ApplicationModel) => {
@@ -66,10 +84,7 @@ export default function AdminApplicationsPage() {
       createdAt,
       updatedAt,
       lastUsedAt,
-      user: {
-        name: userName = '',
-        id: userId = '',
-      } = {}
+      user: { name: userName = "", id: userId = "" } = {},
     } = application;
 
     return {
@@ -85,7 +100,7 @@ export default function AdminApplicationsPage() {
       createdAt,
       updatedAt,
     };
-  }
+  };
 
   const tableItems = applications.map(userToTableItem);
 
@@ -93,100 +108,148 @@ export default function AdminApplicationsPage() {
     record: ApplicationModel,
     {
       attribute,
-      value
+      value,
     }: {
       attribute: string;
       value: unknown;
-    }) => {
-      setApplications((state) => {
-        return state.map((element) => {
-          if (element.id === record.id) {
-            element[attribute] = value;
-
-            return element;
-          }
+    },
+  ) => {
+    setApplications((state) => {
+      return state.map((element) => {
+        if (element.id === record.id) {
+          element[attribute] = value;
 
           return element;
-        })
-      })
-  }
+        }
+
+        return element;
+      });
+    });
+  };
 
   const onRemoveApplication = (record: ApplicationModel) => {
     if (!record.id) return;
 
-    AdminApplicationsService
-      .delete(record.id)
+    AdminApplicationsService.delete(record.id)
       .then(() => {
-        toast.success('Application removed.');
+        toast.success("Application removed.");
 
-        setApplications((state) => state.filter((element) => element.id !== record.id));
+        setApplications((state) =>
+          state.filter((element) => element.id !== record.id),
+        );
       })
       .catch((e) => {
-        const {data} = JSON.parse(e.message);
+        const { data } = JSON.parse(e.message);
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-  }
+  };
 
   const onStatusToggleApplication = (record: ApplicationModel) => {
     if (!record.id) return;
 
     const currentStatus = record.status;
 
-    updateApplicationsElement(record, {attribute: 'status', value: ApplicationStatus.Waiting});
+    updateApplicationsElement(record, {
+      attribute: "status",
+      value: ApplicationStatus.Waiting,
+    });
 
-    AdminApplicationsService
-      .toggleStatus(record.id)
+    AdminApplicationsService.toggleStatus(record.id)
       .then((updatedApplicationModel: ApplicationModel) => {
-        toast.success('Application updated.');
+        toast.success("Application updated.");
 
-        updateApplicationsElement(record, {attribute: 'status', value: updatedApplicationModel.status});
+        updateApplicationsElement(record, {
+          attribute: "status",
+          value: updatedApplicationModel.status,
+        });
       })
       .catch((e) => {
-        const {data} = JSON.parse(e.message);
+        const { data } = JSON.parse(e.message);
 
-        updateApplicationsElement(record, {attribute: 'status', value: currentStatus})
+        updateApplicationsElement(record, {
+          attribute: "status",
+          value: currentStatus,
+        });
 
         toast.error(`Error: ${JSON.stringify(data)}`);
       });
-  }
+  };
 
   return (
     <AuthenticatedAdminRoute>
-      <MainAppWrapper breadcrumbs={['Applications', 'Your applications']}>
+      <MainAppWrapper breadcrumbs={["Applications", "Your applications"]}>
         <Row align="middle">
           <Col className={styles.titleContainer}>
             <H1>Applications</H1>
           </Col>
         </Row>
-        <Table onChange={onTableChange} loading={isLoading} pagination={tableParams.pagination} dataSource={tableItems}>
+        <Table
+          onChange={onTableChange}
+          loading={isLoading}
+          pagination={tableParams.pagination}
+          dataSource={tableItems}
+        >
           <Column
             className={tableStyles.table}
-            key='application-status'
-            title='Status'
-            dataIndex='status'
-            render={(_: any, record: ApplicationModel) =>
+            key="application-status"
+            title="Status"
+            dataIndex="status"
+            render={(_: any, record: ApplicationModel) => (
               <StatusTag status={record.status} />
-            }
+            )}
           />
-          <Column key='application-name' title='Name' dataIndex='name' />
-          <Column key='application-description' title='Description' dataIndex='description' />
-          <Column key='application-userId' title='User ID' dataIndex='userId' />
-          <Column key='application-userName' title='User' dataIndex='userName' />
-          <Column key='application-publicKey' title='Public key' dataIndex='publicKey' />
-          <Column key='application-lastUsedAt' title='Last used at' dataIndex='lastUsedAt' />
-          <Column key='application-createdAt' title='Created At' dataIndex='createdAt' />
-          <Column key='application-updatedAt' title='Updated At' dataIndex='updatedAt' />
+          <Column key="application-name" title="Name" dataIndex="name" />
+          <Column
+            key="application-description"
+            title="Description"
+            dataIndex="description"
+          />
+          <Column key="application-userId" title="User ID" dataIndex="userId" />
+          <Column
+            key="application-userName"
+            title="User"
+            dataIndex="userName"
+          />
+          <Column
+            key="application-publicKey"
+            title="Public key"
+            dataIndex="publicKey"
+          />
+          <Column
+            key="application-lastUsedAt"
+            title="Last used at"
+            dataIndex="lastUsedAt"
+          />
+          <Column
+            key="application-createdAt"
+            title="Created At"
+            dataIndex="createdAt"
+          />
+          <Column
+            key="application-updatedAt"
+            title="Updated At"
+            dataIndex="updatedAt"
+          />
           <Column
             title="Action"
             key="action"
             render={(_: any, record: ApplicationModel) => (
               <Space size="middle">
                 <Popover title="Toggle app status">
-                  <Button onClick={() => onStatusToggleApplication(record)} shape="circle" icon={<SlidersOutlined />} />
+                  <Button
+                    onClick={() => onStatusToggleApplication(record)}
+                    shape="circle"
+                    icon={<SlidersOutlined />}
+                  />
                 </Popover>
                 <Popover title="Delete app">
-                  <Button onClick={() => onRemoveApplication(record)} danger shape="circle" icon={<DeleteOutlined />} />
+                  <Button
+                    onClick={() => onRemoveApplication(record)}
+                    danger
+                    shape="circle"
+                    icon={<DeleteOutlined />}
+                  />
                 </Popover>
               </Space>
             )}
@@ -194,11 +257,11 @@ export default function AdminApplicationsPage() {
         </Table>
       </MainAppWrapper>
     </AuthenticatedAdminRoute>
-  )
+  );
 }
 
-function StatusTag({status}: {status: ApplicationStatus}) {
-  switch(status) {
+function StatusTag({ status }: { status: ApplicationStatus }) {
+  switch (status) {
     case ApplicationStatus.Waiting:
       return (
         <Tag icon={<SyncOutlined spin />} color="processing">
@@ -223,5 +286,5 @@ function StatusTag({status}: {status: ApplicationStatus}) {
 const styles = {
   titleContainer: css({
     flex: 1,
-  })
-}
+  }),
+};

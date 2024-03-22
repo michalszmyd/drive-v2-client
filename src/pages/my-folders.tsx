@@ -8,30 +8,31 @@ import { Folders } from "../components/folders/folders";
 
 export default function MyFolders() {
   const [folders, setFolders, toggleFavorites] = useFolders([]);
-  const [pages, setPages] = useState<ResponsePages>({currentPage: 1, totalPages: 1, per: 40, total: 1});
+  const [pages, setPages] = useState<ResponsePages>({
+    currentPage: 1,
+    totalPages: 1,
+    per: 40,
+    total: 1,
+  });
 
   useEffect(() => {
     fetchFolders();
   }, []);
 
   const fetchFolders = () => {
-    const {currentPage, per} = pages;
+    const { currentPage, per } = pages;
 
-    FoldersService.me({page: currentPage, per}).then(({
-      pages,
-      records,
-    }) => {
+    FoldersService.me({ page: currentPage, per }).then(({ pages, records }) => {
       setPages(pages);
       setFolders(records);
     });
-  }
+  };
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper breadcrumbs={['My Folders']} title="My Folders">
+      <MainAppWrapper breadcrumbs={["My Folders"]} title="My Folders">
         <Folders folders={folders} onFavoriteClick={toggleFavorites} />
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }
-

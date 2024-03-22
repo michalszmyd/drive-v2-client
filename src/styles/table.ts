@@ -10,7 +10,7 @@ const tableStyles = {
         max-width: 150px;
       }
     }
-  `)
-}
+  `),
+};
 
 export default tableStyles;

@@ -15,19 +15,16 @@ export default function ApplicationsApiDocsPage() {
       setSchema(data);
       setIsLoading(false);
     });
-  }, [])
+  }, []);
 
   return (
     <AuthenticatedRoute>
-      <MainAppWrapper title="API Docs" breadcrumbs={['Applications', 'API Docs']}>
-        {
-          isLoading ? (
-            <Loading />
-          ) : (
-            <SwaggerUI spec={schema} />
-          )
-        }
+      <MainAppWrapper
+        title="API Docs"
+        breadcrumbs={["Applications", "API Docs"]}
+      >
+        {isLoading ? <Loading /> : <SwaggerUI spec={schema} />}
       </MainAppWrapper>
     </AuthenticatedRoute>
-  )
+  );
 }

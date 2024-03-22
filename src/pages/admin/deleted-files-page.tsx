@@ -1,7 +1,20 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Col, Row, Space, TablePaginationConfig, Tag, Tooltip } from "antd";
+import {
+  Alert,
+  Button,
+  Col,
+  Row,
+  Space,
+  TablePaginationConfig,
+  Tag,
+  Tooltip,
+} from "antd";
 import { css } from "@emotion/css";
-import { DeleteFilled, DeleteOutlined, RollbackOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  DeleteOutlined,
+  RollbackOutlined,
+} from "@ant-design/icons";
 import { toast } from "react-toastify";
 import DriveFileModel from "../../models/drive-file-model";
 import MainAppWrapper from "../../components/main-app-wrapper";
@@ -27,7 +40,7 @@ export default function AdminDeletedFilesPage() {
   });
 
   useEffect(() => {
-    fetchData({page: 1, per: 10});
+    fetchData({ page: 1, per: 10 });
   }, []);
 
   const onRestore = (restoredFile: DriveFileModel) => {
@@ -35,80 +48,95 @@ export default function AdminDeletedFilesPage() {
       return;
     }
 
-    AdminDriveFilesService.restore(restoredFile.id).then(() => {
-      setFiles((state) => {
-        return state.filter((file : DriveFileModel) => file.id !== restoredFile.id)
+    AdminDriveFilesService.restore(restoredFile.id)
+      .then(() => {
+        setFiles((state) => {
+          return state.filter(
+            (file: DriveFileModel) => file.id !== restoredFile.id,
+          );
+        });
+        setTotalFiles((state) => state - 1);
+        toast.success("File restored");
+      })
+      .catch(() => {
+        toast.error(
+          `There was an error while trying to restore ${restoredFile.name}`,
+        );
       });
-      setTotalFiles((state) => state - 1);
-      toast.success('File restored');
-    }).catch(() => {
-      toast.error(`There was an error while trying to restore ${restoredFile.name}`);
-    });
-  }
+  };
 
   const onErase = (erasedFile: DriveFileModel) => {
     if (!erasedFile.id) {
       return;
     }
 
-    AdminDriveFilesService.erase(erasedFile.id).then(() => {
-      setFiles((state) => {
-        return state.filter((file : DriveFileModel) => file.id !== erasedFile.id)
+    AdminDriveFilesService.erase(erasedFile.id)
+      .then(() => {
+        setFiles((state) => {
+          return state.filter(
+            (file: DriveFileModel) => file.id !== erasedFile.id,
+          );
+        });
+        setTotalFiles((state) => state - 1);
+        toast.success("File erased");
+      })
+      .catch(() => {
+        toast.error(
+          `There was an error while trying to erase ${erasedFile.name}`,
+        );
       });
-      setTotalFiles((state) => state - 1);
-      toast.success('File erased');
-    }).catch(() => {
-      toast.error(`There was an error while trying to erase ${erasedFile.name}`);
-    });
-  }
+  };
 
   const onEraseAll = () => {
-    AdminDriveFilesService.eraseAll().then(() => {
-      setFiles([]);
-      setTotalFiles(0);
-      toast.success('Erased all');
-    }).catch(() => {
-      toast.error(`There was an error while trying to erase all`);
-    });
-  }
+    AdminDriveFilesService.eraseAll()
+      .then(() => {
+        setFiles([]);
+        setTotalFiles(0);
+        toast.success("Erased all");
+      })
+      .catch(() => {
+        toast.error(`There was an error while trying to erase all`);
+      });
+  };
 
-  const fetchData = ({page, per}: {page: number; per: number}) => {
-    AdminDriveFilesService
-      .deleted({page, per})
-      .then(({records, pages}) => {
+  const fetchData = ({ page, per }: { page: number; per: number }) => {
+    AdminDriveFilesService.deleted({ page, per })
+      .then(({ records, pages }) => {
         setFiles(records);
         setTableParams({
           pagination: {
             current: pages.currentPage,
             pageSize: pages.per,
             total: pages.total,
-          }
-        })
+          },
+        });
         setTotalFiles(pages.total);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
-  const onTableChange = ({current, pageSize}: TablePaginationConfig) => {
+  const onTableChange = ({ current, pageSize }: TablePaginationConfig) => {
     const defaultParams = {
       page: current || 1,
-      per: pageSize || 10
-    }
+      per: pageSize || 10,
+    };
 
     return fetchData(defaultParams);
-  }
+  };
 
   return (
     <AuthenticatedAdminRoute>
-      <MainAppWrapper title="Deleted files" breadcrumbs={['Deleted files']}>
+      <MainAppWrapper title="Deleted files" breadcrumbs={["Deleted files"]}>
         <Row gutter={[16, 16]} justify="end">
           <Col span={24}>
             <Alert
               message="Files are permanently deleted after 7 days."
               description={
                 <div>
-                  Total number to delete: <span className={styles.deletedAt}>{totalFiles}</span>
+                  Total number to delete:{" "}
+                  <span className={styles.deletedAt}>{totalFiles}</span>
                 </div>
               }
               type="warning"
@@ -116,7 +144,7 @@ export default function AdminDeletedFilesPage() {
               closable
             />
           </Col>
-          <Col  className={styles.alertContainer}>
+          <Col className={styles.alertContainer}>
             <Button
               type="primary"
               icon={<DeleteFilled />}
@@ -132,9 +160,13 @@ export default function AdminDeletedFilesPage() {
           isLoading={isLoading}
           onChange={onTableChange}
           pagination={tableParams.pagination}
-          dataSource={files.map((file) => (
-            FileRow({file, onRestore: () => onRestore(file), onErase: () => onErase(file)})
-          ))}
+          dataSource={files.map((file) =>
+            FileRow({
+              file,
+              onRestore: () => onRestore(file),
+              onErase: () => onErase(file),
+            }),
+          )}
         />
       </MainAppWrapper>
     </AuthenticatedAdminRoute>
@@ -144,9 +176,9 @@ export default function AdminDeletedFilesPage() {
 function FileRow({
   file,
   onRestore,
-  onErase
+  onErase,
 }: {
-  file: DriveFileModel,
+  file: DriveFileModel;
   onRestore: () => void;
   onErase: () => void;
 }) {
@@ -159,20 +191,21 @@ function FileRow({
     createdAt: file.createdAt,
     updatedAt: file.updatedAt,
     deletedAt: <span className={styles.deletedAt}>{file.deletedAt}</span>,
-    actions:
-        <Space>
-          <Tooltip title="Restore">
-            <Button onClick={onRestore} shape="circle" type="link">
-              <RollbackOutlined />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Erase now">
-            <Button onClick={onErase} shape="circle" type="link">
-              <DeleteOutlined />
-            </Button>
-          </Tooltip>
-        </Space>
-  }
+    actions: (
+      <Space>
+        <Tooltip title="Restore">
+          <Button onClick={onRestore} shape="circle" type="link">
+            <RollbackOutlined />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Erase now">
+          <Button onClick={onErase} shape="circle" type="link">
+            <DeleteOutlined />
+          </Button>
+        </Tooltip>
+      </Space>
+    ),
+  };
 }
 
 const styles = {
@@ -184,52 +217,52 @@ const styles = {
     fontWeight: 600,
   }),
   description: css({
-    color: '#555'
+    color: "#555",
   }),
   warning: css({
     color: colors.warning,
-  })
-}
+  }),
+};
 
 const tableHeader = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: 'Preview',
-    dataIndex: 'preview',
-    key: 'preview',
+    title: "Preview",
+    dataIndex: "preview",
+    key: "preview",
   },
   {
-    title: 'Created at',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
+    title: "Created at",
+    dataIndex: "createdAt",
+    key: "createdAt",
   },
   {
-    title: 'Updated at',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
+    title: "Updated at",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
   },
   {
-    title: 'Deleted at',
-    dataIndex: 'deletedAt',
-    key: 'deletedAt',
+    title: "Deleted at",
+    dataIndex: "deletedAt",
+    key: "deletedAt",
   },
   {
-    title: 'User id',
-    dataIndex: 'userId',
-    key: 'userId',
+    title: "User id",
+    dataIndex: "userId",
+    key: "userId",
   },
   {
-    title: 'Pinned',
-    dataIndex: 'pinned',
-    key: 'pinned',
+    title: "Pinned",
+    dataIndex: "pinned",
+    key: "pinned",
   },
   {
-    title: 'Actions',
-    dataIndex: 'actions',
-    key: 'actions'
-  }
-]
+    title: "Actions",
+    dataIndex: "actions",
+    key: "actions",
+  },
+];

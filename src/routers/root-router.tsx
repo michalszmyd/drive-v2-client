@@ -1,15 +1,12 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import WelcomePage from '../pages/welcome-page';
-import SignInPage from '../pages/sign-in-page';
-import ResetPasswordPage from '../pages/reset-password-page';
-import ActivitiesPage from '../pages/activities-page';
-import DashboardPage from '../pages/dashboard-page';
-import MyFolders from '../pages/my-folders';
-import FolderPage from '../pages/folder-page';
+import WelcomePage from "../pages/welcome-page";
+import SignInPage from "../pages/sign-in-page";
+import ResetPasswordPage from "../pages/reset-password-page";
+import ActivitiesPage from "../pages/activities-page";
+import DashboardPage from "../pages/dashboard-page";
+import MyFolders from "../pages/my-folders";
+import FolderPage from "../pages/folder-page";
 import FilePage from "../pages/file-page";
 import FoldersPage from "../pages/folders-page";
 import EditFolderPage from "../pages/edit-folder-page";
@@ -30,51 +27,51 @@ const router = createBrowserRouter([
   },
   {
     path: "/sign-in",
-    element: <SignInPage />
+    element: <SignInPage />,
   },
   {
     path: "/reset-password/:token",
-    element: <ResetPasswordPage />
+    element: <ResetPasswordPage />,
   },
   {
     path: "/dashboard",
-    element: <DashboardPage />
+    element: <DashboardPage />,
   },
   {
     path: "/activities",
-    element: <ActivitiesPage />
+    element: <ActivitiesPage />,
   },
   {
     path: "/profile",
-    element: <ProfilePage />
+    element: <ProfilePage />,
   },
   {
     path: "/my-folders",
-    element: <MyFolders />
+    element: <MyFolders />,
   },
   {
     path: "/folders/:id",
-    element: <FolderPage />
+    element: <FolderPage />,
   },
   {
     path: "/folders/:id/edit",
-    element: <EditFolderPage />
+    element: <EditFolderPage />,
   },
   {
     path: "/folders",
-    element: <FoldersPage />
+    element: <FoldersPage />,
   },
   {
     path: "/deleted-files",
-    element: <DeletedFilesPage />
+    element: <DeletedFilesPage />,
   },
   {
     path: "/files/:id",
-    element: <FilePage />
+    element: <FilePage />,
   },
   {
     path: "/files/:id/edit",
-    element: <EditFilePage />
+    element: <EditFilePage />,
   },
   {
     path: "/applications",
@@ -85,25 +82,23 @@ const router = createBrowserRouter([
     element: <ApplicationsApiDocsPage />,
   },
   {
-    path: '/settings',
+    path: "/settings",
     element: <SettingsPage />,
   },
   {
     path: "/admin/users",
-    element: <AdminUsersPage />
+    element: <AdminUsersPage />,
   },
   {
     path: "/admin/applications",
-    element: <AdminApplicationsPage />
+    element: <AdminApplicationsPage />,
   },
   {
     path: "/admin/deleted-files",
-    element: <AdminDeletedFilesPage />
+    element: <AdminDeletedFilesPage />,
   },
 ]);
 
 export default function RootRouter() {
-  return (
-    <RouterProvider router={router} />
-  )
+  return <RouterProvider router={router} />;
 }
