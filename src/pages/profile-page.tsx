@@ -39,14 +39,10 @@ export default function ProfilePage() {
       });
   };
 
-  if (!currentUser) {
-    return null;
-  }
-
   return (
     <AuthenticatedRoute>
       <MainAppWrapper
-        title={`My Profile ${currentUser.displayName}`}
+        title={`My Profile ${currentUser?.displayName}`}
         breadcrumbs={["My Profile"]}
       >
         <form>
