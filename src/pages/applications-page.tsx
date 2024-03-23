@@ -10,7 +10,6 @@ import {
   Popover,
   Row,
   Space,
-  Table,
   TablePaginationConfig,
   Tag,
 } from "antd";
@@ -29,7 +28,7 @@ import CreateApplicationModal from "../components/applications/create-applicatio
 import { toast } from "react-toastify";
 import { css } from "@emotion/css";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
-import tableStyles from "../styles/table";
+import TableItemsList from "../components/files/table-list";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -236,10 +235,9 @@ export default function ApplicationsPage() {
             </Button>
           </Col>
         </Row>
-        <Table
-          className={tableStyles.table}
+        <TableItemsList
           onChange={onTableChange}
-          loading={isLoading}
+          isLoading={isLoading}
           pagination={tableParams.pagination}
           dataSource={tableItems}
         >
@@ -312,7 +310,7 @@ export default function ApplicationsPage() {
               </Space>
             )}
           />
-        </Table>
+        </TableItemsList>
       </MainAppWrapper>
     </AuthenticatedRoute>
   );

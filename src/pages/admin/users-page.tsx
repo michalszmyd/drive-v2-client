@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AuthenticatedAdminRoute from "../../components/authenticated/authenticated-admin-route";
 import AdminUsersService from "../../services/admin-users-service";
 import UserModel from "../../models/user-model";
-import { Button, Divider, Popover, Space, Table } from "antd";
+import { Button, Divider, Popover, Space } from "antd";
 import MainAppWrapper from "../../components/main-app-wrapper";
 import Column from "antd/es/table/Column";
 import { CreditCardOutlined, LockOutlined } from "@ant-design/icons";
@@ -10,7 +10,7 @@ import { colors } from "../../consts/colors";
 import { toast } from "react-toastify";
 import UserResetPasswordModel from "../../models/user-reset-password-model";
 import ArrayHelper from "../../helpers/array-helper";
-import tableStyles from "../../styles/table";
+import TableItemsList from "../../components/files/table-list";
 
 type ResetPassword = {
   user: UserModel;
@@ -72,7 +72,7 @@ export default function UsersPage() {
     <AuthenticatedAdminRoute>
       <MainAppWrapper title="Users" breadcrumbs={["All users"]}>
         <ResetPasswordTable resetPasswordUsers={resetPasswordUsers} />
-        <Table className={tableStyles.table} dataSource={tableItems}>
+        <TableItemsList dataSource={tableItems}>
           <Column key="user-id" title="ID" dataIndex="id" />
           <Column key="user-name" title="Name" dataIndex="name" />
           <Column key="user-email" title="Email" dataIndex="email" />
@@ -111,7 +111,7 @@ export default function UsersPage() {
               </Space>
             )}
           />
-        </Table>
+        </TableItemsList>
       </MainAppWrapper>
     </AuthenticatedAdminRoute>
   );
@@ -129,7 +129,7 @@ function ResetPasswordTable({
   return (
     <>
       <Divider orientation="left">ResetPassword</Divider>
-      <Table className={tableStyles.table} dataSource={resetPasswordUsers}>
+      <TableItemsList dataSource={resetPasswordUsers}>
         <Column
           key="user-reset-id"
           title="ID"
@@ -172,7 +172,7 @@ function ResetPasswordTable({
             record.resetPassword.oneTimeToken
           }
         />
-      </Table>
+      </TableItemsList>
       <Divider />
     </>
   );

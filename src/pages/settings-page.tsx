@@ -3,7 +3,7 @@ import AuthenticatedRoute from "../components/authenticated/authenticated-route"
 import MainAppWrapper from "../components/main-app-wrapper";
 import UserSessionModel from "../models/user-session-model";
 import UsersService from "../services/users-service";
-import { Button, Collapse, Space, Table, Tooltip } from "antd";
+import { Button, Collapse, Space, Tooltip } from "antd";
 import Column from "antd/es/table/Column";
 import {
   AndroidOutlined,
@@ -14,8 +14,8 @@ import {
   QuestionOutlined,
   WindowsOutlined,
 } from "@ant-design/icons";
-import tableStyles from "../styles/table";
 import { toast } from "react-toastify";
+import TableItemsList from "../components/files/table-list";
 
 export default function SettingsPage() {
   const [userSessions, setUserSessions] = useState<UserSessionModel[]>([]);
@@ -66,7 +66,7 @@ export default function SettingsPage() {
       <MainAppWrapper title="Settings">
         <Collapse>
           <Collapse.Panel header="User sessions" key="user-sessions-1">
-            <Table className={tableStyles.table} dataSource={tableDataSource}>
+            <TableItemsList dataSource={tableDataSource}>
               <Column
                 key="session-device"
                 title="Device"
@@ -110,7 +110,7 @@ export default function SettingsPage() {
                   </Space>
                 )}
               />
-            </Table>
+            </TableItemsList>
           </Collapse.Panel>
         </Collapse>
       </MainAppWrapper>

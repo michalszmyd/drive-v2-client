@@ -5,7 +5,6 @@ import {
   Popover,
   Row,
   Space,
-  Table,
   TablePaginationConfig,
   Tag,
 } from "antd";
@@ -27,6 +26,7 @@ import AuthenticatedAdminRoute from "../../components/authenticated/authenticate
 import MainAppWrapper from "../../components/main-app-wrapper";
 import { H1 } from "../../components/shared/text-components";
 import tableStyles from "../../styles/table";
+import TableItemsList from "../../components/files/table-list";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -182,9 +182,9 @@ export default function AdminApplicationsPage() {
             <H1>Applications</H1>
           </Col>
         </Row>
-        <Table
+        <TableItemsList
           onChange={onTableChange}
-          loading={isLoading}
+          isLoading={isLoading}
           pagination={tableParams.pagination}
           dataSource={tableItems}
         >
@@ -252,7 +252,7 @@ export default function AdminApplicationsPage() {
               </Space>
             )}
           />
-        </Table>
+        </TableItemsList>
       </MainAppWrapper>
     </AuthenticatedAdminRoute>
   );

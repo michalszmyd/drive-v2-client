@@ -10,17 +10,19 @@ export interface TableParams {
 
 export default function TableItemsList({
   columns,
-  isLoading,
+  isLoading = false,
   onChange = () => {},
   pagination = false,
   dataSource,
+  children,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: any;
-  isLoading: boolean;
+  columns?: any;
+  isLoading?: boolean;
   onChange?: ({ current, pageSize }: TablePaginationConfig) => void;
   pagination?: TableParams["pagination"] | false;
   dataSource: TableProps["dataSource"];
+  children?: React.ReactNode;
 }) {
   return (
     <Table
@@ -32,7 +34,9 @@ export default function TableItemsList({
       pagination={pagination}
       className={`${tableStyles.table} ${styles.table}`}
       dataSource={dataSource}
-    />
+    >
+      {children}
+    </Table>
   );
 }
 
