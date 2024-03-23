@@ -7,9 +7,10 @@ import ItemsService from "../services/items-service";
 import Search from "antd/es/input/Search";
 import CurrentUserContext from "../contexts/current-user-context";
 import TableItemsList, { TableParams } from "../components/files/table-list";
-import { ItemRow, tableHeader } from "../components/activities/item-row";
+import { ItemRow } from "../components/activities/item-row";
 import { useSearchParams } from "react-router-dom";
 import StringHelper from "../helpers/string-helper";
+import { tableHeader } from "../components/activities/table-header";
 
 export default function ActivitiesPage() {
   const [items, setItems] = useState<ItemModel[]>([]);

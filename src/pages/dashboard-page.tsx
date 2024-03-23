@@ -9,10 +9,11 @@ import { css } from "@emotion/css";
 import ItemsService from "../services/items-service";
 import ItemModel from "../models/item-model";
 import TableItemsList from "../components/files/table-list";
-import { ItemRow, tableHeader } from "../components/activities/item-row";
+import { ItemRow } from "../components/activities/item-row";
 import CurrentUserContext from "../contexts/current-user-context";
 import { Folders } from "../components/folders/folders";
 import useFolders from "../hooks/folders";
+import { tableHeader } from "../components/activities/table-header";
 
 export default function DashboardPage() {
   const [favoriteFolders, setFavoriteFolders, toggleFavorites] = useFolders([]);
