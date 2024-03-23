@@ -194,17 +194,12 @@ export default function MainAppWrapper({
             display: "flex",
           }}
         >
-          <AppHeader
-            theme={themeColors}
-            // rightMenuChildren={
-            // }
-          >
+          <AppHeader theme={themeColors}>
             <Space>
-              <Breadcrumb style={{ margin: "16px 0" }}>
-                {breadcrumbs.map((breadcrumb) => (
-                  <BreadcrumbItem breadcrumbItem={breadcrumb} />
-                ))}
-              </Breadcrumb>
+              <Breadcrumb
+                items={breadcrumbList(breadcrumbs)}
+                style={{ margin: "16px 0" }}
+              ></Breadcrumb>
             </Space>
           </AppHeader>
           <Content
@@ -314,26 +309,22 @@ function AppHeader({
   );
 }
 
-function BreadcrumbItem({
-  breadcrumbItem,
-}: {
-  breadcrumbItem: string | BreadcrumbElement;
-}) {
-  if (typeof breadcrumbItem === "string") {
-    return (
-      <Breadcrumb.Item key={breadcrumbItem}>{breadcrumbItem}</Breadcrumb.Item>
-    );
-  }
+function breadcrumbList(
+  breadcrumbs: Array<BreadcrumbElement | string>,
+): BreadcrumbElement[] {
+  if (!breadcrumbs) return [];
 
-  return (
-    <Breadcrumb.Item key={breadcrumbItem.title}>
-      {breadcrumbItem.href ? (
-        <Link to={breadcrumbItem.href}>{breadcrumbItem.title}</Link>
-      ) : (
-        breadcrumbItem.title
-      )}
-    </Breadcrumb.Item>
-  );
+  return breadcrumbs.map((breadcrumbItem) => {
+    if (breadcrumbItem instanceof Object) {
+      const { title, href }: { title: string; href?: string } = breadcrumbItem;
+
+      return { title, href };
+    } else {
+      return {
+        title: breadcrumbItem.toString(),
+      };
+    }
+  });
 }
 
 function Leftbar({
@@ -359,8 +350,13 @@ function Leftbar({
         <Row justify="center" align="middle">
           <Col>
             <ul
-              style={{ border: 0 }}
-              className="ant-menu ant-menu-root ant-menu-inline ant-menu-light css-dev-only-do-not-override-acm2ia"
+              style={{
+                border: 0,
+                listStyleType: "none",
+                margin: 0,
+                padding: 0,
+              }}
+              className="ant-menu ant-menu-root ant-menu-inline ant-menu-light"
             >
               <li>
                 <img
@@ -408,6 +404,7 @@ const styles = {
   content: css(`
     padding: 0 12px;
     min-height: 280px;
+    margin-bottom: 15px;
   `),
   menuRight: css({
     justifyContent: "right",
