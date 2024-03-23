@@ -244,7 +244,11 @@ export default function FolderPage() {
               <Col
                 key={`file-col-${item.id}`}
                 flex={1}
-                span={6}
+                xxl={6}
+                xl={8}
+                md={12}
+                sm={24}
+                xs={24}
                 style={{ height: "100%" }}
               >
                 <ListItem
