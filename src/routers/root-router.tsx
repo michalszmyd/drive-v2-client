@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import WelcomePage from "../pages/welcome-page";
 import SignInPage from "../pages/sign-in-page";
 import ResetPasswordPage from "../pages/reset-password-page";
-import ActivitiesPage from "../pages/activities-page";
+import ItemsPage from "../pages/items-page";
 import DashboardPage from "../pages/dashboard-page";
 import MyFolders from "../pages/my-folders";
 import FolderPage from "../pages/folder-page";
@@ -38,8 +38,8 @@ const router = createBrowserRouter([
     element: <DashboardPage />,
   },
   {
-    path: "/activities",
-    element: <ActivitiesPage />,
+    path: "/items",
+    element: <ItemsPage />,
   },
   {
     path: "/profile",

@@ -5,7 +5,7 @@ import { css } from "@emotion/css";
 import tableStyles from "../../styles/table";
 
 export interface TableParams {
-  pagination?: TablePaginationConfig;
+  pagination: TablePaginationConfig;
 }
 
 export default function TableItemsList({

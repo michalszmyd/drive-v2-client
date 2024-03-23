@@ -4,6 +4,7 @@ import {
   CompassOutlined,
   ControlOutlined,
   DeleteOutlined,
+  FileTextOutlined,
   FolderAddOutlined,
   FolderOpenOutlined,
   LeftOutlined,
@@ -93,18 +94,23 @@ export default function MainAppWrapper({
     },
     {
       key: "2",
+      label: <Link to="/items">Items</Link>,
+      icon: <FileTextOutlined />,
+    },
+    {
+      key: "3",
       label: "Folders",
       children: [
         {
-          key: "2.1",
+          key: "3.1",
           label: <Link to="/folders">Folders</Link>,
         },
         {
-          key: "2.2",
+          key: "3.2",
           label: <Link to="/my-folders">My Folders</Link>,
         },
         {
-          key: "2.3",
+          key: "3.3",
           label: <a onClick={openModal}>Create folder</a>,
           icon: <FolderAddOutlined />,
         },
@@ -112,12 +118,12 @@ export default function MainAppWrapper({
       icon: <FolderOpenOutlined />,
     },
     {
-      key: "3",
+      key: "4",
       label: "Applications",
       icon: <ApiOutlined />,
       children: [
         {
-          key: "3.1",
+          key: "4.1",
           label: (
             <Link to="/applications">
               <Space>
@@ -128,40 +134,40 @@ export default function MainAppWrapper({
           ),
         },
         {
-          key: "3.2",
+          key: "4.2",
           label: <Link to="/applications/api-docs">API Docs</Link>,
         },
       ],
     },
     {
-      key: "4",
+      key: "5",
       label: <Link to="/deleted-files">Deleted Files</Link>,
       icon: <DeleteOutlined />,
     },
   ];
 
   const adminPanelMenuItems = {
-    key: "5",
+    key: "6",
     label: "Admin",
     icon: <BankOutlined />,
     children: [
       {
-        key: "5.1",
+        key: "6.1",
         label: <Link to="/admin/users">Users</Link>,
         icon: <UserSwitchOutlined />,
       },
       {
-        key: "5.2",
+        key: "6.2",
         label: <Link to="/admin/applications">Applications</Link>,
         icon: <ControlOutlined />,
       },
       {
-        key: "5.3",
+        key: "6.3",
         label: "Files",
         icon: <ProfileOutlined />,
         children: [
           {
-            key: "5.3.1",
+            key: "6.3.1",
             label: <Link to="/admin/deleted-files">Deleted files</Link>,
             icon: <DeleteOutlined />,
           },
@@ -227,7 +233,7 @@ function Search() {
   const [q, setQ] = useState<string>(params.get("q") || "");
 
   const onSubmit = () => {
-    navigate(`/activities?q=${q}`);
+    navigate(`/items?q=${q}`);
   };
 
   return (

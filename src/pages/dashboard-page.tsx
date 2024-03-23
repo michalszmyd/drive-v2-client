@@ -9,11 +9,12 @@ import { css } from "@emotion/css";
 import ItemsService from "../services/items-service";
 import ItemModel from "../models/item-model";
 import TableItemsList from "../components/files/table-list";
-import { ItemRow } from "../components/activities/item-row";
+import { ItemRow } from "../components/items/item-row";
 import CurrentUserContext from "../contexts/current-user-context";
 import { Folders } from "../components/folders/folders";
 import useFolders from "../hooks/folders";
-import { tableHeader } from "../components/activities/table-header";
+import { tableHeader } from "../components/items/table-header";
+import { colors } from "../consts/colors";
 
 export default function DashboardPage() {
   const [favoriteFolders, setFavoriteFolders, toggleFavorites] = useFolders([]);
@@ -50,8 +51,12 @@ export default function DashboardPage() {
         <Folders folders={favoriteFolders} onFavoriteClick={toggleFavorites} />
         <Divider orientation="left">Recent files</Divider>
         <Row justify="end">
-          <Link to="/activities">
-            <Button shape="round" className={styles.viewAllButton}>
+          <Link to="/items">
+            <Button
+              shape="round"
+              type="primary"
+              className={styles.viewAllButton}
+            >
               View all
             </Button>
           </Link>
@@ -70,7 +75,7 @@ export default function DashboardPage() {
 
 const styles = {
   viewAllButton: css({
-    backgroundColor: "transparent",
+    backgroundColor: colors.secondary,
     marginBottom: 14,
   }),
 };
