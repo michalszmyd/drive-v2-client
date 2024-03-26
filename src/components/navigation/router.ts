@@ -125,7 +125,7 @@ const defaultAppRoutesLabelsDescribed = {
   },
   items: {
     name: "items",
-    label: React.createElement(Link, {to: "/items"}, "Items")
+    label: React.createElement(Link, {to: "/items"}, "Files")
   },
   allFolders: {
     name: "allFolders",
