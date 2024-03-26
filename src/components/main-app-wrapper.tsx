@@ -1,38 +1,23 @@
 import {
-  ApiOutlined,
-  BankOutlined,
-  CompassOutlined,
-  ControlOutlined,
-  DeleteOutlined,
-  FileTextOutlined,
-  FolderAddOutlined,
-  FolderOpenOutlined,
   LeftOutlined,
   MenuUnfoldOutlined,
-  ProfileOutlined,
   RightOutlined,
   UserOutlined,
-  UserSwitchOutlined,
 } from "@ant-design/icons";
 import { css } from "@emotion/css";
 import {
   Breadcrumb,
   Button,
   Col,
-  Drawer,
   Dropdown,
-  Input,
   Layout,
-  Menu,
   MenuProps,
   Row,
   Space,
-  Tag,
 } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
-import Sider, { SiderTheme } from "antd/es/layout/Sider";
 import React, { useContext, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppTheme, colors, resolveThemeColor, Theme } from "../consts/colors";
 import ThemeContext from "../contexts/theme-context";
 import ReactHelper from "../helpers/react-helper";
@@ -42,8 +27,17 @@ import { H1 } from "./shared/text-components";
 import CurrentUserContext from "../contexts/current-user-context";
 import Loading from "./shared/loading";
 import { MobileOnlyView } from "react-device-detect";
-import { isMobile } from "react-device-detect";
 import OverflowButton from "./shared/overflow-button";
+import Leftbar from "./navigation/left-bar";
+import {
+  Route,
+  adminAppRoutes,
+  buildAppRoutes,
+  defaultAppRoutesLabelsDescribed,
+  mainAppRoutes,
+} from "./navigation/router";
+import ObjectHelper from "../helpers/object-helper";
+import Search from "./shared/search";
 
 interface MainAppWrapperParams {
   children: React.ReactElement | React.ReactElement[];
@@ -78,105 +72,38 @@ export default function MainAppWrapper({
   const closeModal = () => {
     setIsCreateFolderModalOpened(false);
   };
+
   const openModal = () => {
     setIsCreateFolderModalOpened(true);
   };
+
   const onCreateFolder = (folder: FolderModel) => {
     navigate(`/folders/${folder.id}`);
     closeModal();
   };
 
-  const lowerMenuItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: <Link to="/dashboard">My drive</Link>,
-      icon: <CompassOutlined />,
-    },
-    {
-      key: "2",
-      label: <Link to="/items">Items</Link>,
-      icon: <FileTextOutlined />,
-    },
-    {
-      key: "3",
-      label: "Folders",
-      children: [
-        {
-          key: "3.1",
-          label: <Link to="/folders">Folders</Link>,
-        },
-        {
-          key: "3.2",
-          label: <Link to="/my-folders">My Folders</Link>,
-        },
-        {
-          key: "3.3",
-          label: <a onClick={openModal}>Create folder</a>,
-          icon: <FolderAddOutlined />,
-        },
-      ],
-      icon: <FolderOpenOutlined />,
-    },
-    {
-      key: "4",
-      label: "Applications",
-      icon: <ApiOutlined />,
-      children: [
-        {
-          key: "4.1",
-          label: (
-            <Link to="/applications">
-              <Space>
-                Applications
-                <Tag color="cyan">API</Tag>
-              </Space>
-            </Link>
-          ),
-        },
-        {
-          key: "4.2",
-          label: <Link to="/applications/api-docs">API Docs</Link>,
-        },
-      ],
-    },
-    {
-      key: "5",
-      label: <Link to="/deleted-files">Deleted Files</Link>,
-      icon: <DeleteOutlined />,
-    },
-  ];
+  defaultAppRoutesLabelsDescribed.createFolder.label = (
+    <a onClick={openModal}>Create Folder</a>
+  );
 
-  const adminPanelMenuItems = {
-    key: "6",
-    label: "Admin",
-    icon: <BankOutlined />,
-    children: [
-      {
-        key: "6.1",
-        label: <Link to="/admin/users">Users</Link>,
-        icon: <UserSwitchOutlined />,
-      },
-      {
-        key: "6.2",
-        label: <Link to="/admin/applications">Applications</Link>,
-        icon: <ControlOutlined />,
-      },
-      {
-        key: "6.3",
-        label: "Files",
-        icon: <ProfileOutlined />,
-        children: [
-          {
-            key: "6.3.1",
-            label: <Link to="/admin/deleted-files">Deleted files</Link>,
-            icon: <DeleteOutlined />,
-          },
-        ],
-      },
-    ],
-  };
+  const appRoutesLabels = ObjectHelper.values(
+    defaultAppRoutesLabelsDescribed,
+  ) as Route[];
 
-  currentUser?.admin && lowerMenuItems.push(adminPanelMenuItems);
+  const resolvedRoutes = currentUser?.admin
+    ? mainAppRoutes.concat(adminAppRoutes)
+    : mainAppRoutes;
+
+  const { flatRoutes, menuItems } = buildAppRoutes(
+    resolvedRoutes,
+    appRoutesLabels,
+  );
+
+  const selectedKey = flatRoutes.find(
+    (e) => e.route === window.location.pathname,
+  );
+
+  const lowerMenuItems: MenuProps["items"] = menuItems;
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme: toggleTheme }}>
@@ -187,18 +114,15 @@ export default function MainAppWrapper({
       />
       <Layout style={{ display: "flex", flex: 1, minHeight: "100vh" }}>
         <Leftbar
+          selectedKey={selectedKey?.key || "1"}
           theme={theme}
           leftBarMenuCollapsed={leftBarMenuCollapsed}
           setLeftBarMenuCollapsed={setLeftBarMenuCollapsed}
           lowerMenuItems={lowerMenuItems}
         />
         <Layout
-          style={{
-            background: themeColors.background,
-            padding: "0 14px 0",
-            flex: 1,
-            display: "flex",
-          }}
+          style={{ background: themeColors.background }}
+          className={styles.innerLayout}
         >
           <AppHeader theme={themeColors}>
             <Space>
@@ -224,25 +148,6 @@ export default function MainAppWrapper({
         </Layout>
       </Layout>
     </ThemeContext.Provider>
-  );
-}
-
-function Search() {
-  const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const [q, setQ] = useState<string>(params.get("q") || "");
-
-  const onSubmit = () => {
-    navigate(`/items?q=${q}`);
-  };
-
-  return (
-    <Input.Search
-      value={q}
-      placeholder="Type to search"
-      onChange={({ target: { value } }) => setQ(value)}
-      onSearch={onSubmit}
-    />
   );
 }
 
@@ -333,96 +238,22 @@ function breadcrumbList(
   });
 }
 
-function Leftbar({
-  theme,
-  leftBarMenuCollapsed,
-  setLeftBarMenuCollapsed,
-  lowerMenuItems,
-}: {
-  theme: SiderTheme | undefined;
-  leftBarMenuCollapsed: boolean;
-  setLeftBarMenuCollapsed: (value: boolean) => void;
-  lowerMenuItems: MenuProps["items"];
-}) {
-  if (!isMobile) {
-    return (
-      <Sider
-        theme={theme}
-        width={200}
-        collapsible
-        collapsed={leftBarMenuCollapsed}
-        onCollapse={setLeftBarMenuCollapsed}
-      >
-        <Row justify="center" align="middle">
-          <Col>
-            <ul
-              style={{
-                border: 0,
-                listStyleType: "none",
-                margin: 0,
-                padding: 0,
-              }}
-              className="ant-menu ant-menu-root ant-menu-inline ant-menu-light"
-            >
-              <li>
-                <img
-                  className={styles.logoImage}
-                  src="/favicon.ico"
-                  alt="image"
-                />
-              </li>
-            </ul>
-          </Col>
-        </Row>
-        <Menu
-          theme={theme}
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
-          style={{ borderRight: 0 }}
-          items={lowerMenuItems}
-        />
-      </Sider>
-    );
-  }
-
-  return (
-    <Drawer
-      title="Menu"
-      placement="left"
-      onClose={() => setLeftBarMenuCollapsed(false)}
-      open={leftBarMenuCollapsed}
-      key="left"
-    >
-      <Menu
-        theme={theme}
-        mode="inline"
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        style={{ height: "100%", borderRight: 0 }}
-        items={lowerMenuItems}
-      />
-    </Drawer>
-  );
-}
-
 const styles = {
   content: css(`
     padding: 0 12px;
     min-height: 280px;
     margin-bottom: 15px;
   `),
+  innerLayout: css({
+    padding: "0 14px 0",
+    flex: 1,
+    display: "flex",
+  }),
   menuRight: css({
     justifyContent: "right",
     flex: 1,
     display: "flex",
     alignItems: "center",
-  }),
-  logoImage: css({
-    width: "64px",
-    height: "64px",
-    justifyContent: "center",
-    padding: "12px",
   }),
   menuLeft: css({
     justifyContent: "left",
