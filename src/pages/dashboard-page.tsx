@@ -12,7 +12,7 @@ import TableItemsList from "../components/files/table-list";
 import { ItemRow } from "../components/items/item-row";
 import CurrentUserContext from "../contexts/current-user-context";
 import { Folders } from "../components/folders/folders";
-import useFolders from "../hooks/folders";
+import useFolders from "../hooks/folders-hook";
 import { tableHeader } from "../components/items/table-header";
 import { colors } from "../consts/colors";
 

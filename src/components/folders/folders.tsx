@@ -15,7 +15,15 @@ export function Folders({
   return (
     <Row gutter={[24, 24]} align="middle" justify="start">
       {folders.map((folder) => (
-        <Col className={styles.col} xxl={4} xl={6} md={8} sm={12} xs={24}>
+        <Col
+          key={`row-folder-${folder.id}`}
+          className={styles.col}
+          xxl={4}
+          xl={6}
+          md={8}
+          sm={12}
+          xs={24}
+        >
           <Folder onFavoriteClick={onFavoriteClick} folder={folder} />
         </Col>
       ))}

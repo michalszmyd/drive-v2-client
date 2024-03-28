@@ -1,4 +1,4 @@
-import { Button, Col, Collapse, Descriptions, Image, Row } from "antd";
+import { Col, Collapse, Descriptions, Image, Row } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,67 +11,46 @@ import FolderModel from "../models/folder-model";
 import DriveFileModelForm, {
   UploadingStatus,
 } from "../models/forms/drive-file-model-form";
-import { ResponsePages } from "../services/api-service";
-import DriveFilesService from "../services/drive-files-service";
 import FoldersService from "../services/folders-service";
 import CardExtraActions from "../components/folders/card-extra-actions";
 import UploadingFileProgress from "../components/files/uploading-file-progress";
 import ArrayHelper from "../helpers/array-helper";
 import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
-
-const PER_PAGE = 16;
+import InfinityScroll from "../components/shared/infinity-scroll";
+import useFolderFiles from "../hooks/folder-files-hook";
 
 export default function FolderPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [folder, setFolder] = useState<FolderModel>(new FolderModel());
-  const [files, setFiles] = useState<DriveFileModel[]>([]);
-  const [pages, setPages] = useState<ResponsePages>({
-    currentPage: 1,
-    totalPages: 1,
-    per: PER_PAGE,
-    total: 1,
-  });
   const [uploadingFiles, setUploadingFiles] = useState<DriveFileModelForm[]>(
     [],
   );
 
   const { id } = useParams();
   const { currentUser } = useContext(CurrentUserContext);
+
+  const {
+    onLoadMore,
+    deleteFile,
+    pushFile,
+    isLoading: filesLoading,
+    pages: filesPages,
+    files,
+  } = useFolderFiles({ folderId: id });
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
       FoldersService.find(id)
-        .then((folder) => {
-          setFolder(folder);
-
-          fetchDriveFiles()?.then(({ records, pages }) => {
-            setFiles(records);
-            setPages(pages);
-          });
-        })
+        .then(setFolder)
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  const fetchDriveFiles = (
-    { page = 1, per = PER_PAGE }: { page: number; per: number } = {
-      page: 1,
-      per: PER_PAGE,
-    },
-  ) => {
-    if (id) {
-      return DriveFilesService.folderFiles(id, { page, per }).then(
-        ({ records, pages }) => {
-          return { records, pages };
-        },
-      );
-    }
-  };
 
   const onFilesClick = (
     item: DriveFileModel,
@@ -110,7 +89,7 @@ export default function FolderPage() {
             });
           });
 
-          setFiles((state) => [driveFile].concat(state));
+          pushFile(driveFile);
         })
         .catch((e) => {
           const { data } = JSON.parse(e.message);
@@ -130,33 +109,6 @@ export default function FolderPage() {
           toast.error(`Error: ${JSON.stringify(data)}`);
         });
     }
-  };
-
-  const onLoadMore = () => {
-    const { currentPage, per } = pages;
-
-    return fetchDriveFiles({ page: currentPage + 1, per })?.then(
-      ({ records, pages }) => {
-        setFiles((state) => state.concat(records));
-        setPages(pages);
-      },
-    );
-  };
-
-  const onFileDelete = (item: DriveFileModel) => {
-    DriveFilesService.destroy(item)
-      .then(() => {
-        toast.success(`File '${item.name}' removed.`);
-
-        setFiles((state) =>
-          state.filter((folderItem) => folderItem.id !== item.id),
-        );
-      })
-      .catch((e) => {
-        const { data } = JSON.parse(e.message);
-
-        toast.error(`Error: ${JSON.stringify(data)}`);
-      });
   };
 
   const onFolderDelete = () => {
@@ -203,7 +155,9 @@ export default function FolderPage() {
               <Descriptions.Item label="User">
                 {folder.user.name}
               </Descriptions.Item>
-              <Descriptions.Item label="Files">{pages.total}</Descriptions.Item>
+              <Descriptions.Item label="Files">
+                {filesPages.total}
+              </Descriptions.Item>
               <Descriptions.Item label="Private">
                 {folder.folderPrivate}
               </Descriptions.Item>
@@ -238,29 +192,36 @@ export default function FolderPage() {
             <FileForm onSave={onFileFormSave} />
           </Col>
         </Row>
-        <Row wrap align="middle" style={{ marginTop: 24 }} gutter={[12, 12]}>
-          <Image.PreviewGroup>
-            {files.map((item) => (
-              <Col
-                key={`file-col-${item.id}`}
-                flex={1}
-                xxl={6}
-                xl={8}
-                md={12}
-                sm={24}
-                xs={24}
-                style={{ height: "100%" }}
-              >
-                <ListItem
-                  onClick={onFilesClick}
-                  onDelete={() => onFileDelete(item)}
-                  item={item}
-                />
-              </Col>
-            ))}
-          </Image.PreviewGroup>
-        </Row>
-        <Button onClick={onLoadMore}>Load more</Button>
+        <InfinityScroll
+          isLoading={filesLoading}
+          onEndReached={onLoadMore}
+          disabled={
+            filesLoading || filesPages.currentPage === filesPages.totalPages
+          }
+        >
+          <Row wrap align="middle" style={{ marginTop: 24 }} gutter={[12, 12]}>
+            <Image.PreviewGroup>
+              {files.map((item) => (
+                <Col
+                  key={`file-col-${item.id}`}
+                  flex={1}
+                  xxl={6}
+                  xl={8}
+                  md={12}
+                  sm={24}
+                  xs={24}
+                  style={{ height: "100%" }}
+                >
+                  <ListItem
+                    onClick={onFilesClick}
+                    onDelete={() => deleteFile(item)}
+                    item={item}
+                  />
+                </Col>
+              ))}
+            </Image.PreviewGroup>
+          </Row>
+        </InfinityScroll>
       </MainAppWrapper>
     </AuthenticatedRoute>
   );
