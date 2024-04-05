@@ -86,12 +86,12 @@ export default function FilePage() {
             ),
           }}
         />
+        <div className={styles.divider} />
         <FileMetadataText text={file.imageMetadataText} />
         <div className={styles.container}>
           <p dangerouslySetInnerHTML={{ __html: file.body || "" }} />
           <ResolvePreview item={file} />
         </div>
-        <div className={styles.divider} />
       </MainAppWrapper>
     </AuthenticatedRoute>
   );
