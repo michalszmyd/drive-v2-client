@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { Descriptions } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthenticatedRoute from "../components/authenticated/authenticated-route";
 import MainAppWrapper from "../components/main-app-wrapper";
@@ -13,6 +12,7 @@ import { toast } from "react-toastify";
 import CurrentUserContext from "../contexts/current-user-context";
 import NotFound from "../components/shared/not-found";
 import FileDescriptions from "../components/files/file-descriptions";
+import FileMetadataText from "../components/files/file-metadata-text";
 
 export default function FilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -86,11 +86,12 @@ export default function FilePage() {
             ),
           }}
         />
-        <Descriptions></Descriptions>
+        <FileMetadataText text={file.imageMetadataText} />
         <div className={styles.container}>
           <p dangerouslySetInnerHTML={{ __html: file.body || "" }} />
           <ResolvePreview item={file} />
         </div>
+        <div className={styles.divider} />
       </MainAppWrapper>
     </AuthenticatedRoute>
   );
@@ -104,4 +105,7 @@ const styles = {
     textAlign: "justify",
     textJustify: "inter-word",
   }),
+  divider: css({
+    margin: '12px 0',
+  })
 };

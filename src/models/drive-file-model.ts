@@ -6,6 +6,10 @@ import UserModel, { UserModelInit } from "./user-model";
 const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
 const VideoExtensions = ["mp4", "mp3", "mpeg", "m4a"];
 
+interface Metadata {
+  text?: string,
+}
+
 const DEFAULT_PARAMS = {
   id: null,
   deleted_at: null,
@@ -22,6 +26,7 @@ const DEFAULT_PARAMS = {
   created_at: "",
   updated_at: "",
   hosting_source: null,
+  metadata: {},
 };
 
 export type DriveFileModelInit = {
@@ -40,6 +45,7 @@ export type DriveFileModelInit = {
   created_at: string;
   updated_at: string;
   hosting_source: string | null;
+  metadata: object;
 };
 
 export default class DriveFileModel extends Model {
@@ -59,6 +65,7 @@ export default class DriveFileModel extends Model {
   updatedAt: string;
   fileSourceName: string;
   hostingSource: string | null;
+  metadata: Metadata;
 
   constructor({
     deleted_at,
@@ -76,6 +83,7 @@ export default class DriveFileModel extends Model {
     created_at,
     updated_at,
     hosting_source,
+    metadata,
   }: DriveFileModelInit = DEFAULT_PARAMS) {
     super();
 
@@ -92,9 +100,18 @@ export default class DriveFileModel extends Model {
     this.createdAt = created_at;
     this.updatedAt = updated_at;
     this.vibrantColor = vibrant_color;
+    this.metadata = metadata as Metadata;
     this.folder = folder ? new FolderModel(folder) : null;
     this.user = user ? new UserModel(user) : null;
     this.hostingSource = hosting_source;
+  }
+
+  get imageMetadataText() : string | null {
+    if (this.isImage) {
+      return this.metadata?.text || null;
+    }
+
+    return null;
   }
 
   get isImage(): boolean {
