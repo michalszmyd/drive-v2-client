@@ -1,3 +1,4 @@
+import { css } from "@emotion/css";
 import { Collapse } from "antd";
 
 export default function FileMetadataText({text}: {text: string | null}) {
@@ -8,9 +9,14 @@ export default function FileMetadataText({text}: {text: string | null}) {
   return (
     <Collapse defaultActiveKey={[]}>
       <Collapse.Panel header="Image Text" key="1">
-        <p>{text}</p>
+        <p className={styles.metadataText}>{text}</p>
       </Collapse.Panel>
     </Collapse>
-  )
+  );
+}
 
+const styles = {
+  metadataText: css({
+    whiteSpace: 'pre-line',
+  }),
 }
