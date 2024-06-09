@@ -1,4 +1,6 @@
+import FolderModel, { FolderModelInit } from "./folder-model";
 import { getFileExt } from "./helpers/methods";
+import UserModel, { UserModelInit } from "./user-model";
 
 export enum ItemModelRecordType {
   Folder = "folder",
@@ -14,10 +16,10 @@ export type ItemModelInit = {
   source_url: string;
   folder_id?: number | null;
   pinned: boolean;
-  folder_name: string | null;
-  user_name: string;
   user_id: number;
   record_type: ItemModelRecordType;
+  folder: FolderModelInit;
+  user: UserModelInit;
   updated_at: string;
   created_at: string;
 };
@@ -31,34 +33,44 @@ export default class ItemModel {
   recordType: ItemModelRecordType;
   createdAt: string;
   updatedAt: string;
-  folderName: string | null;
-  userName: string;
   userId: number;
+
+  folder: FolderModel;
+  user: UserModel;
 
   constructor({
     id,
     name,
     source_url,
     folder_id,
-    user_name,
     user_id,
-    folder_name,
     pinned,
     record_type,
     updated_at,
     created_at,
+    user,
+    folder,
   }: ItemModelInit) {
     this.id = id;
     this.name = name;
     this.sourceUrl = source_url || "";
-    this.folderName = folder_name;
-    this.userName = user_name;
     this.userId = user_id;
     this.folderId = folder_id || null;
     this.pinned = pinned;
     this.recordType = record_type;
     this.createdAt = created_at;
     this.updatedAt = updated_at;
+
+    this.user = user ? new UserModel(user) :  new UserModel();
+    this.folder = folder ? new FolderModel(folder) : new FolderModel();
+  }
+
+  get folderName(): string {
+    return this.folder.name;
+  }
+
+  get userName(): string {
+    return this.user.name;
   }
 
   get isImage(): boolean {

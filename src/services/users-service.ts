@@ -1,11 +1,41 @@
-import UserModel from "../models/user-model";
+import UserModel, { UserModelInit } from "../models/user-model";
 import UserSessionModel, {
   UserSessionModelInit,
 } from "../models/user-session-model";
-import ApiService from "./api-service";
+import ApiService, { ResponsePages } from "./api-service";
 import AuthenticatedApiService from "./authenticated-api-service";
 
 export default class UsersService {
+  static async all({
+    page = 1,
+    per = 10,
+  }: {
+    page?: number | undefined;
+    per?: number | undefined;
+  } = {}): Promise<{ records: UserModel[]; pages: ResponsePages }> {
+    const instance = await AuthenticatedApiService.default();
+    const requestPage = (page || 1).toString();
+    const requestPer = (per || 1).toString();
+
+    const params = new URLSearchParams({ page: requestPage, per: requestPer });
+
+    const {
+      data: { pages, records },
+    } = await instance.get(`users?${params.toString()}`);
+
+    const responsePages: ResponsePages = {
+      totalPages: pages.total_pages,
+      currentPage: pages.current_page,
+      per: pages.per,
+      total: pages.total,
+    };
+
+    return {
+      pages: responsePages,
+      records: records.map((record: UserModelInit) => new UserModel(record)),
+    };
+  }
+
   static async resetPassword({
     token,
     password,

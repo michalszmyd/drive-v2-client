@@ -19,14 +19,14 @@ export function ItemRow({
       key: item.id,
       type: <ItemLabel item={item} />,
       preview: <ItemPreview item={item} />,
-      userName: item.userName,
+      userName: item.user.name,
       name: (
         <Link className={styles.folderLink} to={`/folders/${item.id}`}>
           {item.name}
         </Link>
       ),
       folderName: (
-        <Link to={`/folders/${item.folderId}`}>{item.folderName}</Link>
+        <Link to={`/folders/${item.folderId}`}>{item.folder.name}</Link>
       ),
       folder: <b>{item.folderId}</b>,
       pinned: <></>,
@@ -38,11 +38,11 @@ export function ItemRow({
     type: <ItemLabel item={item} />,
     preview: <ItemPreview item={item} />,
     name: <Link to={`/files/${item.id}`}>{item.name}</Link>,
-    userName: item.userName,
+    userName: item.user.name,
     folderName: item.folderId && (
       <Tag color={colors.secondary}>
         <Link className={styles.folderLink} to={`/folders/${item.folderId}`}>
-          {item.folderName}
+          {item.folder.name}
         </Link>
       </Tag>
     ),

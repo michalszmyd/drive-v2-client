@@ -19,6 +19,7 @@ import AdminApplicationsPage from "../pages/admin/applications-page";
 import SettingsPage from "../pages/settings-page";
 import DeletedFilesPage from "../pages/deleted-files-page";
 import AdminDeletedFilesPage from "../pages/admin/deleted-files-page";
+import SearchPage from "../pages/search-page";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: "/folders",
     element: <FoldersPage />,
+  },
+  {
+    path: "/search",
+    element: <SearchPage />,
   },
   {
     path: "/deleted-files",

@@ -8,6 +8,7 @@ import {
   FolderAddOutlined,
   FolderOpenOutlined,
   ProfileOutlined,
+  SearchOutlined,
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import React from "react";
@@ -35,6 +36,12 @@ const mainAppRoutes: Route[] = [
     label: "Items",
     route: "/items",
     icon: React.createElement(FileTextOutlined)
+  },
+  {
+    name: "search",
+    label: "Search",
+    route: "/search",
+    icon: React.createElement(SearchOutlined)
   },
   {
     name: "folders",
@@ -131,9 +138,13 @@ const defaultAppRoutesLabelsDescribed = {
     name: "allFolders",
     label: React.createElement(Link, {to: "/folders"}, "Folders")
   },
-  myFolderS: {
+  myFolders: {
     name: "myFolders",
     label: React.createElement(Link, {to: "/my-folders"}, "My Folders")
+  },
+  search: {
+    name: "search",
+    label: React.createElement(Link, {to: "/search"}, "Search"),
   },
   myApplications: {
     name: "myApplications",
