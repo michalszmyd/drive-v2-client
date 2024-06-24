@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import UserResetPasswordModel from "../../models/user-reset-password-model";
 import ArrayHelper from "../../helpers/array-helper";
 import TableItemsList from "../../components/files/table-list";
+import UserSessionsTable from "../../components/users/sessions-table";
+import UserSessionModel from "../../models/user-session-model";
 
 type ResetPassword = {
   user: UserModel;
@@ -30,7 +32,7 @@ export default function UsersPage() {
   }, []);
 
   const userToTableItem = (user: UserModel) => {
-    const { id, name, email, createdAt, updatedAt, admin } = user;
+    const { id, name, email, createdAt, updatedAt, admin, sessions } = user;
 
     return {
       key: id,
@@ -40,6 +42,7 @@ export default function UsersPage() {
       createdAt,
       updatedAt,
       admin,
+      sessions,
     };
   };
 
@@ -68,11 +71,47 @@ export default function UsersPage() {
       });
   };
 
+  const onDeleteSession = (userSession: UserSessionModel) => {
+    AdminUsersService.deleteSession(userSession.userId, userSession.id)
+      .then(() => {
+        setUsers((state) => {
+          return state.map((user: UserModel) => {
+            if (user.id === userSession.userId) {
+              user.sessions = user.sessions.filter(
+                (session) => session.id !== userSession.id,
+              );
+            }
+
+            return user;
+          });
+        });
+
+        toast.success("Session removed");
+      })
+      .catch(() => {
+        toast.error("Session cannot be removed");
+      });
+  };
+
+  const expandedRowRender = (record: UserModel) => {
+    return (
+      <UserSessionsTable
+        onDeleteSession={onDeleteSession}
+        userSessions={record.sessions}
+      />
+    );
+  };
+
   return (
     <AuthenticatedAdminRoute>
       <MainAppWrapper title="Users" breadcrumbs={["All users"]}>
         <ResetPasswordTable resetPasswordUsers={resetPasswordUsers} />
-        <TableItemsList dataSource={tableItems}>
+        <TableItemsList
+          expandable={{
+            expandedRowRender: (r: UserModel) => expandedRowRender(r),
+          }}
+          dataSource={tableItems}
+        >
           <Column key="user-id" title="ID" dataIndex="id" />
           <Column key="user-name" title="Name" dataIndex="name" />
           <Column key="user-email" title="Email" dataIndex="email" />

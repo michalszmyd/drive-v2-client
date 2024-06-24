@@ -1,5 +1,6 @@
 export type UserSessionModelInit = {
   id: number;
+  user_id: number;
   created_at: string;
   updated_at: string;
   last_used_at: string;
@@ -12,6 +13,7 @@ export type UserSessionModelInit = {
 
 export default class UserSessionModel {
   id: number;
+  userId: number;
   createdAt: string;
   updatedAt: string;
   lastUsedAt: string;
@@ -23,6 +25,7 @@ export default class UserSessionModel {
 
   constructor({
     id,
+    user_id,
     created_at,
     updated_at,
     last_used_at,
@@ -33,6 +36,7 @@ export default class UserSessionModel {
     device_type,
   }: UserSessionModelInit) {
     this.id = id;
+    this.userId = user_id;
     this.createdAt = created_at;
     this.updatedAt = updated_at;
     this.lastUsedAt = last_used_at;

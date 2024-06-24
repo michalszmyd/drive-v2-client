@@ -1,11 +1,13 @@
 import StringHelper from "../helpers/string-helper";
 import Model from "./model";
+import UserSessionModel, { UserSessionModelInit } from "./user-session-model";
 
 const DEFAULT_PARAMS = {
   id: null,
   name: "",
   email: "",
   admin: null,
+  sessions: [],
   created_at: "",
   updated_at: "",
 };
@@ -15,6 +17,7 @@ export type UserModelInit = {
   name?: string;
   admin?: boolean | null;
   email?: string;
+  sessions?: UserSessionModelInit[],
   updated_at?: string;
   created_at?: string;
 };
@@ -24,6 +27,7 @@ export default class UserModel extends Model {
   name: string;
   email: string;
   admin: boolean | null;
+  sessions: UserSessionModel[];
   updatedAt: string;
   createdAt: string;
 
@@ -32,6 +36,7 @@ export default class UserModel extends Model {
     name = "",
     email = "",
     admin = null,
+    sessions = [],
     updated_at = "",
     created_at = "",
   }: UserModelInit = DEFAULT_PARAMS) {
@@ -41,6 +46,7 @@ export default class UserModel extends Model {
     this.name = name;
     this.email = email;
     this.admin = admin;
+    this.sessions = sessions.map((session) => new UserSessionModel(session));
     this.createdAt = created_at;
     this.updatedAt = updated_at;
   }

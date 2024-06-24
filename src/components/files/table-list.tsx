@@ -15,6 +15,7 @@ export default function TableItemsList({
   pagination = false,
   dataSource,
   children,
+  expandable,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns?: any;
@@ -23,6 +24,8 @@ export default function TableItemsList({
   pagination?: TableParams["pagination"] | false;
   dataSource: TableProps["dataSource"];
   children?: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  expandable?: any;
 }) {
   return (
     <Table
@@ -32,6 +35,7 @@ export default function TableItemsList({
       loading={isLoading}
       onChange={onChange}
       pagination={pagination}
+      expandable={expandable}
       className={`${tableStyles.table} ${styles.table}`}
       dataSource={dataSource}
     >

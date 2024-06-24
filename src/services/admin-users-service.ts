@@ -20,6 +20,12 @@ export default class AdminUsersService {
     };
   }
 
+  static async deleteSession(userId: number, id: number) {
+    const instance = await AuthenticatedApiService.default();
+
+    return instance.delete(`admin/users/${userId}/sessions/${id}`);
+  }
+
   static async resetPassword(id: number) {
     const instance = await AuthenticatedApiService.default();
 
