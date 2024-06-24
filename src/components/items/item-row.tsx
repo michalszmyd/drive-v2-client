@@ -51,6 +51,9 @@ export function ItemRow({
       <CardExtraActions
         manageActionsEnabled={currentUser?.id === item.userId}
         sourceUrl={item.sourceUrl}
+        downloadOnClick={() => {
+          item.sourceUrl && window.open(item.sourceUrl, "_blank")?.focus();
+        }}
         editLinkTo={`/files/${item.id}/edit`}
       />
     ),

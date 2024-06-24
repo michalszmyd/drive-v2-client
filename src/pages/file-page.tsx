@@ -64,6 +64,12 @@ export default function FilePage() {
       });
   };
 
+  const onFileDownload = () => {
+    if (file.sourceUrl) {
+      window.open(file.sourceUrl, "_blank")?.focus();
+    }
+  };
+
   if (!file.id && !isLoading) {
     return <NotFound />;
   }
@@ -82,6 +88,7 @@ export default function FilePage() {
                 editLinkTo={`/files/${file.id}/edit`}
                 manageActionsEnabled={file.userId === currentUser?.id}
                 deleteOnClick={onFileDelete}
+                downloadOnClick={onFileDownload}
               />
             ),
           }}
@@ -106,6 +113,6 @@ const styles = {
     textJustify: "inter-word",
   }),
   divider: css({
-    margin: '12px 0',
-  })
+    margin: "12px 0",
+  }),
 };
