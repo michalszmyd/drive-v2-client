@@ -9,30 +9,38 @@ import { Link } from "react-router-dom";
 import { colors } from "../../consts/colors";
 import { css } from "@emotion/css";
 import { toast } from "react-toastify";
-import StringHelper from "../../helpers/string-helper";
+import DriveFilesService from "../../services/drive-files-service";
+import SETTINGS from "../../consts/settings";
 
 export default function CardExtraActions({
+  fileId,
   editLinkTo,
   editTitle = "Edit",
-  sourceUrl,
   manageActionsEnabled = false,
   downloadOnClick,
   deleteOnClick,
   deleteTitle = "Delete",
 }: {
+  fileId?: number | null;
   editLinkTo: string;
   editTitle?: string;
-  sourceUrl?: string | null;
   manageActionsEnabled?: boolean;
   downloadOnClick?: () => void;
   deleteOnClick?: () => void;
   deleteTitle?: string;
 }) {
   const copyToClipboard = () => {
-    if (sourceUrl && StringHelper.isPresent(sourceUrl)) {
-      navigator.clipboard.writeText(sourceUrl);
+    if (fileId) {
+      DriveFilesService.share(fileId).then((data) => {
+        const url =
+          SETTINGS.HOST_URL +
+          "/files/embed/?" +
+          new URLSearchParams(data).toString();
 
-      toast.success("Copied to clipboard!");
+        navigator.clipboard.writeText(url);
+
+        toast.success("Copied to clipboard!");
+      });
     }
   };
 
@@ -45,13 +53,13 @@ export default function CardExtraActions({
           </Button>
         </Tooltip>
       )}
-      {StringHelper.isPresent(sourceUrl) && (
-        <Tooltip title="Embed">
-          <Button onClick={copyToClipboard} shape="circle" type="link">
-            <CopyOutlined />
-          </Button>
-        </Tooltip>
-      )}
+      {/* {StringHelper.isPresent(sourceUrl) && ( */}
+      <Tooltip title="Embed">
+        <Button onClick={copyToClipboard} shape="circle" type="link">
+          <CopyOutlined />
+        </Button>
+      </Tooltip>
+      {/* )} */}
       {manageActionsEnabled && (
         <Link to={editLinkTo}>
           <Tooltip title={editTitle}>

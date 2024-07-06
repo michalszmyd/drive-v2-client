@@ -50,6 +50,14 @@ export default class DriveFilesService {
     return new DriveFileModel(data);
   }
 
+  static async share(fileId: number) {
+    const instance = await AuthenticatedApiService.default();
+
+    const { data } = await instance.post(`files/${fileId}/share`);
+
+    return data;
+  }
+
   static async update(
     file: DriveFileModel,
     {

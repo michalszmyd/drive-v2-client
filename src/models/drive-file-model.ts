@@ -93,7 +93,7 @@ export default class DriveFileModel extends Model {
     this.folderId = folder_id;
     this.id = id;
     this.name = name;
-    this.pinned = pinned;
+    this.pinned = pinned || false;
     this.sourceUrl = source_url || "";
     this.fileSourceName = resolveBaseURL(source_url) || "";
     this.userId = user_id;

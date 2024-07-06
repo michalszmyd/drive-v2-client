@@ -70,6 +70,15 @@ export default function FilePage() {
     }
   };
 
+  const onShare = () => {
+    if (!file.id) return;
+
+    DriveFilesService.share(file.id).then((data) => {
+      const v = new URLSearchParams(data).toString();
+      console.log({ v });
+    });
+  };
+
   if (!file.id && !isLoading) {
     return <NotFound />;
   }
@@ -77,6 +86,7 @@ export default function FilePage() {
   return (
     <AuthenticatedRoute>
       <MainAppWrapper isLoading={isLoading} breadcrumbs={buildBreadcrumbs()}>
+        <button onClick={onShare}>Share</button>
         <FileDescriptions
           file={file}
           descriptionsParams={{
@@ -84,7 +94,7 @@ export default function FilePage() {
             bordered: true,
             extra: (
               <CardExtraActions
-                sourceUrl={file.sourceUrl}
+                fileId={file.id}
                 editLinkTo={`/files/${file.id}/edit`}
                 manageActionsEnabled={file.userId === currentUser?.id}
                 deleteOnClick={onFileDelete}

@@ -56,7 +56,7 @@ export function ListItem({
       hoverable
       extra={
         <CardExtraActions
-          sourceUrl={item.sourceUrl}
+          fileId={item.id}
           editLinkTo={`/files/${item.id}/edit`}
           manageActionsEnabled={item.userId === currentUser?.id}
           deleteOnClick={onDelete}

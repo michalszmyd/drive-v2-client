@@ -49,8 +49,8 @@ export function ItemRow({
     pinned: item.pinned && <Tag color="yellow">Pinned</Tag>,
     actions: (
       <CardExtraActions
+        fileId={item.id}
         manageActionsEnabled={currentUser?.id === item.userId}
-        sourceUrl={item.sourceUrl}
         downloadOnClick={() => {
           item.sourceUrl && window.open(item.sourceUrl, "_blank")?.focus();
         }}

@@ -20,6 +20,7 @@ import SettingsPage from "../pages/settings-page";
 import DeletedFilesPage from "../pages/deleted-files-page";
 import AdminDeletedFilesPage from "../pages/admin/deleted-files-page";
 import SearchPage from "../pages/search-page";
+import EmbedFilePage from "../pages/embed-file-page";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
   {
     path: "/files/:id/edit",
     element: <EditFilePage />,
+  },
+  {
+    path: "/files/embed",
+    element: <EmbedFilePage />,
   },
   {
     path: "/applications",
