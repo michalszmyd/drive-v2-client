@@ -33,8 +33,8 @@ export default function CardExtraActions({
     if (fileId) {
       DriveFilesService.share(fileId).then((data) => {
         const url =
-          SETTINGS.HOST_URL +
-          "/files/embed/?" +
+          SETTINGS.API_ORIGIN +
+          "/files/embed?" +
           new URLSearchParams(data).toString();
 
         navigator.clipboard.writeText(url);
@@ -53,13 +53,11 @@ export default function CardExtraActions({
           </Button>
         </Tooltip>
       )}
-      {/* {StringHelper.isPresent(sourceUrl) && ( */}
       <Tooltip title="Embed">
         <Button onClick={copyToClipboard} shape="circle" type="link">
           <CopyOutlined />
         </Button>
       </Tooltip>
-      {/* )} */}
       {manageActionsEnabled && (
         <Link to={editLinkTo}>
           <Tooltip title={editTitle}>
