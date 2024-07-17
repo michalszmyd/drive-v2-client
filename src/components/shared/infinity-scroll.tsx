@@ -20,7 +20,7 @@ export default function InfinityScroll({
     const offsetHeight = document.documentElement.offsetHeight;
     const innerHeight = window.innerHeight;
 
-    const endReached = innerHeight + scrollTop >= offsetHeight;
+    const endReached = innerHeight + scrollTop >= offsetHeight - 50;
 
     if (endReached) {
       onEndReached();

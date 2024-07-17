@@ -195,7 +195,9 @@ export default function FolderPage() {
           isLoading={filesLoading}
           onEndReached={onLoadMore}
           disabled={
-            filesLoading || filesPages.currentPage === filesPages.totalPages
+            filesLoading ||
+            filesPages.total === 0 ||
+            filesPages.currentPage === filesPages.totalPages
           }
         >
           <Row wrap align="middle" style={{ marginTop: 24 }} gutter={[12, 12]}>
