@@ -26,7 +26,7 @@ export default class EmbedDriveFilesService {
 
     const instance = await ApiService.default();
 
-    const { data } = await instance.get(`files/embed?${searchParams}`);
+    const { data } = await instance.get(`files/share?${searchParams}`);
 
     return new DriveFileModel(data);
   }
