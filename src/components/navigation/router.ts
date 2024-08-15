@@ -3,6 +3,7 @@ import {
   BankOutlined,
   CompassOutlined,
   ControlOutlined,
+  DashboardOutlined,
   DeleteOutlined,
   FileTextOutlined,
   FolderAddOutlined,
@@ -97,6 +98,12 @@ const adminAppRoutes: Route[] = [
   icon: React.createElement(BankOutlined),
   children: [
     {
+      name: "adminDashboard",
+      label: "Dashboard",
+      route: "/admin/dashboard",
+      icon: React.createElement(DashboardOutlined)
+    },
+    {
       name: "adminUsers",
       label: "Users",
       route: "/admin/users",
@@ -164,6 +171,10 @@ const defaultAppRoutesLabelsDescribed = {
   },
   admin: {
     name: "admin",
+  },
+  adminDashboard: {
+    name: 'adminDashboard',
+    label: React.createElement(Link, {to: "/admin/dashboard"}, "Dashboard")
   },
   adminUsers: {
     name: "adminUsers",

@@ -16,6 +16,7 @@ import AdminUsersPage from "../pages/admin/users-page";
 import ApplicationsPage from "../pages/applications-page";
 import ApplicationsApiDocsPage from "../pages/applications-api-docs-page";
 import AdminApplicationsPage from "../pages/admin/applications-page";
+import AdminDashboardPage from "../pages/admin/dashboard-page";
 import SettingsPage from "../pages/settings-page";
 import DeletedFilesPage from "../pages/deleted-files-page";
 import AdminDeletedFilesPage from "../pages/admin/deleted-files-page";
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: <SettingsPage />,
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminDashboardPage />,
   },
   {
     path: "/admin/users",
