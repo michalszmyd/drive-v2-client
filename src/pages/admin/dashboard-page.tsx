@@ -3,7 +3,10 @@ import AuthenticatedAdminRoute from "../../components/authenticated/authenticate
 import MainAppWrapper from "../../components/main-app-wrapper";
 import useActivities from "../../hooks/admin/activites-hook";
 import TableItemsList from "../../components/files/table-list";
-import ActivityModel from "../../models/activity-model";
+import ActivityModel, {
+  ActivityActionType,
+  ActivityResourceType,
+} from "../../models/activity-model";
 import Column from "antd/es/table/Column";
 import { css } from "@emotion/css";
 import { Link } from "react-router-dom";
@@ -128,58 +131,71 @@ function ResourceTag({
   resource,
   resourceId,
 }: {
-  resource: string;
+  resource: ActivityResourceType;
   resourceId?: number | null;
 }) {
-  if (resource === "folder") {
+  if (resource === ActivityResourceType.Folder) {
     return (
       <Tag color={resourceTagColor(resource)}>
-        <Link to={`/folders/${resourceId}`}>{resource.toUpperCase()}</Link>
+        <Link to={`/folders/${resourceId}`}>
+          {resource.toString().toUpperCase()}
+        </Link>
       </Tag>
     );
   }
 
-  if (resource === "file") {
+  if (
+    resource === ActivityResourceType.File ||
+    resource === ActivityResourceType.FileShare
+  ) {
     return (
       <Tag color={resourceTagColor(resource)}>
-        <Link to={`/files/${resourceId}`}>{resource.toUpperCase()}</Link>
+        <Link to={`/files/${resourceId}`}>
+          {resource.toString().toUpperCase()}
+        </Link>
       </Tag>
     );
   }
 
-  return <Tag color={resourceTagColor(resource)}>{resource.toUpperCase()}</Tag>;
+  return (
+    <Tag color={resourceTagColor(resource)}>
+      {resource.toString().toUpperCase()}
+    </Tag>
+  );
 }
 
-function resourceTagColor(resource: string) {
+function resourceTagColor(resource: ActivityResourceType) {
   switch (resource) {
-    case "folder":
+    case ActivityResourceType.Folder:
       return "volcano";
-    case "file":
+    case ActivityResourceType.File:
       return "cyan";
-    case "session":
+    case ActivityResourceType.Session:
       return "geekblue";
-    case "user":
+    case ActivityResourceType.User:
       return "magenta";
+    case ActivityResourceType.FileShare:
+      return "purple";
     default:
       return "black";
   }
 }
 
-function ActionTag({ action }: { action: string }) {
+function ActionTag({ action }: { action: ActivityActionType }) {
   return <Tag color={actionTagColor(action)}>{action.toUpperCase()}</Tag>;
 }
 
-function actionTagColor(action: string) {
+function actionTagColor(action: ActivityActionType) {
   switch (action) {
-    case "visit":
+    case ActivityActionType.Visit:
       return "blue";
-    case "create":
+    case ActivityActionType.Create:
       return "green";
-    case "update":
+    case ActivityActionType.Update:
       return "yellow";
-    case "delete":
+    case ActivityActionType.Delete:
       return "red";
-    case "restore":
+    case ActivityActionType.Restore:
       return "purple";
     default:
       return "black";

@@ -1,10 +1,28 @@
 import UserModel, { UserModelInit } from "./user-model";
 
+export enum ActivityActionType {
+  Visit = 'visit',
+  Create = 'create',
+  Update = 'update',
+  Delete = 'delete',
+  Restore = 'restore',
+}
+
+export enum ActivityResourceType {
+  Folder = 'folder',
+  File = 'file',
+  Application = 'application',
+  Search = 'search',
+  Session = 'session',
+  User = 'user',
+  FileShare = 'file_share',
+}
+
 export type ActivityModelInit = {
   id: number;
-  resource: string;
+  resource: ActivityResourceType;
   resource_id: number | null;
-  action: string;
+  action: ActivityActionType;
   metadata: string;
   request_info: string;
   user: UserModelInit | null;
@@ -14,9 +32,9 @@ export type ActivityModelInit = {
 
 export default class ActivityModel {
   id: number;
-  resource: string;
+  resource: ActivityResourceType;
   resourceId: number | null;
-  action: string;
+  action: ActivityActionType;
   metadata: string;
   requestInfo: string;
   user: UserModel;
