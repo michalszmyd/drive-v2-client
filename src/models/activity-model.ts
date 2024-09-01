@@ -16,12 +16,15 @@ export enum ActivityResourceType {
   Session = 'session',
   User = 'user',
   FileShare = 'file_share',
+  Folders = 'folders',
+  FolderFiles = 'folder_files',
 }
 
 export type ActivityModelInit = {
   id: number;
   resource: ActivityResourceType;
   resource_id: number | null;
+  application_id: number | null;
   action: ActivityActionType;
   metadata: string;
   request_info: string;
@@ -34,6 +37,7 @@ export default class ActivityModel {
   id: number;
   resource: ActivityResourceType;
   resourceId: number | null;
+  applicationId: number | null;
   action: ActivityActionType;
   metadata: string;
   requestInfo: string;
@@ -45,6 +49,7 @@ export default class ActivityModel {
     id,
     resource,
     resource_id,
+    application_id,
     action,
     metadata,
     request_info,
@@ -55,6 +60,7 @@ export default class ActivityModel {
     this.id = id;
     this.resource = resource;
     this.resourceId = resource_id;
+    this.applicationId = application_id;
     this.action = action;
     this.metadata = JSON.stringify(metadata);
     this.requestInfo = JSON.stringify(request_info);

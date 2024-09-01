@@ -1,4 +1,5 @@
 import SETTINGS from "../consts/settings";
+import ActivityModel, { ActivityModelInit } from "../models/activity-model";
 import ApplicationModel, {
   ApplicationModelInit,
 } from "../models/application-model";
@@ -40,6 +41,28 @@ export default class ApplicationsService {
     data.host = SETTINGS.API_DOCS_ORIGIN;
 
     return data;
+  }
+
+  static async activityLogs(applicationId: number, { page = 1, per = 10 }: { page?: number; per?: number }): Promise<{
+    pages: ResponsePages;
+    records: ActivityModel[];
+  }> {
+    const instance = await AuthenticatedApiService.default();
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per: per.toString(),
+    });
+
+    const {
+      data: { records, pages },
+    } = await instance.get(`applications/${applicationId}/activities?${params.toString()}`);
+
+    return {
+      pages: mapPagesToResponsePages(pages),
+      records: records.map(
+        (record: ActivityModelInit) => new ActivityModel(record),
+      ),
+    };
   }
 
   static async create(params: RequestApplicationParams) {

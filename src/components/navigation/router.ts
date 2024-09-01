@@ -72,6 +72,11 @@ const mainAppRoutes: Route[] = [
     icon: React.createElement(ApiOutlined),
     children: [
       {
+        name: "applicationsDashboard",
+        label: "Dashboard",
+        route: "/applications/dashboard"
+      },
+      {
         name: "myApplications",
         label: "Applications",
         route: "/applications"
@@ -152,6 +157,10 @@ const defaultAppRoutesLabelsDescribed = {
   search: {
     name: "search",
     label: React.createElement(Link, {to: "/search"}, "Search"),
+  },
+  applicationsDashboard: {
+    name: "applicationsDashboard",
+    label: React.createElement(Link, {to: "/applications/dashboard"}, "Dashboard")
   },
   myApplications: {
     name: "myApplications",
