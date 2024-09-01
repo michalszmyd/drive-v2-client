@@ -3,8 +3,8 @@ import { getFileExt, resolveBaseURL } from "./helpers/methods";
 import Model from "./model";
 import UserModel, { UserModelInit } from "./user-model";
 
-const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
-const VideoExtensions = ["mp4", "mp3", "mpeg", "m4a"];
+export const ImageExtensions = ["jpg", "jpeg", "png", "gif", "webp", "jfif"];
+export const VideoExtensions = ["mp4", "mp3", "mpeg", "m4a", "webm", "mov"];
 
 interface Metadata {
   text?: string,

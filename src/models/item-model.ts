@@ -1,3 +1,4 @@
+import { ImageExtensions, VideoExtensions } from "./drive-file-model";
 import FolderModel, { FolderModelInit } from "./folder-model";
 import { getFileExt } from "./helpers/methods";
 import UserModel, { UserModelInit } from "./user-model";
@@ -6,9 +7,6 @@ export enum ItemModelRecordType {
   Folder = "folder",
   DriveFile = "drive_file",
 }
-
-const ImageExtensions = ["jpg", "jpeg", "png", "gif"];
-const VideoExtensions = ["mp4"];
 
 export type ItemModelInit = {
   id: number;
